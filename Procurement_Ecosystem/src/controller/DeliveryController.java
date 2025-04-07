@@ -4,16 +4,15 @@
  */
 package controller;
 
-import model.ecosystem.Network;
-import model.user.UserAccount;
+import model.ecosystem.Enterprise;
+import model.inventory.Product;
 
 /**
  *
  * @author linweihong
  */
-public class AuthController {
-    public UserAccount login(String username, String password, Network network) {
-        // logic for login across all organizations in the network
-        return null;
+public class DeliveryController {
+    public void requestShipping(Product product, Enterprise logistics) {
+        // logic to create delivery request
     }
 }

@@ -4,16 +4,15 @@
  */
 package controller;
 
-import model.ecosystem.Network;
-import model.user.UserAccount;
+import model.ecosystem.Enterprise;
+import model.workqueue.RFQRequest;
 
 /**
  *
  * @author linweihong
  */
-public class AuthController {
-    public UserAccount login(String username, String password, Network network) {
-        // logic for login across all organizations in the network
-        return null;
+public class VendorController {
+    public void submitQuotation(RFQRequest rfq, Enterprise vendor, double price, String spec) {
+        // logic to submit quotation
     }
 }
