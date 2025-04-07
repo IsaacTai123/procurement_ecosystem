@@ -17,8 +17,8 @@ package Ecosystem;
 import Constants.Role;
 import java.util.ArrayList;
 import java.util.Arrays;
-import model.UserAccount;
-import model.UserAccountDirectory;
+import model.user.UserAccount;
+import model.user.UserAccountDirectory;
 
 
 /**
@@ -61,13 +61,13 @@ public class ConfigureAnEcosystem {
         // 1 admin, 3 branchManager, 3 customers
         UserAccountDirectory userAccountDirectory = business.getUserAccountDirectory();
         UserAccount account1 = userAccountDirectory.newUserAccount("a",Role.ADMIN, ""); /// order products for one of the customers and performed by a sales person
-        UserAccount account2 = userAccountDirectory.newUserAccount("b1", Role.BRANCHMANAGER, "1"); /// order products for one of the customers and performed by a sales person
-        UserAccount account3 = userAccountDirectory.newUserAccount("b2", Role.BRANCHMANAGER, "2"); /// order products for one of the customers and performed by a sales person
-        UserAccount account4 = userAccountDirectory.newUserAccount("b3", Role.BRANCHMANAGER, "3"); /// order products for one of the customers and performed by a sales person
-
-        UserAccount account5 = userAccountDirectory.newUserAccount("c1", Role.CUSTOMER, "1"); /// order products for one of the customers and performed by a sales person
-        UserAccount account6 = userAccountDirectory.newUserAccount("c2", Role.CUSTOMER, "2"); /// order products for one of the customers and performed by a sales person
-        UserAccount account7 = userAccountDirectory.newUserAccount("c3", Role.CUSTOMER, "3"); /// order products for one of the customers and performed by a sales person
+//        UserAccount account2 = userAccountDirectory.newUserAccount("b1", Role.BRANCHMANAGER, "1"); /// order products for one of the customers and performed by a sales person
+//        UserAccount account3 = userAccountDirectory.newUserAccount("b2", Role.BRANCHMANAGER, "2"); /// order products for one of the customers and performed by a sales person
+//        UserAccount account4 = userAccountDirectory.newUserAccount("b3", Role.BRANCHMANAGER, "3"); /// order products for one of the customers and performed by a sales person
+//
+//        UserAccount account5 = userAccountDirectory.newUserAccount("c1", Role.CUSTOMER, "1"); /// order products for one of the customers and performed by a sales person
+//        UserAccount account6 = userAccountDirectory.newUserAccount("c2", Role.CUSTOMER, "2"); /// order products for one of the customers and performed by a sales person
+//        UserAccount account7 = userAccountDirectory.newUserAccount("c3", Role.CUSTOMER, "3"); /// order products for one of the customers and performed by a sales person
 
         
         

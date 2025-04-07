@@ -7,7 +7,7 @@ package Ecosystem;
 
 //import Business.Person.PersonDirectory;
 
-import model.UserAccountDirectory;
+import model.user.UserAccountDirectory;
 
 //import Business.Profiles.EmployeeDirectory;
 //import Business.Profiles.StudentDirectory;
