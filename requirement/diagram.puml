@@ -3,6 +3,7 @@ skinparam linetype ortho
 skinparam classAttributeIconSize 0
 
 ' ================= Layer 0: Ecosystem =================
+
 class Ecosystem {
     - networks : List<Network>
     - user : Role
@@ -16,12 +17,17 @@ class Network {
 Ecosystem "1" --> "*" Network : manages
 
 ' ================= Layer 1: Enterprise & Org =================
+
 class Enterprise {
+    - purchaseRequests : List<PurchaseRequest>
+    - shipments : List<Shipment>
     - enterpriseId : String
     - name : String
     - nationality : String
     - type : EnterpriseType
     - organizations : List<Organization>
+    + addPurchaseRequest(pr : PurchaseRequest) : void
+    + getShipmentsByVendor(vendorId : String) : List<Shipment>
     + getAllUserAccounts() : List<UserAccount>
 }
 
@@ -56,19 +62,20 @@ enum Role {
 UserAccount --> Role
 
 ' ================= Layer 3: WorkRequest Superclass =================
-class WorkRequest {
-    - id : String
-    - sender : UserAccount
-    - receiver : UserAccount
-    - requestDate : Date
-    - status : RequestStatus
-}
 
 enum RequestStatus {
     PENDING
     APPROVED
     REJECTED
     COMPLETED
+}
+
+class WorkRequest {
+    - id : String
+    - sender : UserAccount
+    - receiver : UserAccount
+    - requestDate : Date
+    - status : RequestStatus
 }
 
 WorkRequest --> RequestStatus
@@ -122,23 +129,12 @@ class Quotation {
     - selected : boolean
 }
 
-class Spec {
-}
-
 class PurchaseOrder {
     - poNumber : String
     - quotation : Quotation
     - totalAmount : double
     - issueDate : Date
     - status : POStatus
-}
-
-enum POStatus {
-    ISSUED
-    ACCEPTED
-    REJECTED
-    CANCELLED
-    FULFILLED
 }
 
 class Contract {
@@ -165,13 +161,33 @@ enum ShipmentStatus {
     DELIVERED
 }
 
+Shipment --> ShipmentStatus
+
+enum ReceiptStatus {
+    PENDING_REVIEW
+    COMPLETED
+}
+
 class DeliveryReceipt {
-    - receivedBy : UserAccount
+    - confirmedBy : UserAccount
+    - reviewedBy : UserAccount
     - receivedDate : Date
+    - shipmentId : String
+    - status : ReceiptStatus
     - conditionNotes : String
 }
 
-class Product {
+DeliveryReceipt --> ReceiptStatus
+
+class Spec {
+    - specId : String
+    - category : String
+    - specifications : Map<String, String>
+    + getSpecification(key : String) : String
+    + setSpecification(key : String, value : String) : void
+}
+
+class Product extends Spec {
     - productId : String
     - name : String
     - description : String
