@@ -14,7 +14,34 @@ import java.util.ArrayList;
 public class Enterprise {
     private String name;
     private ArrayList<Organization> organizations;
-    private EnterpriseType type;
-    // enum: BUYER, VENDOR, LOGISTICS
-    // getters, setters
+    private EnterpriseType type; // enum: BUYER, VENDOR, LOGISTICS
+    
+    
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ArrayList<Organization> getOrganizations() {
+        return organizations;
+    }
+
+    public void setOrganizations(ArrayList<Organization> organizations) {
+        this.organizations = organizations;
+    }
+
+    public EnterpriseType getType() {
+        return type;
+    }
+
+    public void setType(EnterpriseType type) {
+        this.type = type;
+    }
+    
+    
+    
 }

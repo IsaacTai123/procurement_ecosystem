@@ -6,13 +6,26 @@ package controller;
 
 import model.ecosystem.Enterprise;
 import model.inventory.Product;
+import model.workqueue.DeliveryRequest;
 
 /**
  *
  * @author linweihong
  */
 public class DeliveryController {
-    public void requestShipping(Product product, Enterprise logistics) {
+    
+    public DeliveryRequest requestShipping(Product product, Enterprise logistics) {
         // logic to create delivery request
+        DeliveryRequest deliveryReq = new DeliveryRequest();      
+        deliveryReq.setProduct(product);
+        deliveryReq.setLogisticsPartner(logistics);
+        return deliveryReq;
     }
+    
+    
+    
+    
+    
+    
+    
 }

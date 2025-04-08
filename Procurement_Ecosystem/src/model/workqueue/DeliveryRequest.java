@@ -14,5 +14,23 @@ import model.inventory.Product;
 public class DeliveryRequest extends WorkRequest {
     private Product product;
     private Enterprise logisticsPartner;
-    // getters, setters
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public Enterprise getLogisticsPartner() {
+        return logisticsPartner;
+    }
+
+    public void setLogisticsPartner(Enterprise logisticsPartner) {
+        this.logisticsPartner = logisticsPartner;
+    }
+    
+    
+    
 }

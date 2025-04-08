@@ -11,5 +11,21 @@ package model.inventory;
 public class Product {
     private String name;
     private double unitPrice;
-    // getters, setters
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(double unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+    
 }
