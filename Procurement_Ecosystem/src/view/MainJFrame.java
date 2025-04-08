@@ -2,12 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package ui;
+package view;
 
 import Ecosystem.ConfigureAnEcosystem;
 import Ecosystem.Ecosystem;
 import java.awt.CardLayout;
-import model.UserAccountDirectory;
+import model.user.UserAccountDirectory;
 
 
 /**
@@ -67,7 +67,6 @@ public class MainJFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(51, 51, 255));
-        setPreferredSize(new java.awt.Dimension(780, 688));
 
         jPanel1.setBackground(new java.awt.Color(153, 153, 255));
 
