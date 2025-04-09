@@ -4,8 +4,15 @@
  */
 package controller;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import model.delivery.Shipment;
+import model.delivery.ShipmentHistory;
+import model.delivery.ShipmentItem;
 import model.ecosystem.Enterprise;
 import model.product.Product;
+import model.user.UserAccount;
 import model.workqueue.DeliveryRequest;
 
 /**
@@ -14,18 +21,19 @@ import model.workqueue.DeliveryRequest;
  */
 public class DeliveryController {
     
-    public DeliveryRequest requestShipping(Product product, Enterprise logistics) {
-        // logic to create delivery request
-        DeliveryRequest deliveryReq = new DeliveryRequest();      
-        deliveryReq.setProduct(product);
+    public DeliveryRequest requestShipping(ArrayList<ShipmentItem> items, Enterprise logistics, UserAccount sender, UserAccount receiver, Date shipDate, Date expectedArrival, ShipmentHistory shipments) {
+        // logic to create delivery request and place a shipment
+        DeliveryRequest deliveryReq = new DeliveryRequest();
+        deliveryReq.setItems(items);
         deliveryReq.setLogisticsPartner(logistics);
+        
+        shipments.newShipment(sender, receiver, shipDate, expectedArrival);
+
         return deliveryReq;
     }
-    
-    
-    
-    
-    
+
+   
+
     
     
 }
