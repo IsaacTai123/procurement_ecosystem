@@ -4,9 +4,8 @@
  */
 package view;
 
-import Ecosystem.ConfigureAnEcosystem;
-import Ecosystem.Ecosystem;
-import java.awt.CardLayout;
+import util.MockDataInitializer;
+import model.ecosystem.Ecosystem;
 import model.user.UserAccountDirectory;
 
 
@@ -36,7 +35,7 @@ public class MainJFrame extends javax.swing.JFrame {
         setResizable(false);
         setSize(900,700);
         
-        ecosystem = ConfigureAnEcosystem.initialize(); // pre-populate data
+        ecosystem = MockDataInitializer.initialize(); // pre-populate data
 
         userAccountDirectory = ecosystem.getUserAccountDirectory();
 //        authorDirectory = ecosystem.getAuthorDirectory();
