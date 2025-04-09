@@ -5,7 +5,7 @@
  */
 package model.user;
 
-import Constants.Role;
+import enums.Role;
 import java.util.ArrayList;
 import model.SysAdmin;
 

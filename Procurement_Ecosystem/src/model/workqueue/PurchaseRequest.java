@@ -4,12 +4,17 @@
  */
 package model.workqueue;
 
+import model.procurement.PurchaseItem;
+
+import java.util.List;
+
 /**
  *
  * @author linweihong
  */
 public class PurchaseRequest extends WorkRequest {
     private String description;
-    private double estimatedBudget;
-    // getters, setters
+    private List<PurchaseItem> purchaseItems;
+    private double estimatedBudget; // total cost of all items
+
 }

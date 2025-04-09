@@ -4,7 +4,7 @@
  */
 package util;
 
-import model.inventory.Product;
+import model.product.Product;
 
 /**
  *

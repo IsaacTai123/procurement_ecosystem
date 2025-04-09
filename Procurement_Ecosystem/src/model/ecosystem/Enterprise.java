@@ -4,7 +4,7 @@
  */
 package model.ecosystem;
 
-import Constants.EnterpriseType;
+import enums.EnterpriseType;
 import java.util.ArrayList;
 
 /**

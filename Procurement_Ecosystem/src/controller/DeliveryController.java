@@ -5,7 +5,7 @@
 package controller;
 
 import model.ecosystem.Enterprise;
-import model.inventory.Product;
+import model.product.Product;
 import model.workqueue.DeliveryRequest;
 
 /**

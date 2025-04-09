@@ -90,7 +90,7 @@ WorkRequest <|-- ProcurementClosure
 ' ================= Layer 4: WorkRequest Subclasses =================
 class PurchaseRequest {
     - description : String
-    - products : ProductCatalog
+    - purchaseItems : List<PurchaseItem>
     - estimatedBudget : double
 }
 
@@ -180,20 +180,28 @@ class DeliveryReceipt {
 DeliveryReceipt --> ReceiptStatus
 
 class Spec {
-    - specId : String
+    - modelNumber : String
+    - color : String
+    - size : String
+    - material : String
     - category : String
-    - specifications : Map<String, String>
-    + getSpecification(key : String) : String
-    + setSpecification(key : String, value : String) : void
+    - additionalNotes : String
 }
 
 class Product extends Spec {
-    - productId : String
+    - id : String
     - name : String
     - description : String
-    - unitPrice : double
-    - quantity : int
 }
+
+class PurchaseItem {
+    - product : Product
+    - spec : Spec
+    - quantity : int
+    - unitPrice : double
+}
+
+PurchaseRequest --> PurchaseItem
 
 ' ================= Relationships (Flow) =================
 RFQRequest --> PurchaseRequest : refers to

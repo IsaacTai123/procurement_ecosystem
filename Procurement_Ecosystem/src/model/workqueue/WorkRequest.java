@@ -4,7 +4,7 @@
  */
 package model.workqueue;
 
-import Constants.RequestStatus;
+import enums.RequestStatus;
 import java.util.Date;
 import model.user.UserAccount;
 
