@@ -4,7 +4,7 @@
  * and open the template in the editor.
 
 */
-package Ecosystem;
+package util;
 
 //import Business.Person.Person;
 //import Business.Person.PersonDirectory;
@@ -15,6 +15,7 @@ package Ecosystem;
 
 
 import enums.Role;
+import model.ecosystem.Ecosystem;
 import model.user.UserAccount;
 import model.user.UserAccountDirectory;
 
@@ -23,7 +24,7 @@ import model.user.UserAccountDirectory;
  *
  * @author kal bugrara
  */
-public class ConfigureAnEcosystem {
+public class MockDataInitializer {
 
     public static Ecosystem initialize() {
         Ecosystem business = new Ecosystem("Library Management System");
