@@ -8,6 +8,6 @@ package enums;
  *
  * @author linweihong
  */
-public enum Status {
-    RENTED, RETURNED, WAIT_FOR_APPROVAL, REJECTED;
+public enum ReceiptStatus {
+    PENDING_REVIEW, COMPLETED
 }
