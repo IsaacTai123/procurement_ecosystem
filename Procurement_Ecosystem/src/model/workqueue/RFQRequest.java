@@ -6,6 +6,7 @@ package model.workqueue;
 
 import java.util.ArrayList;
 import model.ecosystem.Enterprise;
+import model.procurement.PurchaseRequest;
 
 /**
  *

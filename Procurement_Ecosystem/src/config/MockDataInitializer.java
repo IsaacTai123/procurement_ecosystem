@@ -4,7 +4,7 @@
  * and open the template in the editor.
 
 */
-package util;
+package config;
 
 //import Business.Person.Person;
 //import Business.Person.PersonDirectory;

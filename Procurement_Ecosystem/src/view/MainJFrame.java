@@ -4,7 +4,7 @@
  */
 package view;
 
-import util.MockDataInitializer;
+import config.MockDataInitializer;
 import model.ecosystem.Ecosystem;
 import model.user.UserAccountDirectory;
 

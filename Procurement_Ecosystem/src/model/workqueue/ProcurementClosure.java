@@ -4,6 +4,8 @@
  */
 package model.workqueue;
 
+import model.procurement.PurchaseRequest;
+
 /**
  *
  * @author linweihong

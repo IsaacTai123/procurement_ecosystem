@@ -1,9 +1,9 @@
-package model.product;
+package common.dto;
 
 /**
  * @author tisaac
  */
-public class Spec {
+public class SpecDTO {
     private String modelNumber;
     private String color;
     private String size;
@@ -11,7 +11,7 @@ public class Spec {
     private String category;
     private String additionalNotes;
 
-    public Spec(String modelNumber, String color, String size, String material, String category, String additionalNotes) {
+    public SpecDTO(String modelNumber, String color, String size, String material, String category, String additionalNotes) {
         this.modelNumber = modelNumber;
         this.color = color;
         this.size = size;
@@ -38,5 +38,9 @@ public class Spec {
 
     public String getCategory() {
         return category;
+    }
+
+    public String getAdditionalNotes() {
+        return additionalNotes;
     }
 }
