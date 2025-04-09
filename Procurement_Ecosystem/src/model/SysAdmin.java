@@ -5,7 +5,7 @@
 package model;
 
 import model.user.UserAccount;
-import Constants.Role;
+import enums.Role;
 
 /**
  *

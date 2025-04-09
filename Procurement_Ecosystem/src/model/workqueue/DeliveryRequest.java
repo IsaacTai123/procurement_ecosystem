@@ -5,7 +5,7 @@
 package model.workqueue;
 
 import model.ecosystem.Enterprise;
-import model.inventory.Product;
+import model.product.Product;
 
 /**
  *
