@@ -12,11 +12,11 @@ import model.user.UserAccount;
  *
  * @author linweihong
  */
-public class ShipmentHistory {
+public class ShipmentDirectory {
     private ArrayList<Shipment> shipments;
     
     
-    public ShipmentHistory() {
+    public ShipmentDirectory() {
         shipments = new ArrayList();
     }
     
