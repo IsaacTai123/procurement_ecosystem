@@ -4,6 +4,9 @@
  */
 package model.workqueue;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import model.delivery.ShipmentItem;
 import model.ecosystem.Enterprise;
 import model.product.Product;
 
@@ -12,15 +15,16 @@ import model.product.Product;
  * @author linweihong
  */
 public class DeliveryRequest extends WorkRequest {
-    private Product product;
+    private ArrayList<ShipmentItem> items;
     private Enterprise logisticsPartner;
 
-    public Product getProduct() {
-        return product;
+    
+    public ArrayList<ShipmentItem> getItems() {
+        return items;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setItems(ArrayList<ShipmentItem> items) {
+        this.items = items;
     }
 
     public Enterprise getLogisticsPartner() {
