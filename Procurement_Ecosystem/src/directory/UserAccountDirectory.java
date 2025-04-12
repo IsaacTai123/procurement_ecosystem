@@ -10,9 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import model.SysAdmin;
 import model.user.UserAccount;
-import registry.UserRegistry;
 
 /**
  *
@@ -27,16 +25,7 @@ public class UserAccountDirectory {
     }
 
     public UserAccount createUserAccount (String name, String pw, Role type) {
-        UserAccount account = null;
-
-        switch (type) {
-            case SYS_ADMIN:
-                account = new SysAdmin(name, pw);
-                break;
-            default:
-
-        }
-        
+        UserAccount account = new UserAccount(name, type, pw);
         userAccountList.add(account);
         return account;
     }

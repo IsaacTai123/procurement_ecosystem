@@ -1,21 +1,12 @@
 package service.procurement;
 
-import common.NetworkManager;
 import common.Result;
 import enums.RequestStatus;
-import model.ecosystem.Enterprise;
-import model.ecosystem.Network;
-import model.ecosystem.Organization;
 import model.procurement.PurchaseItem;
-import model.product.Product;
 import model.product.Spec;
 import model.user.UserAccount;
 import model.procurement.PurchaseRequest;
-import model.workqueue.ApprovalStep;
-import util.ProductUtil;
 import util.ResultUtil;
-
-import java.util.List;
 
 /**
  * @author tisaac

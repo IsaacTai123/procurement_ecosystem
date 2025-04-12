@@ -6,12 +6,15 @@
 package model.user;
 
 import enums.Role;
+import util.IdGenerateUtil;
+
+import java.util.Random;
 
 /**
  *
  * @author linweihong
  */
-public abstract class UserAccount {
+public class UserAccount {
     
     // every object of subclass of UserAccount share the same counter, but capture the current counter value as its own userId 
 
@@ -21,7 +24,7 @@ public abstract class UserAccount {
     protected String password;
 
     public UserAccount (String name, Role type, String password) {
-        this.userId = "";
+        this.userId = IdGenerateUtil.generateUserId();
         this.userName = name;
         this.userType = type;
         this.password = password;
@@ -55,9 +58,6 @@ public abstract class UserAccount {
         this.password = password;
     }
 
-    
-    
-    
     @Override
     public String toString() {
         return getUsername();
