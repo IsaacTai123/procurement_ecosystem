@@ -4,6 +4,7 @@ import common.Result;
 import common.dto.PurchaseItemDTO;
 import common.dto.PurchaseRequestDTO;
 import common.dto.SpecDTO;
+import directory.PurchaseItemDirectory;
 import model.procurement.PurchaseItem;
 import model.procurement.PurchaseRequest;
 import model.product.Product;
@@ -20,21 +21,22 @@ public class PurchaseRequestController {
     private final PurchaseRequestService prService = new PurchaseRequestService();
 
     public Result<Void> handlePRSubmit(PurchaseRequestDTO dto) {
-        // create PurchaseRequest with the given DTO
-        List<PurchaseItem> items = new ArrayList<>();
-        for (PurchaseItemDTO itemDTO : dto.getPurchaseItems()) {
-            SpecDTO specDTO = itemDTO.getSpec();
-            Spec spec = new Spec(specDTO.getModelNumber(), specDTO.getColor(), specDTO.getSize(),
-                    specDTO.getMaterial(), specDTO.getCategory(), specDTO.getAdditionalNotes());
-
-            Product product = new Product(itemDTO.getProductName());
-
-            PurchaseItem item = new PurchaseItem(product, itemDTO.getQuantity(), itemDTO.getUnitPrice(), spec);
-            items.add(item);
-        }
-
-        PurchaseRequest pr = new PurchaseRequest(dto.getDescription(), items);
-        return prService.submitPR(pr);
+//        // create PurchaseRequest with the given DTO
+//        PurchaseItemDirectory items = new ArrayList<>();
+//        for (PurchaseItemDTO itemDTO : dto.getPurchaseItems()) {
+//            SpecDTO specDTO = itemDTO.getSpec();
+//            Spec spec = new Spec(specDTO.getModelNumber(), specDTO.getColor(), specDTO.getSize(),
+//                    specDTO.getMaterial(), specDTO.getCategory(), specDTO.getAdditionalNotes());
+//
+//            Product product = new Product(itemDTO.getProductName());
+//
+//            PurchaseItem item = new PurchaseItem(product, itemDTO.getQuantity(), itemDTO.getUnitPrice(), spec);
+//            items.add(item);
+//        }
+//
+//        PurchaseRequest pr = new PurchaseRequest(dto.getDescription(), items);
+//        return prService.submitPR(pr);
+        return null;
     }
 
     public Result<List<PurchaseRequest>> handleMyRequests() {

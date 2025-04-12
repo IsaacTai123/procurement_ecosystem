@@ -4,7 +4,7 @@
  */
 package model.product;
 
-import util.ProductUtil;
+import util.IdGenerateUtil;
 
 /**
  * This class represents the actual products that vendors have.
@@ -16,7 +16,7 @@ public class Product {
 
     public Product(String name) {
         this.name = name;
-        this.id = ProductUtil.generateProductId(name);
+        this.id = IdGenerateUtil.generateProductId(name);
     }
 
     public String getName() {
