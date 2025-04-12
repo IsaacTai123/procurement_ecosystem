@@ -14,7 +14,7 @@ import enums.Role;
 public class SysAdmin extends UserAccount{
     
     public SysAdmin(String name, String password){
-        super(name, Role.ADMIN, password); // Calls the constructor of UserAccount
+        super(name, Role.SYS_ADMIN, password); // Calls the constructor of UserAccount
     
     }
     

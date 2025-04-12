@@ -4,14 +4,20 @@
  */
 package model.product;
 
+import util.ProductUtil;
+
 /**
- *
- * @author linweihong
+ * This class represents the actual products that vendors have.
+ * @author tisaac
  */
 public class Product {
     private String id;
     private String name;
-    private String description;
+
+    public Product(String name) {
+        this.name = name;
+        this.id = ProductUtil.generateProductId(name);
+    }
 
     public String getName() {
         return name;
@@ -20,5 +26,14 @@ public class Product {
     public void setName(String name) {
         this.name = name;
     }
-    
+
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
 }

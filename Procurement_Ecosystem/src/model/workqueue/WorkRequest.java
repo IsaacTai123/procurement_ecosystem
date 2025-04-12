@@ -17,7 +17,7 @@ public abstract class WorkRequest {
     private UserAccount sender;
     private UserAccount receiver;
     private Date requestDate;
-    private RequestStatus status; // enum: PENDING, APPROVED, REJECTED, COMPLETED
+    private RequestStatus status = RequestStatus.PENDING; // enum: PENDING, APPROVED, REJECTED, COMPLETED
     
 
     public String getId() {

@@ -9,14 +9,13 @@ package enums;
  * @author linweihong
  */
 public enum Role {
-    ADMIN,
+    SYS_ADMIN,
     IT_ADMIN,
-    PROCUREMENT_SPECIALIST,
-    IT_ENGINEER,
-    FINANCE_ANALYST,
+    SPECIALIST,
+    ENGINEER,
+    ANALYST,
     LEGAL_REVIEWER,
-    WAREHOUSE_SPECIALIST,
-    SALES_MANAGER_TSMC,
-    SALES_MANAGER_SAMSUNG,
-    SHIPPING_COORDINATOR_FEDEX;
+    MANAGER,
+    SHIPPING_COORDINATOR;
 }
+// SYS_ADMIN: System Administrator
