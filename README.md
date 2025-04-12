@@ -78,14 +78,20 @@ flowchart TB
 ```
 
 ## PR Approval Flow
+
 ```mermaid
 flowchart LR
-    IT_Engineer["IT Engineer"] -->|Submit PR| Procurement_Specialist["Procurement Specialist"]
-    Procurement_Specialist -->|Review PR<br>Add supplier info| Finance_Analyst["Finance Analyst"]
-    Finance_Analyst -->|Approve Budget| Procurement_Specialist
-    Procurement_Specialist -->|Request Tech Confirmation| IT_Engineer
-    IT_Engineer -->|Confirm Specs| Procurement_Specialist
+    Employee["Any Employee"] -->|Submit PR| Procurement
+
+    Procurement -->|1. Check PR| Decision
+    Decision -->|"Yes (Hardware related)"| IT
+    Decision -->|"No (Non-Hardware related) Jump to 3"| Procurement
+
+    IT -->|2. Approve Spec| Procurement
+    Procurement -->|"3. Submit Quotation (After RFQ and Quotation flow)"| Finance
+    Finance -->|4. Approve Budget| Procurement
 ```
+
 
 ## RFQ and Quotation
 ```mermaid
