@@ -50,6 +50,12 @@ public class Ecosystem {
         return EcosystemHolder.INSTANCE;
     }
 
+    public void AddNetwork(Network n) {
+        if (n != null && !networkList.contains(n)) {
+            networkList.add(n);
+            NetworkManager.registerNetwork(n);
+        }
+    }
 
     public String getName() {
         return "Procurement Ecosystem";
