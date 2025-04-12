@@ -19,7 +19,7 @@ flowchart TB
 
         subgraph IT
             A1_1[IT Admin]
-            A1_2[IT Engineer]
+            A1_2[Engineer]
         end
 
         subgraph Finance

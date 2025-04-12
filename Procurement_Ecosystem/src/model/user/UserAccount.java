@@ -14,28 +14,24 @@ import enums.Role;
 public abstract class UserAccount {
     
     // every object of subclass of UserAccount share the same counter, but capture the current counter value as its own userId 
-    
-    private static int userIdCounter = 0; // Static ID Counter (private: encapsulation, to avoid being modified)
-    protected final int userId;
+
+    protected final String userId; // Unique ID for each user
     protected String userName;
     protected Role userType;
     protected String password;
 
-    public UserAccount (String name, Role type, String password){
-       this.userId = userIdCounter++; // assign the original value, then add 1
-       this.userName = name;
-       this.userType = type;
-       this.password = password;
-       
+    public UserAccount (String name, Role type, String password) {
+        this.userId = "";
+        this.userName = name;
+        this.userType = type;
+        this.password = password;
     }
-    
-    
-    
-    public int getUserId() {
+
+    public String getUserId() {
         return userId;
     }
 
-    public String getUserName() {
+    public String getUsername() {
         return userName;
     }
     
@@ -64,8 +60,7 @@ public abstract class UserAccount {
     
     @Override
     public String toString() {
-
-        return getUserName();
+        return getUsername();
     }
 
 }
