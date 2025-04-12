@@ -5,6 +5,10 @@
 package model.ecosystem;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import directory.UserAccountDirectory;
+import enums.Role;
 import model.user.UserAccount;
 
 /**
@@ -12,7 +16,19 @@ import model.user.UserAccount;
  * @author linweihong
  */
 public class Organization {
-    private String name;
-    private ArrayList<UserAccount> userAccounts;
-    // getters, setters
+    private final String name;
+    private final UserAccountDirectory userAccountList;
+
+    public Organization(String name) {
+        this.name = name;
+        this.userAccountList = new UserAccountDirectory();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public UserAccountDirectory getUserAccountDir() {
+        return userAccountList;
+    }
 }

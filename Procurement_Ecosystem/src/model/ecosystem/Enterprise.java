@@ -4,8 +4,8 @@
  */
 package model.ecosystem;
 
+import directory.OrganizationDirectory;
 import enums.EnterpriseType;
-import java.util.ArrayList;
 
 /**
  *
@@ -13,10 +13,14 @@ import java.util.ArrayList;
  */
 public class Enterprise {
     private String name;
-    private ArrayList<Organization> organizations;
     private EnterpriseType type; // enum: BUYER, VENDOR, LOGISTICS
+    private final OrganizationDirectory organizationList;
     
-    
+    public Enterprise(String name, EnterpriseType type) {
+        this.name = name;
+        this.type = type;
+        organizationList = new OrganizationDirectory();
+    }
 
     public String getName() {
         return name;
@@ -24,14 +28,6 @@ public class Enterprise {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public ArrayList<Organization> getOrganizations() {
-        return organizations;
-    }
-
-    public void setOrganizations(ArrayList<Organization> organizations) {
-        this.organizations = organizations;
     }
 
     public EnterpriseType getType() {
@@ -42,6 +38,8 @@ public class Enterprise {
         this.type = type;
     }
     
-    
+    public OrganizationDirectory getOrganizationDir() {
+        return organizationList;
+    }
     
 }
