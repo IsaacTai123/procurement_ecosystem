@@ -4,9 +4,9 @@
  */
 package view;
 
-import util.MockDataInitializer;
-import model.ecosystem.Ecosystem;
-import model.user.UserAccountDirectory;
+import config.MockDataInitializer;
+import directory.UserAccountDirectory;
+import model.ecosystem.Network;
 
 
 /**
@@ -16,12 +16,8 @@ import model.user.UserAccountDirectory;
 public class MainJFrame extends javax.swing.JFrame {
 
     private UserAccountDirectory userAccountDirectory;
-//    private AuthorDirectory authorDirectory;
-//    private BranchDirectory branchDirectory;
-//    private BookDirectory bookDirectory;
-//    private CustomerDirectory customerDirectory;
 
-    Ecosystem ecosystem;
+    Network network;
   
 
 
@@ -35,18 +31,12 @@ public class MainJFrame extends javax.swing.JFrame {
         setResizable(false);
         setSize(900,700);
         
-        ecosystem = MockDataInitializer.initialize(); // pre-populate data
+        network = MockDataInitializer.initialize(); // pre-populate data
 
-        userAccountDirectory = ecosystem.getUserAccountDirectory();
-//        authorDirectory = ecosystem.getAuthorDirectory();
-//        branchDirectory = ecosystem.getBranchDirectory();
-//        bookDirectory = ecosystem.getBookDirectory();
-//        customerDirectory = ecosystem.getCustomerDirectory();
+        userAccountDirectory = network.getUserAccountDir();
         
         
         System.out.println("user accounts: " + userAccountDirectory.getUserAccountList());
-//        System.out.println("author list: " + authorDirectory.getAuthorList());
-       
 
     }
 
@@ -123,12 +113,6 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void btnServiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServiceActionPerformed
         // TODO add your handling code here:
-        
-//        ServiceJPanel panel = new ServiceJPanel(userProcessContainer, serviceCatalog);
-//        userProcessContainer.add("ServiceJPanel", panel); // add Jpanel into Jpanel, userProcessContainer (JPanel) has card layout
-        
-//        CardLayout layout = (CardLayout) userProcessContainer.getLayout(); // use CardLayout class's next() function to flip to the next card in the container
-//        layout.next(userProcessContainer); 
         
         
         
