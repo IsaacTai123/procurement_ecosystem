@@ -4,9 +4,14 @@
  */
 package model.procurement;
 
+import directory.PurchaseItemDirectory;
+import enums.ApprovalStatus;
+import model.user.UserAccount;
+import model.workqueue.ApprovalStep;
 import model.workqueue.WorkRequest;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -14,9 +19,10 @@ import java.util.List;
  */
 public class PurchaseRequest extends WorkRequest {
     private final String description;
-    private List<PurchaseItem> purchaseItems;
+    private PurchaseItemDirectory purchaseItems;
+    private List<ApprovalStep> actionSteps;
 
-    public PurchaseRequest(String description, List<PurchaseItem> purchaseItems) {
+    public PurchaseRequest(String description, PurchaseItemDirectory purchaseItems) {
         this.description = description;
         this.purchaseItems = purchaseItems;
     }
@@ -28,14 +34,22 @@ public class PurchaseRequest extends WorkRequest {
     // Calculates the total estimated budget based on the purchase items
     public double getEstimatedBudget() {
         double estimatedBudget = 0;
-        for (PurchaseItem item : purchaseItems) {
+        for (PurchaseItem item : purchaseItems.getPurchaseItemList()) {
             estimatedBudget += item.getPrice();
         }
 
         return estimatedBudget;
     }
 
-    public List<PurchaseItem> getPurchaseItems() {
+    public List<ApprovalStep> getActionSteps() {
+        return actionSteps;
+    }
+
+    public void setActionSteps(List<ApprovalStep> actionSteps) {
+        this.actionSteps = actionSteps;
+    }
+
+    public PurchaseItemDirectory getPurchaseItems() {
         return purchaseItems;
     }
 }

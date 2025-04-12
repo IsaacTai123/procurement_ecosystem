@@ -1,6 +1,10 @@
 package util;
 
+import model.procurement.PurchaseItem;
+import model.product.Product;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**

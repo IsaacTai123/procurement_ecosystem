@@ -7,6 +7,7 @@ package controller.procurement;
 import java.util.ArrayList;
 import java.util.List;
 
+import common.Result;
 import common.dto.PurchaseItemDTO;
 import common.dto.PurchaseRequestDTO;
 import common.dto.SpecDTO;
@@ -24,25 +25,10 @@ import service.procurement.PurchaseRequestService;
  * @author tisaac
  */
 public class ProcurementController {
-    private PurchaseRequestService prService = new PurchaseRequestService();
 
-    public void handlePRSubmit(PurchaseRequestDTO dto) {
-        // create PurchaseRequest with the given DTO
-        List<PurchaseItem> items = new ArrayList<>();
-        for (PurchaseItemDTO itemDTO : dto.getPurchaseItems()) {
-            SpecDTO specDTO = itemDTO.getSpec();
-            Spec spec = new Spec(specDTO.getModelNumber(), specDTO.getColor(), specDTO.getSize(),
-                    specDTO.getMaterial(), specDTO.getCategory(), specDTO.getAdditionalNotes());
-
-            Product product = new Product();
-            product.setName(itemDTO.getProductName());
-
-            PurchaseItem item = new PurchaseItem(product, spec, itemDTO.getQuantity(), itemDTO.getUnitPrice());
-            items.add(item);
-        }
-
-        PurchaseRequest pr = new PurchaseRequest(dto.getDescription(), items);
-        prService.submitPR(pr);
+    public Result<Void> handlePRConfirm() {
+        // logic to confirm PR
+        return null;
     }
 
     public void issueRFQ(PurchaseRequest pr, ArrayList<Enterprise> vendors) {

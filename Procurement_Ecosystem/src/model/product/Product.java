@@ -14,12 +14,26 @@ public class Product {
     private String id;
     private String name;
 
+    public Product(String name) {
+        this.name = name;
+        this.id = ProductUtil.generateProductId(name);
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-        this.id = ProductUtil.generateProductId(name);
     }
+
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
 }
