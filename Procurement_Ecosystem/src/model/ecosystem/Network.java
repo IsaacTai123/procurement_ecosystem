@@ -7,12 +7,8 @@ package model.ecosystem;
 import directory.*;
 import registry.OrganizationRegistry;
 import registry.UserRegistry;
-import service.procurement.OrganizationService;
-import service.procurement.UserAccountService;
-
-import java.util.ArrayList;
-import java.util.List;
-import util.NavigationUtil;
+import service.OrganizationService;
+import service.UserAccountService;
 
 /**
  *

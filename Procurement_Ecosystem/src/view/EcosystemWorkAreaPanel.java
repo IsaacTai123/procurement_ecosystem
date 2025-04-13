@@ -4,6 +4,9 @@
  */
 package view;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author tisaac
@@ -28,24 +31,24 @@ public class EcosystemWorkAreaPanel extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tblNetwork = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        btnCreateNetwork = new javax.swing.JButton();
         title = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnNext = new javax.swing.JButton();
+        btnCreateEnterprise = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tblNetwork1 = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
+        tblEnterprise = new javax.swing.JTable();
+        lbNetwork = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         cmbEnterpriseType = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
-        txtEnterpriseName1 = new javax.swing.JTextField();
-        txtEnterpriseName2 = new javax.swing.JTextField();
+        txtEnterpriseName = new javax.swing.JTextField();
+        txtAdminUserName = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jPasswordField1 = new javax.swing.JPasswordField();
+        txtAdminUserPwd = new javax.swing.JPasswordField();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        txtEnterpriseName3 = new javax.swing.JTextField();
+        txtNetworkName = new javax.swing.JTextField();
 
         setMinimumSize(new java.awt.Dimension(850, 570));
 
@@ -73,22 +76,22 @@ public class EcosystemWorkAreaPanel extends javax.swing.JPanel {
             tblNetwork.getColumnModel().getColumn(0).setResizable(false);
         }
 
-        jButton1.setText("Create Network");
+        btnCreateNetwork.setText("Create Network");
 
         title.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
         title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         title.setText("Ecosystem Management (System Admin page)");
 
-        jButton2.setText("Next >>");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnNext.setText("Next >>");
+        btnNext.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnNextActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Create Enterprise");
+        btnCreateEnterprise.setText("Create Enterprise");
 
-        tblNetwork1.setModel(new javax.swing.table.DefaultTableModel(
+        tblEnterprise.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -107,13 +110,13 @@ public class EcosystemWorkAreaPanel extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(tblNetwork1);
-        if (tblNetwork1.getColumnModel().getColumnCount() > 0) {
-            tblNetwork1.getColumnModel().getColumn(0).setResizable(false);
-            tblNetwork1.getColumnModel().getColumn(1).setResizable(false);
+        jScrollPane2.setViewportView(tblEnterprise);
+        if (tblEnterprise.getColumnModel().getColumnCount() > 0) {
+            tblEnterprise.getColumnModel().getColumn(0).setResizable(false);
+            tblEnterprise.getColumnModel().getColumn(1).setResizable(false);
         }
 
-        jLabel1.setText("Network Name");
+        lbNetwork.setText("Network Name");
 
         jLabel2.setText("Enterprise Name");
 
@@ -125,7 +128,7 @@ public class EcosystemWorkAreaPanel extends javax.swing.JPanel {
         jLabel6.setFont(new java.awt.Font("Helvetica Neue", 2, 13)); // NOI18N
         jLabel6.setText("Admin User Name");
 
-        jPasswordField1.setText("jPasswordField1");
+        txtAdminUserPwd.setText("jPasswordField1");
 
         jLabel8.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
         jLabel8.setText("Enterprise List");
@@ -145,17 +148,17 @@ public class EcosystemWorkAreaPanel extends javax.swing.JPanel {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel9))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addComponent(lbNetwork)
                         .addGap(18, 18, 18)
-                        .addComponent(txtEnterpriseName3, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jButton1))
+                        .addComponent(txtNetworkName, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnCreateNetwork))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(344, 344, 344)
-                        .addComponent(jButton3))
+                        .addComponent(btnCreateEnterprise))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGap(25, 25, 25)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(41, 41, 41)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -167,7 +170,7 @@ public class EcosystemWorkAreaPanel extends javax.swing.JPanel {
                                     .addComponent(jLabel3))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtEnterpriseName1)
+                                    .addComponent(txtEnterpriseName)
                                     .addComponent(cmbEnterpriseType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -175,8 +178,8 @@ public class EcosystemWorkAreaPanel extends javax.swing.JPanel {
                                     .addComponent(jLabel4))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtEnterpriseName2)
-                                    .addComponent(jPasswordField1)))
+                                    .addComponent(txtAdminUserName)
+                                    .addComponent(txtAdminUserPwd)))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
                 .addGap(46, 46, 46))
         );
@@ -189,26 +192,26 @@ public class EcosystemWorkAreaPanel extends javax.swing.JPanel {
                         .addGap(17, 17, 17)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
-                            .addComponent(txtEnterpriseName1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtEnterpriseName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(cmbEnterpriseType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtEnterpriseName2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtAdminUserName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtAdminUserPwd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4))
                         .addGap(18, 18, 18)
-                        .addComponent(jButton3)
+                        .addComponent(btnCreateEnterprise)
                         .addGap(32, 32, 32)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel8)
                             .addComponent(jLabel9)
-                            .addComponent(jButton2))
+                            .addComponent(btnNext))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
@@ -216,39 +219,44 @@ public class EcosystemWorkAreaPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(54, 54, 54)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtEnterpriseName3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
+                            .addComponent(txtNetworkName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbNetwork))
                         .addGap(18, 18, 18)
-                        .addComponent(jButton1)))
+                        .addComponent(btnCreateNetwork)))
                 .addContainerGap(32, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnNextActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCreateEnterprise;
+    private javax.swing.JButton btnCreateNetwork;
+    private javax.swing.JButton btnNext;
     private javax.swing.JComboBox<String> cmbEnterpriseType;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel lbNetwork;
+    private javax.swing.JTable tblEnterprise;
     private javax.swing.JTable tblNetwork;
-    private javax.swing.JTable tblNetwork1;
     private javax.swing.JLabel title;
-    private javax.swing.JTextField txtEnterpriseName1;
-    private javax.swing.JTextField txtEnterpriseName2;
-    private javax.swing.JTextField txtEnterpriseName3;
+    private javax.swing.JTextField txtAdminUserName;
+    private javax.swing.JPasswordField txtAdminUserPwd;
+    private javax.swing.JTextField txtEnterpriseName;
+    private javax.swing.JTextField txtNetworkName;
     // End of variables declaration//GEN-END:variables
+
+    public void clearTable(JTable table) {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+    }
 }

@@ -1,7 +1,6 @@
-package service.procurement;
+package service;
 
 import directory.GlobalOrganizationDirectory;
-import enums.Role;
 import model.ecosystem.Enterprise;
 import model.ecosystem.Organization;
 

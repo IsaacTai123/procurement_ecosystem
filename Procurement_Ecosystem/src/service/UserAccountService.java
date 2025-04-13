@@ -1,4 +1,4 @@
-package service.procurement;
+package service;
 
 import directory.GlobalUserAccountDirectory;
 import enums.Role;
