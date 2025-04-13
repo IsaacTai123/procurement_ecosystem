@@ -5,37 +5,52 @@ import java.awt.*;
 import java.util.Stack;
 
 /**
- * NavigationUtil is a helper utility designed to manage panel navigation using a {@link CardLayout}.
+ * {@code NavigationUtil} is a singleton helper utility for managing panel navigation in Swing applications using {@link CardLayout}.
  * <p>
- * It keeps track of panel navigation history using a stack structure, allowing you to:
+ * It maintains a navigation history using a stack structure, enabling features like:
  * <ul>
- *   <li>Switch between panels by name</li>
- *   <li>Go back to the previously visited panel (like a "Back" button)</li>
- *   <li>Ensure panels are not duplicated in the layout</li>
+ *   <li>Switching between panels by name</li>
+ *   <li>Returning to the previous panel (simulating a "Back" button)</li>
+ *   <li>Preventing duplicate panels from being added to the layout</li>
  * </ul>
+ * <p>
+ * This utility is ideal for multi-page workflows where panels are dynamically displayed using {@code CardLayout}.
  *
- * <p>This utility is useful for Swing applications that use {@code CardLayout} to simulate
- * multi-page workflows or dynamic screen transitions.
- *
- * <h3>Example usage:</h3>
+ * <h3>Usage Example:</h3>
  * <pre>{@code
- * JPanel mainPanel = new JPanel(new CardLayout());
- * NavigationUtil nav = new NavigationUtil(mainPanel);
+ * // Initialize once in your main frame
+ * NavigationUtil.init(mainPanel);
  *
+ * // Retrieve and use anywhere in your app
+ * NavigationUtil nav = NavigationUtil.getInstance();
  * nav.showCard(homePanel, "Home");
  * nav.showCard(settingsPanel, "Settings");
  * nav.goBack(); // Returns to "Home"
  * }</pre>
  *
+ * <p><strong>Note:</strong> {@code init()} must be called once before calling {@code getInstance()}.
+ * Otherwise, {@code getInstance()} will return {@code null} or throw an error if guarded.
+ *
  * @author tisaac
  */
 public class NavigationUtil {
+    private static NavigationUtil instance;
     private final JPanel workArea;
     private final Stack<String> history; // Stores visited panels
 
-    public NavigationUtil(JPanel workArea) {
+    private NavigationUtil(JPanel workArea) {
         this.workArea = workArea;
         this.history = new Stack<>();
+    }
+
+    public static void init(JPanel workArea) {
+        if (instance == null) {
+            instance = new NavigationUtil(workArea);
+        }
+    }
+
+    public static NavigationUtil getInstance() {
+        return instance;
     }
 
     /**
