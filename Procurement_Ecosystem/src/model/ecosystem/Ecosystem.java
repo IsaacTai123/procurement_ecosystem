@@ -6,6 +6,7 @@
 package model.ecosystem;
 
 import common.NetworkManager;
+import model.user.UserAccount;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +39,20 @@ import java.util.List;
  */
 public class Ecosystem {
     private final List<Network> networkList;
+    private UserAccount sysAdmin;
+
     private Ecosystem() {
         networkList = new ArrayList<>();
+    }
+
+    public void init(UserAccount sysAdmin) {
+        if (this.sysAdmin != null) {
+            throw new IllegalStateException("System Admin is already initialized.");
+        }
+        if (sysAdmin == null) {
+            throw new IllegalArgumentException("sysAdmin cannot be null.");
+        }
+        this.sysAdmin = sysAdmin;
     }
 
     private static class EcosystemHolder {
@@ -59,5 +72,9 @@ public class Ecosystem {
 
     public String getName() {
         return "Procurement Ecosystem";
+    }
+
+    public UserAccount getSysAdmin() {
+        return sysAdmin;
     }
 }

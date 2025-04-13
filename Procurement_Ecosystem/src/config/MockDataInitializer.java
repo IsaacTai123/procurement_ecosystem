@@ -14,7 +14,6 @@ package config;
 //import Business.Profiles.StudentProfile;
 
 
-import directory.OrganizationDirectory;
 import enums.EnterpriseType;
 import enums.Role;
 import model.ecosystem.Ecosystem;
@@ -22,9 +21,8 @@ import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import model.ecosystem.Organization;
 import model.user.UserAccount;
-import directory.UserAccountDirectory;
-import service.procurement.OrganizationService;
-import service.procurement.UserAccountService;
+import service.OrganizationService;
+import service.UserAccountService;
 
 
 /**
@@ -35,21 +33,20 @@ public class MockDataInitializer {
 
     public static Network initialize() {
         Ecosystem eco = Ecosystem.getInstance();
-        Network network = new Network("Google_TSMC");
+        eco.init(new UserAccount("admin", Role.SYS_ADMIN, "admin"));
+
+        Network network = new Network("Tech");
         eco.AddNetwork(network);
 
         OrganizationService orgService = network.getOrgService();
         UserAccountService userAccountService = network.getUserAccountService();
 
-        // Enterprise
-
-        // Network Admin
-        Enterprise systemCore = network.getEnterpriseDir().createEnterprise("System Core", EnterpriseType.SYSTEM_CORE);
-        Organization networkOrg = orgService.createOrgFromEnterprise("Network Admin", systemCore);
-        UserAccount sysAdmin = userAccountService.createUserFromOrganization("admin", "admin", Role.SYS_ADMIN, networkOrg); // system admin account
-
         // Google
         Enterprise google = network.getEnterpriseDir().createEnterprise("Google", EnterpriseType.BUYER);
+
+        Organization googleIT = orgService.createOrgFromEnterprise("IT", google);
+        UserAccount googleITManager = userAccountService.createUserFromOrganization("Alvin", "Alvin", Role.MANAGER, googleIT);
+
         Organization googleProcurement = orgService.createOrgFromEnterprise("Procurement", google);
         UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac", Role.MANAGER, googleProcurement);
 
