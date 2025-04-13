@@ -29,7 +29,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="MenuPanel" pref="954" max="32767" attributes="0"/>
+          <Component id="MenuPanel" max="32767" attributes="0"/>
           <Component id="userProcessContainer" alignment="1" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
@@ -38,7 +38,7 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="MenuPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="userProcessContainer" pref="641" max="32767" attributes="0"/>
+              <Component id="userProcessContainer" pref="564" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -58,7 +58,7 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace pref="260" max="32767" attributes="0"/>
+                  <EmptySpace pref="156" max="32767" attributes="0"/>
                   <Component id="lbUsername" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="txtUsername" min="-2" pref="140" max="-2" attributes="0"/>
@@ -104,6 +104,9 @@
           </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="txtUsername">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtUsernameActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JPasswordField" name="pwdPassword">
         </Component>

@@ -5,7 +5,9 @@
 package view;
 
 import config.MockDataInitializer;
+import directory.ShipmentDirectories;
 import directory.UserAccountDirectory;
+import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import service.procurement.UserAccountService;
 import util.NavigationUtil;
@@ -18,6 +20,8 @@ import util.NavigationUtil;
 public class MainJFrame extends javax.swing.JFrame {
 
     private UserAccountDirectory userAccountDirectory;
+    private ShipmentDirectories shipmentDirectories;
+
 
     Network network;
 
@@ -33,9 +37,21 @@ public class MainJFrame extends javax.swing.JFrame {
         
         network = MockDataInitializer.initialize(); // pre-populate data
         NavigationUtil.init(userProcessContainer);
-
+        
         WelcomePanel wl = new WelcomePanel();
         NavigationUtil.getInstance().showCard(wl, "Welcome");
+
+        userAccountDirectory = network.getUserAccountDir();
+        shipmentDirectories = network.getShipmentDirectories(); 
+        // todo: give shipment company name, return shipment directory | shipmentDirectories.getShipmentDirectory(enterprise)
+        // when fedEx login, get fedEx's shipment directory
+        Enterprise fedEx = network.getEnterpriseDir().getEnterpriseByName("FedEx");
+
+        System.out.println("shipment directory: " + shipmentDirectories.getShipmentDirectory(fedEx).getShipments().get(0).getShipDate());
+        // UI display
+        
+        System.out.println("user accounts: " + userAccountDirectory.getUserAccountList());
+
     }
 
     /**
@@ -71,6 +87,12 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
 
+        txtUsername.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtUsernameActionPerformed(evt);
+            }
+        });
+
         lbUsername.setBackground(new java.awt.Color(255, 255, 255));
         lbUsername.setFont(new java.awt.Font("Helvetica Neue", 3, 14)); // NOI18N
         lbUsername.setForeground(new java.awt.Color(255, 255, 255));
@@ -94,7 +116,7 @@ public class MainJFrame extends javax.swing.JFrame {
         MenuPanelLayout.setHorizontalGroup(
             MenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, MenuPanelLayout.createSequentialGroup()
-                .addContainerGap(260, Short.MAX_VALUE)
+                .addContainerGap(156, Short.MAX_VALUE)
                 .addComponent(lbUsername)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -130,7 +152,7 @@ public class MainJFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(MenuPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 954, Short.MAX_VALUE)
+            .addComponent(MenuPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(userProcessContainer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -138,7 +160,7 @@ public class MainJFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(MenuPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(userProcessContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 641, Short.MAX_VALUE))
+                .addComponent(userProcessContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE))
         );
 
         pack();
@@ -151,6 +173,10 @@ public class MainJFrame extends javax.swing.JFrame {
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnLogoutActionPerformed
+
+    private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsernameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtUsernameActionPerformed
 
     /**
      * @param args the command line arguments

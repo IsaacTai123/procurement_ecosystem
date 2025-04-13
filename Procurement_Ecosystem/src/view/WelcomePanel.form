@@ -39,8 +39,9 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
                       <Component id="image" min="-2" pref="293" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="lbWelcome2" min="-2" pref="378" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
@@ -79,7 +80,7 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="99" green="99" red="0" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="MANAGEMENT"/>
+        <Property name="text" type="java.lang.String" value="ECOSYSTEM"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="lbWelcome1">
@@ -101,7 +102,7 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="99" green="99" red="0" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="PROCUREMENT ECOSYSTEM"/>
+        <Property name="text" type="java.lang.String" value="PROCUREMENT MANAGEMENT"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="image">

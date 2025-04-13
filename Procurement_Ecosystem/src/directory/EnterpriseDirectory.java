@@ -26,4 +26,17 @@ public class EnterpriseDirectory {
     public List<Enterprise> getEnterprisesList() {
         return enterprisesList;
     }
+    
+    public Enterprise getEnterpriseByName(String name) {
+        
+        for(Enterprise enterprise: enterprisesList){
+            if (enterprise.getName() == name) {
+                return enterprise;
+            }
+        
+        }
+        
+        return null;
+    
+    }
 }

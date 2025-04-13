@@ -25,6 +25,9 @@ public class Network {
     private final OrganizationDirectory orgDir;
     private final UserAccountDirectory useraccountDir;
     private final EnterpriseDirectory enterpriseDir;
+    private final ShipmentDirectories shipmentDirectories;
+
+
 
     // Helper classes
     private final UserRegistry userRegistry;
@@ -48,6 +51,8 @@ public class Network {
 
         GlobalOrganizationDirectory globalOrgDir = new GlobalOrganizationDirectory(orgRegistry);
         this.orgService = new OrganizationService(globalOrgDir);
+        
+        this.shipmentDirectories = new ShipmentDirectories();
     }
 
     public String getName() {
@@ -81,4 +86,10 @@ public class Network {
     public OrganizationService getOrgService() {
         return orgService;
     }
+
+    public ShipmentDirectories getShipmentDirectories() {
+        return shipmentDirectories;
+    }
+    
+    
 }
