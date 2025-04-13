@@ -6,6 +6,7 @@ package model.delivery;
 
 import java.util.ArrayList;
 import java.util.Date;
+import model.ecosystem.Enterprise;
 import model.user.UserAccount;
 
 /**
@@ -13,17 +14,32 @@ import model.user.UserAccount;
  * @author linweihong
  */
 public class ShipmentDirectory {
+    
     private ArrayList<Shipment> shipments;
+    private Enterprise enterprise;
     
     
-    public ShipmentDirectory() {
+    public ShipmentDirectory(Enterprise enterprise) {
         shipments = new ArrayList();
+        this.enterprise = enterprise;
     }
     
     public void newShipment(UserAccount sender, UserAccount receiver, Date shipDate, Date expectedArrival) {
         Shipment shipment = new Shipment(sender, receiver, shipDate, expectedArrival);
         shipments.add(shipment);
     }
+
+    public Enterprise getEnterprise() {
+        return enterprise;
+    }
+
+    public ArrayList<Shipment> getShipments() {
+        return shipments;
+    }
+    
+    
+    
+    
     
     
 }

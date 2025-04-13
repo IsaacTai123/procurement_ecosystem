@@ -5,7 +5,9 @@
 package view;
 
 import config.MockDataInitializer;
+import directory.ShipmentDirectories;
 import directory.UserAccountDirectory;
+import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 
 
@@ -16,6 +18,8 @@ import model.ecosystem.Network;
 public class MainJFrame extends javax.swing.JFrame {
 
     private UserAccountDirectory userAccountDirectory;
+    private ShipmentDirectories shipmentDirectories;
+
 
     Network network;
   
@@ -34,7 +38,13 @@ public class MainJFrame extends javax.swing.JFrame {
         network = MockDataInitializer.initialize(); // pre-populate data
 
         userAccountDirectory = network.getUserAccountDir();
-        
+        shipmentDirectories = network.getShipmentDirectories(); 
+        // todo: give shipment company name, return shipment directory | shipmentDirectories.getShipmentDirectory(enterprise)
+        // when fedEx login, get fedEx's shipment directory
+        Enterprise fedEx = network.getEnterpriseDir().getEnterpriseByName("FedEx");
+
+        System.out.println("shipment directory: " + shipmentDirectories.getShipmentDirectory(fedEx).getShipments().get(0).getShipDate());
+        // UI display
         
         System.out.println("user accounts: " + userAccountDirectory.getUserAccountList());
 

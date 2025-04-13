@@ -5,25 +5,37 @@ import model.ecosystem.Enterprise;
 
 import java.util.ArrayList;
 import java.util.List;
+import model.delivery.ShipmentDirectory;
 
 /**
  * @author tisaac
  */
-public class EnterpriseDirectory {
+public class ShipmentDirectories {
 
-    private final List<Enterprise> enterprisesList;
+    private final ArrayList<ShipmentDirectory> shipmentDirectories; // final: immutable list, so there's only one
+                                                                    // shipmentDirectories
 
-    public EnterpriseDirectory() {
-        this.enterprisesList = new ArrayList<>();
+    public ShipmentDirectories() {
+        this.shipmentDirectories = new ArrayList<>();
     }
 
-    public Enterprise createEnterprise(String name, EnterpriseType type) {
-        Enterprise enterprise = new Enterprise(name, type);
-        enterprisesList.add(enterprise);
-        return enterprise;
+    public ShipmentDirectory getShipmentDirectory(Enterprise enterprise) {
+
+        for (ShipmentDirectory shipmentDirectory : shipmentDirectories) {
+            if (shipmentDirectory.getEnterprise() == enterprise) {
+                System.out.println("directory.ShipmentDirectories.getShipmentDirectory()");
+                return shipmentDirectory;
+            }
+
+        }
+
+        return null;
+
     }
 
-    public List<Enterprise> getEnterprisesList() {
-        return enterprisesList;
+    public void addShipmentDirectory(ShipmentDirectory shipmentDirectory) {
+        shipmentDirectories.add(shipmentDirectory);
+
     }
+
 }

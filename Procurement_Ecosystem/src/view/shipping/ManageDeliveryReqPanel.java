@@ -64,7 +64,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
                 {null, null, null, null, null}
             },
             new String [] {
-                "Request ID", "Customer", "Book Name", "Status", "Price"
+                "TrackingNumber", "Title", "Product", "Status", "Receiver"
             }
         ) {
             boolean[] canEdit = new boolean [] {
