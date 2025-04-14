@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.UUID;
 import model.product.Product;
 import model.user.UserAccount;
+import model.workqueue.DeliveryRequest;
 
 /**
  *
@@ -25,10 +26,12 @@ public class Shipment {
     private UserAccount sender;
     private UserAccount receiver;
     private String title;
+    private DeliveryRequest deliveryReq;
 
-    public Shipment(UserAccount sender, UserAccount receiver, Date shipDate, Date expectedArrival, String title) {
+    public Shipment(UserAccount sender, UserAccount receiver, Date shipDate, Date expectedArrival, String title, DeliveryRequest deliveryReq) {
         this.trackingNumber = UUID.randomUUID().toString().substring(0, 10).toUpperCase(); // Example: "B6D4D2A7-6"
-        this.items = new ArrayList<>();
+        this.deliveryReq = deliveryReq;
+        this.items = deliveryReq.getItems();
         this.sender = sender;
         this.receiver = receiver;
         this.shipDate = shipDate;

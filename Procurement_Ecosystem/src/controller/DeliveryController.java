@@ -29,7 +29,7 @@ public class DeliveryController {
         deliveryReq.setItems(items);
         deliveryReq.setLogisticsPartner(logistics);
         
-        shipments.newShipment(sender, receiver, shipDate, expectedArrival, title);
+        shipments.newShipment(sender, receiver, shipDate, expectedArrival, title, deliveryReq);
 
         return deliveryReq;
     }

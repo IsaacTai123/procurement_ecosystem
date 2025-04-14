@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import model.ecosystem.Enterprise;
 import model.user.UserAccount;
+import model.workqueue.DeliveryRequest;
 
 /**
  *
@@ -25,8 +26,8 @@ public class ShipmentDirectory {
     }
     
 
-    public void newShipment(UserAccount sender, UserAccount receiver, Date shipDate, Date expectedArrival, String title) {
-        Shipment shipment = new Shipment(sender, receiver, shipDate, expectedArrival, title);
+    public void newShipment(UserAccount sender, UserAccount receiver, Date shipDate, Date expectedArrival, String title, DeliveryRequest deliveryReq) {
+        Shipment shipment = new Shipment(sender, receiver, shipDate, expectedArrival, title, deliveryReq);
 
         shipments.add(shipment);
     }
