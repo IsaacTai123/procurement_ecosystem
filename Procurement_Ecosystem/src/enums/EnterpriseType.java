@@ -9,5 +9,5 @@ package enums;
  * @author linweihong
  */
 public enum EnterpriseType {
-    BUYER, VENDOR, LOGISTICS, SYSTEM_CORE;
+    BUYER, VENDOR, LOGISTICS;
 }

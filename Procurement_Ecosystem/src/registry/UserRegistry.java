@@ -34,6 +34,7 @@ public class UserRegistry {
 
     public void register(UserAccount userAccount) {
         userIndex.put(userAccount.getUserId(), userAccount);
+        System.out.println("User " + userAccount.getUserId() + " registered in UserRegistry.");
     }
 
     public void unregister(String userId) {
