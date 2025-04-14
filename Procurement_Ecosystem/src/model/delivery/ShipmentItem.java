@@ -18,6 +18,7 @@ public class ShipmentItem {
     public ShipmentItem(Product product, int quantity) {
         this.product = product;
         this.quantity = quantity;
+        // todo: warning window: quantity should be at least 1
     }
 
     public Product getProduct() {
@@ -35,8 +36,6 @@ public class ShipmentItem {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-    
-    
-    
-    
+
+
 }

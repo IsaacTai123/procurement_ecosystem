@@ -14,6 +14,8 @@ package config;
 //import Business.Profiles.StudentProfile;
 
 
+import controller.DeliveryController;
+import directory.OrganizationDirectory;
 import enums.EnterpriseType;
 import enums.Role;
 import model.ecosystem.Ecosystem;
@@ -21,6 +23,13 @@ import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import model.ecosystem.Organization;
 import model.user.UserAccount;
+import directory.UserAccountDirectory;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
+import model.delivery.ShipmentDirectory;
+import model.delivery.ShipmentItem;
+import model.product.Product;
 import service.OrganizationService;
 import service.UserAccountService;
 
@@ -47,6 +56,35 @@ public class MockDataInitializer {
 
         Organization googleProcurement = orgService.createOrgFromEnterprise("Procurement", google);
         UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac", Role.MANAGER, googleProcurement);
+
+        // FedEx
+        Enterprise fedEx = network.getEnterpriseDir().createEnterprise("FedEx", EnterpriseType.LOGISTICS);
+        Organization fedExShipping = orgService.createOrgFromEnterprise("Shipping", fedEx);
+        UserAccount fedExShippingCoordinator = userAccountService.createUserFromOrganization("CarrierA", "CarrierA", Role.SHIPPING_COORDINATOR, fedExShipping);
+
+        // Asus
+        Enterprise asus = network.getEnterpriseDir().createEnterprise("ASUS", EnterpriseType.VENDOR);
+        Organization asusSales = orgService.createOrgFromEnterprise("Sales", fedEx);
+        UserAccount asusSalesManager = userAccountService.createUserFromOrganization("SalesManagerA", "SalesManagerA", Role.MANAGER, asusSales);
+
+        
+        
+        
+        // Add new delivery Request
+        DeliveryController deliveryController = new DeliveryController();
+        
+        ShipmentDirectory fedEx_shipmentDirectory = new ShipmentDirectory(fedEx);
+        network.getShipmentDirectories().addShipmentDirectory(fedEx_shipmentDirectory);
+        ArrayList<ShipmentItem> items = new ArrayList<>();
+        ShipmentItem itemA = new ShipmentItem(new Product("Asus Laptop"), 1);
+        ShipmentItem itemB = new ShipmentItem(new Product("Asus adaptor"), 1);
+        items.add(itemA);
+        items.add(itemB);
+        
+        Date currentDate = new Date();
+        
+
+        deliveryController.requestShipping(items, fedEx, asusSalesManager, googleProcurementManager, currentDate, currentDate, fedEx_shipmentDirectory, "Laptops");
 
         
         

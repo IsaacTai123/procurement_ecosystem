@@ -45,7 +45,7 @@ public class WelcomePanel extends javax.swing.JPanel {
 
         lbWelcome2.setFont(new java.awt.Font("Helvetica Neue", 3, 48)); // NOI18N
         lbWelcome2.setForeground(new java.awt.Color(0, 153, 153));
-        lbWelcome2.setText("MANAGEMENT");
+        lbWelcome2.setText("ECOSYSTEM");
 
         lbWelcome1.setFont(new java.awt.Font("Helvetica Neue", 3, 36)); // NOI18N
         lbWelcome1.setForeground(new java.awt.Color(51, 51, 51));
@@ -53,7 +53,7 @@ public class WelcomePanel extends javax.swing.JPanel {
 
         lbWelcome3.setFont(new java.awt.Font("Helvetica Neue", 3, 48)); // NOI18N
         lbWelcome3.setForeground(new java.awt.Color(0, 153, 153));
-        lbWelcome3.setText("PROCUREMENT ECOSYSTEM");
+        lbWelcome3.setText("PROCUREMENT MANAGEMENT");
 
         image.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         image.setMinimumSize(new java.awt.Dimension(50, 50));
@@ -74,8 +74,9 @@ public class WelcomePanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(63, 63, 63)
                         .addComponent(image, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(lbWelcome2, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lbWelcome2, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(24, 24, 24))
         );
         layout.setVerticalGroup(

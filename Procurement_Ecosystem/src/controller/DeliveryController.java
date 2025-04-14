@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import model.delivery.Shipment;
-import model.delivery.ShipmentHistory;
+import model.delivery.ShipmentDirectory;
 import model.delivery.ShipmentItem;
 import model.ecosystem.Enterprise;
 import model.product.Product;
@@ -21,13 +21,15 @@ import model.workqueue.DeliveryRequest;
  */
 public class DeliveryController {
     
-    public DeliveryRequest requestShipping(ArrayList<ShipmentItem> items, Enterprise logistics, UserAccount sender, UserAccount receiver, Date shipDate, Date expectedArrival, ShipmentHistory shipments) {
+
+    public DeliveryRequest requestShipping(ArrayList<ShipmentItem> items, Enterprise logistics, UserAccount sender, UserAccount receiver, Date shipDate, Date expectedArrival, ShipmentDirectory shipments, String title) {
+
         // logic to create delivery request and place a shipment
         DeliveryRequest deliveryReq = new DeliveryRequest();
         deliveryReq.setItems(items);
         deliveryReq.setLogisticsPartner(logistics);
         
-        shipments.newShipment(sender, receiver, shipDate, expectedArrival);
+        shipments.newShipment(sender, receiver, shipDate, expectedArrival, title);
 
         return deliveryReq;
     }

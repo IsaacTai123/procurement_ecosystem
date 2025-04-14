@@ -33,7 +33,7 @@ public class UserService {
         if (network == null || "-- Select Network --".equals(network)) {
 
             UserAccount admin = Ecosystem.getInstance().getSysAdmin();
-            if (admin.getUserId().equals(userId)) {
+            if (admin.getUsername().equals(userId)) {
                 return checkPassword(admin, pwd);
             } else {
                 return ResultUtil.failure("Please select a network");

@@ -8,13 +8,20 @@ import common.NetworkManager;
 import common.Result;
 import common.Session;
 import config.MockDataInitializer;
+import directory.ShipmentDirectories;
 import directory.UserAccountDirectory;
+
+import java.util.Date;
+import model.delivery.ShipmentDirectory;
+
+import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import model.user.UserAccount;
 import service.UserService;
 import util.NavigationUtil;
 import enums.Role;
 import util.UIUtil;
+import view.shipping.DeliveryCompanyWorkspacePanel;
 
 
 /**
@@ -24,6 +31,8 @@ import util.UIUtil;
 public class MainJFrame extends javax.swing.JFrame {
 
     private UserAccountDirectory userAccountDirectory;
+    private ShipmentDirectories shipmentDirectories;
+
 
     Network selectedNetwork;
 
@@ -39,12 +48,19 @@ public class MainJFrame extends javax.swing.JFrame {
 
         Network network = MockDataInitializer.initialize(); // pre-populate data
         NavigationUtil.init(userProcessContainer);
-
+        
         WelcomePanel wl = new WelcomePanel();
         NavigationUtil.getInstance().showCard(wl, "Welcome");
         
         // show network list
         generateNetworkList();
+
+        userAccountDirectory = network.getUserAccountDir();
+        shipmentDirectories = network.getShipmentDirectories(); 
+
+        
+        System.out.println("user accounts: " + userAccountDirectory.getUserAccountList());
+
     }
 
     /**
@@ -56,7 +72,6 @@ public class MainJFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         MenuPanel = new javax.swing.JPanel();
         btnLogin = new javax.swing.JButton();
         txtUserId = new javax.swing.JTextField();
@@ -67,8 +82,6 @@ public class MainJFrame extends javax.swing.JFrame {
         lbNetwork = new javax.swing.JLabel();
         cmbNetwork = new javax.swing.JComboBox<>();
         userProcessContainer = new javax.swing.JPanel();
-
-        jLabel1.setText("jLabel1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(51, 51, 255));
@@ -217,6 +230,10 @@ public class MainJFrame extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnLogoutActionPerformed
 
+    private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsernameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtUsernameActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -257,7 +274,6 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnLogin;
     private javax.swing.JButton btnLogout;
     private javax.swing.JComboBox<String> cmbNetwork;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lbNetwork;
     private javax.swing.JLabel lbPwd;
     private javax.swing.JLabel lbUserId;
