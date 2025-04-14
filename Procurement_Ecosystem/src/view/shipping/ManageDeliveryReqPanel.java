@@ -4,6 +4,8 @@
  */
 package view.shipping;
 
+import enums.RequestStatus;
+import enums.ShipmentStatus;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -54,6 +56,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblRequests = new javax.swing.JTable();
         btnTransit = new javax.swing.JButton();
+        btnAcceptRequest = new javax.swing.JButton();
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         jLabel2.setText("Manage Delivery Requests");
@@ -73,7 +76,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
                 {null, null, null, null, null}
             },
             new String [] {
-                "TrackingNumber", "Title", "Product", "Status", "Receiver"
+                "TrackingNumber", "Title", "Product", "Request Status", "Shipment Status"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -93,6 +96,13 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
             }
         });
 
+        btnAcceptRequest.setText("Accept Request");
+        btnAcceptRequest.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAcceptRequestActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -109,6 +119,8 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnAcceptRequest)
+                .addGap(30, 30, 30)
                 .addComponent(btnTransit)
                 .addGap(60, 60, 60))
         );
@@ -122,7 +134,9 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
                 .addGap(36, 36, 36)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(43, 43, 43)
-                .addComponent(btnTransit)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnTransit)
+                    .addComponent(btnAcceptRequest))
                 .addContainerGap(95, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -140,7 +154,39 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
 
     private void btnTransitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransitActionPerformed
         // TODO add your handling code here:
+        
+        int row = tblRequests.getSelectedRow();
+        
+        if(row < 0) {
+            JOptionPane.showMessageDialog(null, "Please select a row from the table first", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        Shipment shipment = (Shipment)tblRequests.getValueAt(row, 0); // the first element store an object
+        shipment.setStatus(ShipmentStatus.IN_TRANSIT);
+        
+        
+        populateTable();
+        
     }//GEN-LAST:event_btnTransitActionPerformed
+
+    private void btnAcceptRequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcceptRequestActionPerformed
+        // TODO add your handling code here:
+        int row = tblRequests.getSelectedRow();
+        
+        if(row < 0) {
+            JOptionPane.showMessageDialog(null, "Please select a row from the table first", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        Shipment shipment = (Shipment)tblRequests.getValueAt(row, 0); // the first element store an object
+        shipment.getDeliveryReq().setStatus(RequestStatus.APPROVED);
+        
+        
+        populateTable();
+        
+        
+    }//GEN-LAST:event_btnAcceptRequestActionPerformed
 
     
     // clean all data and add all data in vitalSignsHistory
@@ -155,14 +201,13 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         
         for (Shipment shipment: shipmentDirectory.getShipments()){
 
-//            Book book = rentalRequest.getBook();
             
             Object[] row = new Object[5];
             row[0] = shipment;
             row[1] = shipment.getTitle();
             row[2] = shipment.getItems().get(0).getProduct();
-            row[3] = shipment.getStatus();
-            row[4] = shipment.getReceiver();
+            row[3] = shipment.getDeliveryReq().getStatus();
+            row[4] = shipment.getStatus();
             
             
             model.addRow(row);
@@ -173,6 +218,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAcceptRequest;
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnTransit;
     private javax.swing.JLabel jLabel2;
