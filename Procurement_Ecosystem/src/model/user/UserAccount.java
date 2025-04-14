@@ -6,6 +6,7 @@
 package model.user;
 
 import enums.Role;
+import model.ecosystem.Organization;
 import util.IdGenerateUtil;
 
 import java.util.Random;
@@ -18,16 +19,26 @@ public class UserAccount {
     
     // every object of subclass of UserAccount share the same counter, but capture the current counter value as its own userId 
 
-    protected final String userId; // Unique ID for each user
-    protected String userName;
-    protected Role userType;
-    protected String password;
+    private final String userId; // Unique ID for each user
+    private String userName;
+    private Role userType;
+    private String password;
+    private Organization org;
+
 
     public UserAccount (String name, Role type, String password) {
         this.userId = IdGenerateUtil.generateUserId();
         this.userName = name;
         this.userType = type;
         this.password = password;
+    }
+
+    public UserAccount (String name, Role type, String password, Organization org) {
+        this.userId = IdGenerateUtil.generateUserId();
+        this.userName = name;
+        this.userType = type;
+        this.password = password;
+        this.org = org;
     }
 
     public String getUserId() {
@@ -56,6 +67,14 @@ public class UserAccount {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Organization getOrg() {
+        return org;
+    }
+
+    public void setOrg(Organization org) {
+        this.org = org;
     }
 
     @Override

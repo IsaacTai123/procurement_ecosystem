@@ -1,8 +1,7 @@
-package service.procurement;
+package service;
 
 import common.NetworkManager;
 import model.ecosystem.Ecosystem;
-import model.ecosystem.Enterprise;
 import model.ecosystem.Organization;
 import model.user.UserAccount;
 

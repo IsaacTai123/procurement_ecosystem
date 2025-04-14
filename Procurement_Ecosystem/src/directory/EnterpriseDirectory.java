@@ -26,17 +26,11 @@ public class EnterpriseDirectory {
     public List<Enterprise> getEnterprisesList() {
         return enterprisesList;
     }
-    
-    public Enterprise getEnterpriseByName(String name) {
-        
-        for(Enterprise enterprise: enterprisesList){
-            if (enterprise.getName() == name) {
-                return enterprise;
-            }
-        
-        }
-        
-        return null;
-    
+
+    public Enterprise findEnterpriseByName(String name) {
+        return enterprisesList.stream()
+                .filter(ent -> ent.getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 }

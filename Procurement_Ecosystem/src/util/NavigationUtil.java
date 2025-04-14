@@ -117,4 +117,12 @@ public class NavigationUtil {
         }
         return false;
     }
+
+    /**
+     * Clears the entire navigation history.
+     * Useful when logging out or resetting the application state.
+     */
+    public void reset() {
+        history.clear();
+    }
 }
