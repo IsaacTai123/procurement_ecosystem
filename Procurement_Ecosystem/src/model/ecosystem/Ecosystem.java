@@ -45,14 +45,14 @@ public class Ecosystem {
         networkList = new ArrayList<>();
     }
 
-    public void init(UserAccount sysAdmin) {
+    public void init(UserAccount user) {
         if (this.sysAdmin != null) {
             throw new IllegalStateException("System Admin is already initialized.");
         }
-        if (sysAdmin == null) {
+        if (user == null) {
             throw new IllegalArgumentException("sysAdmin cannot be null.");
         }
-        this.sysAdmin = sysAdmin;
+        this.sysAdmin = user;
     }
 
     private static class EcosystemHolder {
@@ -63,11 +63,20 @@ public class Ecosystem {
         return EcosystemHolder.INSTANCE;
     }
 
-    public void AddNetwork(Network n) {
-        if (n != null && !networkList.contains(n)) {
-            networkList.add(n);
-            NetworkManager.registerNetwork(n);
+    public Network AddNetwork(String n) {
+        if (n == null || n.isEmpty()) {
+            throw new IllegalArgumentException("Network name cannot be null or empty.");
         }
+
+        return networkList.stream()
+                .filter(network -> network.getName().equals(n))
+                .findFirst()
+                .orElseGet(() -> {
+                    Network newNetwork = new Network(n);
+                    networkList.add(newNetwork);
+                    NetworkManager.registerNetwork(newNetwork);
+                    return newNetwork;
+                });
     }
 
     public String getName() {

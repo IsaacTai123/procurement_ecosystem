@@ -35,7 +35,7 @@ public class UserAccountService {
     }
 
     public UserAccount createUserFromOrganization(String name, String pw, Role type, Organization org) {
-        UserAccount account = org.getUserAccountDir().createUserAccount(name, pw, type);
+        UserAccount account = org.getUserAccountDir().createUserAccount(name, pw, type, org);
         globalDir.addUser(account);
         return account;
     }

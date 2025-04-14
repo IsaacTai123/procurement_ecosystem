@@ -4,7 +4,9 @@
  */
 package view;
 
+import common.NetworkManager;
 import common.Result;
+import common.Session;
 import config.MockDataInitializer;
 import directory.UserAccountDirectory;
 import model.ecosystem.Network;
@@ -12,6 +14,7 @@ import model.user.UserAccount;
 import service.UserService;
 import util.NavigationUtil;
 import enums.Role;
+import util.UIUtil;
 
 
 /**
@@ -22,7 +25,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private UserAccountDirectory userAccountDirectory;
 
-    Network network;
+    Network selectedNetwork;
 
     /**
      * Creates new form MainJFrame
@@ -33,12 +36,15 @@ public class MainJFrame extends javax.swing.JFrame {
         setSize(900,700);
         
         btnLogout.setEnabled(false);
-        
-        network = MockDataInitializer.initialize(); // pre-populate data
+
+        Network network = MockDataInitializer.initialize(); // pre-populate data
         NavigationUtil.init(userProcessContainer);
 
         WelcomePanel wl = new WelcomePanel();
         NavigationUtil.getInstance().showCard(wl, "Welcome");
+        
+        // show network list
+        generateNetworkList();
     }
 
     /**
@@ -143,7 +149,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         userProcessContainer.setBackground(new java.awt.Color(204, 204, 204));
         userProcessContainer.setForeground(new java.awt.Color(153, 153, 255));
-        userProcessContainer.setMinimumSize(new java.awt.Dimension(0, 0));
+        userProcessContainer.setMinimumSize(new java.awt.Dimension(900, 570));
         userProcessContainer.setLayout(new java.awt.CardLayout());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -151,14 +157,14 @@ public class MainJFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(MenuPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
-            .addComponent(userProcessContainer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(userProcessContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(MenuPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(userProcessContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 584, Short.MAX_VALUE))
+                .addComponent(userProcessContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE))
         );
 
         pack();
@@ -166,17 +172,22 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         String network = (String) cmbNetwork.getSelectedItem();
+        Network selectedNetwork = NetworkManager.findByName(network).orElse(null);
+
         String username = txtUserId.getText();
         String password = String.valueOf(pwdPwd.getPassword());
 
-        Result<UserAccount> result = UserService.getInstance().login(network, username, password);
+        Result<UserAccount> result = UserService.getInstance().login(selectedNetwork, username, password);
         if (!result.isSuccess()) {
-            javax.swing.JOptionPane.showMessageDialog(this, result.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            UIUtil.showError(this, result.getMessage());
+            return;
         }
 
-        toggleLoginLogout();
+        toggleAuthUIState();
         UserAccount user = result.getData();
         Role role = user.getUserType();
+        Session.setCurrentNetwork(selectedNetwork);
+        Session.setCurrentUser(user);
 
         switch (role) {
             case SYS_ADMIN -> {
@@ -198,7 +209,12 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
-        // TODO add your handling code here:
+        toggleAuthUIState();
+        UIUtil.clearPasswordFields(pwdPwd);
+        UIUtil.clearTextFields(txtUserId);
+        NavigationUtil.getInstance().reset();
+        NavigationUtil.getInstance().showCard(new WelcomePanel(), "Welcome");
+
     }//GEN-LAST:event_btnLogoutActionPerformed
 
     /**
@@ -250,10 +266,20 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel userProcessContainer;
     // End of variables declaration//GEN-END:variables
 
-    public void toggleLoginLogout() {
+    private void toggleAuthUIState() {
         btnLogin.setEnabled(!btnLogin.isEnabled());
         btnLogout.setEnabled(!btnLogout.isEnabled());
+        txtUserId.setEnabled(!txtUserId.isEnabled());
+        pwdPwd.setEnabled(!pwdPwd.isEnabled());
+        cmbNetwork.setEnabled(!cmbNetwork.isEnabled());
     }
 
-
+    private void generateNetworkList() {
+        UIUtil.populateComboBox(
+                cmbNetwork,
+                NetworkManager.getNetworks(),
+                Network::getName,
+                "-- Select Network --"
+        );
+    }
 }

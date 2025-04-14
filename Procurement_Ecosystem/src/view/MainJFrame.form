@@ -37,7 +37,7 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="MenuPanel" pref="900" max="32767" attributes="0"/>
-          <Component id="userProcessContainer" alignment="1" max="32767" attributes="0"/>
+          <Component id="userProcessContainer" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -45,7 +45,7 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="MenuPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="userProcessContainer" pref="584" max="32767" attributes="0"/>
+              <Component id="userProcessContainer" pref="570" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -194,7 +194,7 @@
           <Color blue="ff" green="99" red="99" type="rgb"/>
         </Property>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[0, 0]"/>
+          <Dimension value="[900, 570]"/>
         </Property>
       </Properties>
 

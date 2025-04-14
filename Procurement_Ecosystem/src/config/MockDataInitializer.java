@@ -34,9 +34,7 @@ public class MockDataInitializer {
     public static Network initialize() {
         Ecosystem eco = Ecosystem.getInstance();
         eco.init(new UserAccount("admin", Role.SYS_ADMIN, "admin"));
-
-        Network network = new Network("Tech");
-        eco.AddNetwork(network);
+        Network network = eco.AddNetwork("Tech");
 
         OrganizationService orgService = network.getOrgService();
         UserAccountService userAccountService = network.getUserAccountService();

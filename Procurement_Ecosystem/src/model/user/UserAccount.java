@@ -33,6 +33,14 @@ public class UserAccount {
         this.password = password;
     }
 
+    public UserAccount (String name, Role type, String password, Organization org) {
+        this.userId = IdGenerateUtil.generateUserId();
+        this.userName = name;
+        this.userType = type;
+        this.password = password;
+        this.org = org;
+    }
+
     public String getUserId() {
         return userId;
     }

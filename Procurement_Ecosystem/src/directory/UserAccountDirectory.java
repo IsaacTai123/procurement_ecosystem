@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import model.ecosystem.Organization;
 import model.user.UserAccount;
 
 /**
@@ -24,8 +25,8 @@ public class UserAccountDirectory {
         userAccountList = new ArrayList<>();
     }
 
-    public UserAccount createUserAccount (String name, String pw, Role type) {
-        UserAccount account = new UserAccount(name, type, pw);
+    public UserAccount createUserAccount (String name, String pw, Role type, Organization org) {
+        UserAccount account = new UserAccount(name, type, pw, org);
         userAccountList.add(account);
         return account;
     }
