@@ -9,6 +9,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
+import model.delivery.Shipment;
+import model.delivery.ShipmentDirectory;
+import util.NavigationUtil;
+
+
 /**
  *
  * @author linweihong
@@ -16,21 +21,24 @@ import javax.swing.table.DefaultTableModel;
 public class ManageDeliveryReqPanel extends javax.swing.JPanel {
 
     
-    JPanel userProcessContainer;
+
+    ShipmentDirectory shipmentDirectory;
+
+
 
     
     /**
      * Creates new form ManageUserAccountsJPanel
      */
-//    public ManageDeliveryReqPanel(JPanel userProcessContainer, UserAccountDirectory userAccountDirectory, Business business, Branch branch) {
-//        initComponents();
-//        this.userProcessContainer = userProcessContainer;
-//
-//        populateTable();
-//        
-//        
-//
-//    }
+
+    public ManageDeliveryReqPanel(ShipmentDirectory shipmentDirectory) {
+        initComponents();
+        this.shipmentDirectory = shipmentDirectory;
+        
+        
+        populateTable();
+
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -108,10 +116,10 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
 
-        // remove current JPanel and flip to previous card
-        userProcessContainer.remove(this);
-        CardLayout cardLayout = (CardLayout) userProcessContainer.getLayout();
-        cardLayout.previous(userProcessContainer); // flip to previous card
+
+        NavigationUtil.getInstance().goBack();
+
+        
 
         //        populateTable();
     }//GEN-LAST:event_btnBackActionPerformed
@@ -123,21 +131,25 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) tblRequests.getModel(); // get table schema to control the table
         model.setRowCount(0); // clean all data in the table
         
-//        for (RentalRequest rentalRequest: rentalRequestDirectory.getRentalRequestsListByBranch(branch.getName())){
-//
+        System.out.println("shipmentDirectory" + shipmentDirectory.getShipments().get(0).getTrackingNumber());
+
+        
+        
+        for (Shipment shipment: shipmentDirectory.getShipments()){
+
 //            Book book = rentalRequest.getBook();
-//            
-//            Object[] row = new Object[5];
-//            row[0] = rentalRequest;
-//            row[1] = rentalRequest.getCustomer().getUserName();
-//            row[2] = book.getName();
-//            row[3] = rentalRequest.getStatus();
-//            row[4] = book.getPrice();
-//            
-//            
-//            model.addRow(row);
-//            
-//        }
+            
+            Object[] row = new Object[5];
+            row[0] = shipment;
+            row[1] = shipment.getTitle();
+            row[2] = shipment.getItems();
+            row[3] = shipment.getStatus();
+            row[4] = shipment.getReceiver();
+            
+            
+            model.addRow(row);
+            
+        }
     }
     
     
