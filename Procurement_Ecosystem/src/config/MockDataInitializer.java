@@ -86,7 +86,7 @@ public class MockDataInitializer {
         
         Date currentDate = new Date();
         
-        deliveryController.requestShipping(items, fedEx, asusSalesManager, googleProcurementManager, currentDate, currentDate, fedEx_shipmentDirectory);
+        deliveryController.requestShipping(items, fedEx, asusSalesManager, googleProcurementManager, currentDate, currentDate, fedEx_shipmentDirectory, "Laptops");
         
         
         return network;

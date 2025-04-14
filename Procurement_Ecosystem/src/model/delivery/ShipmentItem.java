@@ -37,4 +37,8 @@ public class ShipmentItem {
         this.quantity = quantity;
     }
 
+    
+    
+    
+
 }

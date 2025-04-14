@@ -4,17 +4,29 @@
  */
 package view.shipping;
 
+import model.delivery.ShipmentDirectory;
+import util.NavigationUtil;
+
 /**
  *
  * @author linweihong
  */
 public class DeliveryCompanyWorkspacePanel extends javax.swing.JPanel {
-
     /**
      * Creates new form DeliveryPanel
      */
-    public DeliveryCompanyWorkspacePanel() {
+    
+    ShipmentDirectory shipmentDirectory;
+    
+    
+    
+    
+    
+    
+    public DeliveryCompanyWorkspacePanel(ShipmentDirectory shipmentDirectory) {
         initComponents();
+        this.shipmentDirectory = shipmentDirectory;
+        
     }
 
     /**
@@ -27,6 +39,7 @@ public class DeliveryCompanyWorkspacePanel extends javax.swing.JPanel {
     private void initComponents() {
 
         btnViewDeliveryReq = new javax.swing.JButton();
+        btnBack = new javax.swing.JButton();
 
         btnViewDeliveryReq.setText("Manage Delivery Requests");
         btnViewDeliveryReq.addActionListener(new java.awt.event.ActionListener() {
@@ -35,19 +48,33 @@ public class DeliveryCompanyWorkspacePanel extends javax.swing.JPanel {
             }
         });
 
+        btnBack.setText("<< Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(92, 92, 92)
-                .addComponent(btnViewDeliveryReq)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(92, 92, 92)
+                        .addComponent(btnViewDeliveryReq))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(43, 43, 43)
+                        .addComponent(btnBack)))
                 .addContainerGap(478, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(123, 123, 123)
+                .addGap(53, 53, 53)
+                .addComponent(btnBack)
+                .addGap(47, 47, 47)
                 .addComponent(btnViewDeliveryReq)
                 .addContainerGap(349, Short.MAX_VALUE))
         );
@@ -56,8 +83,9 @@ public class DeliveryCompanyWorkspacePanel extends javax.swing.JPanel {
     private void btnViewDeliveryReqActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDeliveryReqActionPerformed
         // TODO add your handling code here:
         
-        
-        
+
+        NavigationUtil.getInstance().showCard(new ManageDeliveryReqPanel(shipmentDirectory), "ManageDeliveryReqPanel");
+
         
         
         
@@ -65,8 +93,16 @@ public class DeliveryCompanyWorkspacePanel extends javax.swing.JPanel {
         
     }//GEN-LAST:event_btnViewDeliveryReqActionPerformed
 
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+
+        NavigationUtil.getInstance().goBack();
+        
+    }//GEN-LAST:event_btnBackActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBack;
     private javax.swing.JButton btnViewDeliveryReq;
     // End of variables declaration//GEN-END:variables
 }

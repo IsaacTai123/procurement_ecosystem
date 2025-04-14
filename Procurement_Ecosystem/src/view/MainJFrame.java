@@ -7,10 +7,13 @@ package view;
 import config.MockDataInitializer;
 import directory.ShipmentDirectories;
 import directory.UserAccountDirectory;
+import java.util.Date;
+import model.delivery.ShipmentDirectory;
 import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import service.procurement.UserAccountService;
 import util.NavigationUtil;
+import view.shipping.DeliveryCompanyWorkspacePanel;
 
 
 /**
@@ -43,12 +46,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         userAccountDirectory = network.getUserAccountDir();
         shipmentDirectories = network.getShipmentDirectories(); 
-        // todo: give shipment company name, return shipment directory | shipmentDirectories.getShipmentDirectory(enterprise)
-        // when fedEx login, get fedEx's shipment directory
-        Enterprise fedEx = network.getEnterpriseDir().getEnterpriseByName("FedEx");
-
-        System.out.println("shipment directory: " + shipmentDirectories.getShipmentDirectory(fedEx).getShipments().get(0).getShipDate());
-        // UI display
+        
         
         System.out.println("user accounts: " + userAccountDirectory.getUserAccountList());
 
@@ -168,6 +166,21 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         // TODO add your handling code here:
+        
+        
+        
+        // todo: login to Delivery company workspace
+        // 1. give shipment company name, return shipment directory, when fedEx login, get fedEx enterprise object and then get fedEx's shipment directory
+        // 2. need to add login verification before go to Delivery company workspace
+        Enterprise fedEx = network.getEnterpriseDir().getEnterpriseByName("FedEx");
+        ShipmentDirectory shipmentDirectory = shipmentDirectories.getShipmentDirectory(fedEx);
+        Date date = shipmentDirectory.getShipments().get(0).getShipDate(); // just an example
+        System.out.println("shipment directory (date): " + date);
+        NavigationUtil.getInstance().showCard(new DeliveryCompanyWorkspacePanel(shipmentDirectory), "DeliveryCompanyWorkspacePanel");
+
+        
+        
+        
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed

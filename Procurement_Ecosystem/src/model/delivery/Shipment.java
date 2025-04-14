@@ -24,8 +24,9 @@ public class Shipment {
     private ShipmentStatus status;
     private UserAccount sender;
     private UserAccount receiver;
+    private String title;
 
-    public Shipment(UserAccount sender, UserAccount receiver, Date shipDate, Date expectedArrival) {
+    public Shipment(UserAccount sender, UserAccount receiver, Date shipDate, Date expectedArrival, String title) {
         this.trackingNumber = UUID.randomUUID().toString().substring(0, 10).toUpperCase(); // Example: "B6D4D2A7-6"
         this.items = new ArrayList<>();
         this.sender = sender;
@@ -33,6 +34,7 @@ public class Shipment {
         this.shipDate = shipDate;
         this.expectedArrival = expectedArrival;
         this.status = ShipmentStatus.PLACED;
+        this.title = title;
     }
 
     // Getters and Setters
@@ -71,4 +73,47 @@ public class Shipment {
     public void setStatus(ShipmentStatus status) {
         this.status = status;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public ArrayList<ShipmentItem> getItems() {
+        return items;
+    }
+
+    public void setItems(ArrayList<ShipmentItem> items) {
+        this.items = items;
+    }
+
+    public UserAccount getSender() {
+        return sender;
+    }
+
+    public void setSender(UserAccount sender) {
+        this.sender = sender;
+    }
+
+    public UserAccount getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(UserAccount receiver) {
+        this.receiver = receiver;
+    }
+    
+    
+
+    @Override
+    public String toString() {
+        return trackingNumber;
+    }
+    
+    
+    
+    
 }
