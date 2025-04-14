@@ -8,6 +8,7 @@ import common.NetworkManager;
 import common.Result;
 import common.Session;
 import config.MockDataInitializer;
+import directory.EnterpriseDirectory;
 import directory.ShipmentDirectories;
 import directory.UserAccountDirectory;
 
@@ -31,6 +32,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private UserAccountDirectory userAccountDirectory;
     private ShipmentDirectories shipmentDirectories;
+    private EnterpriseDirectory enterpriseDirectory;
 
     Network selectedNetwork;
 
@@ -55,6 +57,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         userAccountDirectory = network.getUserAccountDir();
         shipmentDirectories = network.getShipmentDirectories();
+        enterpriseDirectory = network.getEnterpriseDir();
 
         System.out.println("user accounts: " + userAccountDirectory.getUserAccountList());
 
@@ -222,14 +225,14 @@ public class MainJFrame extends javax.swing.JFrame {
             }
 
             case IT_ADMIN -> {
-
+                
             }
 
             case SHIPPING_COORDINATOR -> {
-                // shipmentDirectories.getShipmentDirectory(enterprise)
-                // NavigationUtil.getInstance().showCard(new
-                // DeliveryCompanyWorkspacePanel(shipmentDirectory),
-                // "DeliveryCompanyWorkspacePanel");
+                // todo: login as UPS, not only FedEx
+                Enterprise enterprise = enterpriseDirectory.findEnterpriseByName("FedEx");
+                ShipmentDirectory shipmentDirectory = shipmentDirectories.getShipmentDirectory(enterprise);
+                NavigationUtil.getInstance().showCard(new DeliveryCompanyWorkspacePanel(shipmentDirectory),"DeliveryCompanyWorkspacePanel");
 
             }
 
