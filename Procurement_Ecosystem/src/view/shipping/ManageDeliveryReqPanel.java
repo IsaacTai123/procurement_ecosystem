@@ -8,9 +8,11 @@ import java.awt.CardLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
+
 import model.delivery.Shipment;
 import model.delivery.ShipmentDirectory;
 import util.NavigationUtil;
+
 
 /**
  *
@@ -19,13 +21,16 @@ import util.NavigationUtil;
 public class ManageDeliveryReqPanel extends javax.swing.JPanel {
 
     
+
     ShipmentDirectory shipmentDirectory;
+
 
 
     
     /**
      * Creates new form ManageUserAccountsJPanel
      */
+
     public ManageDeliveryReqPanel(ShipmentDirectory shipmentDirectory) {
         initComponents();
         this.shipmentDirectory = shipmentDirectory;
@@ -111,9 +116,11 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
 
+
         NavigationUtil.getInstance().goBack();
 
         
+
         //        populateTable();
     }//GEN-LAST:event_btnBackActionPerformed
 

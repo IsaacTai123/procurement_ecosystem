@@ -24,8 +24,10 @@ public class ShipmentDirectory {
         this.enterprise = enterprise;
     }
     
+
     public void newShipment(UserAccount sender, UserAccount receiver, Date shipDate, Date expectedArrival, String title) {
         Shipment shipment = new Shipment(sender, receiver, shipDate, expectedArrival, title);
+
         shipments.add(shipment);
     }
 

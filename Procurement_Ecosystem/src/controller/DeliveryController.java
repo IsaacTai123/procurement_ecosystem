@@ -21,7 +21,9 @@ import model.workqueue.DeliveryRequest;
  */
 public class DeliveryController {
     
+
     public DeliveryRequest requestShipping(ArrayList<ShipmentItem> items, Enterprise logistics, UserAccount sender, UserAccount receiver, Date shipDate, Date expectedArrival, ShipmentDirectory shipments, String title) {
+
         // logic to create delivery request and place a shipment
         DeliveryRequest deliveryReq = new DeliveryRequest();
         deliveryReq.setItems(items);

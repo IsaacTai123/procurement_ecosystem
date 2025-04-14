@@ -7,8 +7,10 @@ package view;
 import config.MockDataInitializer;
 import directory.ShipmentDirectories;
 import directory.UserAccountDirectory;
+
 import java.util.Date;
 import model.delivery.ShipmentDirectory;
+
 import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import service.procurement.UserAccountService;
@@ -46,7 +48,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         userAccountDirectory = network.getUserAccountDir();
         shipmentDirectories = network.getShipmentDirectories(); 
-        
+
         
         System.out.println("user accounts: " + userAccountDirectory.getUserAccountList());
 
