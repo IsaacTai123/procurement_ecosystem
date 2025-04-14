@@ -53,6 +53,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         btnBack = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblRequests = new javax.swing.JTable();
+        btnTransit = new javax.swing.JButton();
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         jLabel2.setText("Manage Delivery Requests");
@@ -85,6 +86,13 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(tblRequests);
 
+        btnTransit.setText("Transit");
+        btnTransit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTransitActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -99,6 +107,10 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnTransit)
+                .addGap(60, 60, 60))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -109,7 +121,9 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
                     .addComponent(btnBack))
                 .addGap(36, 36, 36)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(161, Short.MAX_VALUE))
+                .addGap(43, 43, 43)
+                .addComponent(btnTransit)
+                .addContainerGap(95, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -123,6 +137,10 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
 
         //        populateTable();
     }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnTransitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransitActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnTransitActionPerformed
 
     
     // clean all data and add all data in vitalSignsHistory
@@ -142,7 +160,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
             Object[] row = new Object[5];
             row[0] = shipment;
             row[1] = shipment.getTitle();
-            row[2] = shipment.getItems();
+            row[2] = shipment.getItems().get(0).getProduct();
             row[3] = shipment.getStatus();
             row[4] = shipment.getReceiver();
             
@@ -156,6 +174,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnTransit;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblRequests;

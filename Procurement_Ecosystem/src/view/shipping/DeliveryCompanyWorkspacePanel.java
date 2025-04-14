@@ -22,10 +22,6 @@ public class DeliveryCompanyWorkspacePanel extends javax.swing.JPanel {
     ShipmentDirectory shipmentDirectory;
     
     
-    
-    
-    
-    
     public DeliveryCompanyWorkspacePanel(ShipmentDirectory shipmentDirectory) {
         initComponents();
         this.shipmentDirectory = shipmentDirectory;
