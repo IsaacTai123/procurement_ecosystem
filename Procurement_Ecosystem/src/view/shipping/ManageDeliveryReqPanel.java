@@ -57,6 +57,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         tblRequests = new javax.swing.JTable();
         btnTransit = new javax.swing.JButton();
         btnAcceptRequest = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         jLabel2.setText("Manage Delivery Requests");
@@ -103,6 +104,13 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
             }
         });
 
+        btnEdit.setText("Edit");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -119,6 +127,8 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnEdit)
+                .addGap(26, 26, 26)
                 .addComponent(btnAcceptRequest)
                 .addGap(30, 30, 30)
                 .addComponent(btnTransit)
@@ -136,7 +146,8 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
                 .addGap(43, 43, 43)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnTransit)
-                    .addComponent(btnAcceptRequest))
+                    .addComponent(btnAcceptRequest)
+                    .addComponent(btnEdit))
                 .addContainerGap(95, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -188,6 +199,25 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         
     }//GEN-LAST:event_btnAcceptRequestActionPerformed
 
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        // TODO add your handling code here:
+        
+        int row = tblRequests.getSelectedRow();
+        
+        if(row < 0) {
+            JOptionPane.showMessageDialog(null, "Please select a row from the table first", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        Shipment shipment = (Shipment)tblRequests.getValueAt(row, 0); // the first element store an object
+        
+                
+        NavigationUtil.getInstance().showCard(new EditShipmentDetailPanel(shipment, tblRequests), "EditShipmentDetailPanel");
+
+        
+        
+    }//GEN-LAST:event_btnEditActionPerformed
+
     
     // clean all data and add all data in vitalSignsHistory
     private void populateTable() {
@@ -220,6 +250,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAcceptRequest;
     private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnTransit;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
