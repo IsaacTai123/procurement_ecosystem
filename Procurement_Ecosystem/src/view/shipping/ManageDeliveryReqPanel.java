@@ -4,16 +4,20 @@
  */
 package view.shipping;
 
+import common.Session;
 import enums.RequestStatus;
 import enums.ShipmentStatus;
-import java.awt.CardLayout;
+
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
 import model.delivery.Shipment;
 import model.delivery.ShipmentDirectory;
+import model.ecosystem.Enterprise;
+import model.ecosystem.Network;
+import model.user.UserAccount;
 import util.NavigationUtil;
+import util.UIUtil;
 
 
 /**
@@ -25,7 +29,9 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
     
 
     ShipmentDirectory shipmentDirectory;
-
+    private UserAccount currentUser;
+    private Network network;
+    private Enterprise enterprise;
 
 
     
@@ -33,12 +39,18 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
      * Creates new form ManageUserAccountsJPanel
      */
 
-    public ManageDeliveryReqPanel(ShipmentDirectory shipmentDirectory) {
+    public ManageDeliveryReqPanel() {
         initComponents();
-        this.shipmentDirectory = shipmentDirectory;
-        
+
+        this.currentUser = Session.getCurrentUser();
+        this.network = Session.getCurrentNetwork();
+        this.enterprise = currentUser.getEnterprise();
+        this.shipmentDirectory = network.getShipmentDirectories().getShipmentDirectory(enterprise);
         
         populateTable();
+
+        // Update the title with the current enterprise name
+        UIUtil.setEnterpriseTitle(lbTitle, currentUser.getEnterprise().getName());
 
     }
 
@@ -51,15 +63,15 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel2 = new javax.swing.JLabel();
+        lbTitle = new javax.swing.JLabel();
         btnBack = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblRequests = new javax.swing.JTable();
         btnTransit = new javax.swing.JButton();
         btnAcceptRequest = new javax.swing.JButton();
 
-        jLabel2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
-        jLabel2.setText("Manage Delivery Requests");
+        lbTitle.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        lbTitle.setText("Manage Delivery Requests");
 
         btnBack.setText("<< Back");
         btnBack.addActionListener(new java.awt.event.ActionListener() {
@@ -111,7 +123,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
                 .addGap(56, 56, 56)
                 .addComponent(btnBack)
                 .addGap(60, 60, 60)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
@@ -129,7 +141,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(49, 49, 49)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
+                    .addComponent(lbTitle)
                     .addComponent(btnBack))
                 .addGap(36, 36, 36)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -221,8 +233,8 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnAcceptRequest;
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnTransit;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lbTitle;
     private javax.swing.JTable tblRequests;
     // End of variables declaration//GEN-END:variables
 }

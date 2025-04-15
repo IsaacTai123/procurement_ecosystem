@@ -6,10 +6,9 @@
 package model.user;
 
 import enums.Role;
+import model.ecosystem.Enterprise;
 import model.ecosystem.Organization;
 import util.IdGenerateUtil;
-
-import java.util.Random;
 
 /**
  *
@@ -77,8 +76,8 @@ public class UserAccount {
         this.org = org;
     }
 
-    public String getEnterpriseName() {
-        return org.getEnterprise().getName();
+    public Enterprise getEnterprise() {
+        return org.getEnterprise();
     }
 
     @Override

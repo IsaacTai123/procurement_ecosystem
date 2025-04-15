@@ -5,7 +5,6 @@
 package view;
 
 import common.Session;
-import enums.OrganizationType;
 import enums.Role;
 import interfaces.IDataRefreshCallback;
 import interfaces.IDataRefreshCallbackAware;
@@ -43,7 +42,7 @@ public class HRServicePanel extends javax.swing.JPanel implements IDataRefreshCa
             return;
         }
 
-        UIUtil.setEnterpriseTitle(lbTitle, user.getEnterpriseName());
+        UIUtil.setEnterpriseTitle(lbTitle, user.getEnterprise().getName());
         UIUtil.clearTable(tblUserAccount);
         setCreateFieldsEnabled(false);
         enterprise = user.getOrg().getEnterprise();

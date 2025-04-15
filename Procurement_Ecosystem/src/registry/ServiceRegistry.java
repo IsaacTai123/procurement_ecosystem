@@ -4,6 +4,7 @@ import enums.OrganizationType;
 import enums.Role;
 import view.HRServicePanel;
 import view.ITServicePanel;
+import view.shipping.ManageDeliveryReqPanel;
 
 import javax.swing.*;
 import java.util.*;
@@ -20,6 +21,7 @@ public class ServiceRegistry {
     static {
         Supplier<JPanel> IT = ITServicePanel::new;
         Supplier<JPanel> HR = HRServicePanel::new;
+        Supplier<JPanel> LOGISTICS = ManageDeliveryReqPanel::new;
 
         JPanel hrService = new HRServicePanel();
 
@@ -29,16 +31,21 @@ public class ServiceRegistry {
                 new ServiceItem("Manage Employees", HR)
         ));
 
+        // IT Engineer
+        serviceMap.put(new ServiceKey(Role.ENGINEER, OrganizationType.IT), List.of(
+                new ServiceItem("IT Management", IT)
+        ));
+
         // Finance Manager
-        serviceMap.put(new ServiceKey(Role.MANAGER, OrganizationType.FINANCE), List.of(
+        serviceMap.put(new ServiceKey(Role.ANALYST, OrganizationType.FINANCE), List.of(
         ));
 
         // Procurement Manager
-        serviceMap.put(new ServiceKey(Role.MANAGER, OrganizationType.PROCUREMENT), List.of(
+        serviceMap.put(new ServiceKey(Role.SPECIALIST, OrganizationType.PROCUREMENT), List.of(
         ));
 
         // Legal Manager
-        serviceMap.put(new ServiceKey(Role.MANAGER, OrganizationType.LEGAL), List.of(
+        serviceMap.put(new ServiceKey(Role.LEGAL_REVIEWER, OrganizationType.LEGAL), List.of(
         ));
 
         // HR Manager
@@ -47,15 +54,16 @@ public class ServiceRegistry {
         ));
 
         // Warehouse Manager
-        serviceMap.put(new ServiceKey(Role.MANAGER, OrganizationType.WAREHOUSE), List.of(
+        serviceMap.put(new ServiceKey(Role.SPECIALIST, OrganizationType.WAREHOUSE), List.of(
         ));
 
         // Sales Manager
         serviceMap.put(new ServiceKey(Role.MANAGER, OrganizationType.SALES), List.of(
         ));
 
-        // Logistics Manager
-        serviceMap.put(new ServiceKey(Role.MANAGER, OrganizationType.LOGISTICS), List.of(
+        // Logistics
+        serviceMap.put(new ServiceKey(Role.SHIPPING_COORDINATOR, OrganizationType.LOGISTICS), List.of(
+                new ServiceItem("Manage Delivery Requests", LOGISTICS)
         ));
     }
 

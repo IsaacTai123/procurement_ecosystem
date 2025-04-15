@@ -31,7 +31,7 @@ public class DashboardPanel extends javax.swing.JPanel implements IDataRefreshCa
         initComponents();
         // tabs or cards for different role panels
 
-        UIUtil.setEnterpriseTitle(lbTitle, currentUser.getEnterpriseName());
+        UIUtil.setEnterpriseTitle(lbTitle, currentUser.getEnterprise().getName());
         UserAccount user = Session.getCurrentUser();
         lbUserId.setText("User Id: " + user.getUserId());
         lbUserName.setText("User Name: " + user.getUsername());
@@ -161,7 +161,7 @@ public class DashboardPanel extends javax.swing.JPanel implements IDataRefreshCa
     private javax.swing.JTable tblServices;
     // End of variables declaration//GEN-END:variables
 
-    // TODO: Generate service that is available to the user
+    // Generate service that is available to the user
     private void showServices() {
         services = ServiceRegistry.getServicesFor(
                 currentUser.getUserType(),
