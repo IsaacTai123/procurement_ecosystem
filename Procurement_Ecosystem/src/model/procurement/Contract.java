@@ -1,4 +1,4 @@
-package model.procurement;
+package model.quotation;
 
 import java.util.Date;
 import java.util.UUID;

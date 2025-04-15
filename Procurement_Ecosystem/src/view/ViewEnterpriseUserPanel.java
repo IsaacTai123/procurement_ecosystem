@@ -30,9 +30,7 @@ public class ViewEnterpriseUserPanel extends javax.swing.JPanel {
         lbTitle.setText("User Accounts in " + enterprise.getName());
 
         // Populate the table with all user accounts
-        List<UserAccount> userList = enterprise.getOrganizationDir().getOrganizationList().stream()
-                        .flatMap(org -> org.getUserAccountDir().getUserAccountList().stream())
-                                .collect(Collectors.toList());
+        List<UserAccount> userList = enterprise.getAllUserAccounts();
 
         UIUtil.reloadTable(
                 tblUserAccount,

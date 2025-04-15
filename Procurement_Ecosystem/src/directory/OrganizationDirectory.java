@@ -2,6 +2,7 @@ package directory;
 
 import common.NetworkManager;
 import model.ecosystem.Ecosystem;
+import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import model.ecosystem.Organization;
 import registry.OrganizationRegistry;
@@ -19,8 +20,8 @@ public class OrganizationDirectory {
         this.organizationList = new ArrayList<>();
     }
 
-    public Organization createOrganization(String name) {
-        Organization org = new Organization(name);
+    public Organization createOrganization(String name, Enterprise enterprise) {
+        Organization org = new Organization(name, enterprise);
         organizationList.add(org);
         return org;
     }
@@ -32,5 +33,12 @@ public class OrganizationDirectory {
 
     public List<Organization> getOrganizationList() {
         return organizationList;
+    }
+
+    public Organization findOrganizationByName(String name) {
+        return organizationList.stream()
+                .filter(org -> org.getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 }

@@ -3,6 +3,8 @@ package util;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.List;
 
@@ -46,6 +48,21 @@ public class UIUtil {
     public static void setEnabled(boolean enabled, JComponent... components) {
         for (JComponent comp : components) {
             comp.setEnabled(enabled);
+        }
+    }
+
+    public static void setEnterpriseTitle(JLabel lb, String enterpriseName) {
+        if (lb == null) return;
+        String safeEnterpriseName = enterpriseName == null ? "" : enterpriseName;
+        String safeTitle = lb.getText() == null ? "" : lb.getText();
+        lb.setText(safeEnterpriseName + " " + safeTitle);
+    }
+
+    public static void toggleComponentsEnabled(JComponent... components) {
+        for (JComponent comp : components) {
+            if (comp != null) {
+                comp.setEnabled(!comp.isEnabled());
+            }
         }
     }
 
@@ -150,5 +167,48 @@ public class UIUtil {
                 box.setSelectedIndex(0); // Set to the first item
             }
         }
+    }
+
+    /**
+     * Retrieves the value of a selected row from a specified column in a JTable.
+     * <p>
+     * If no row is selected, or if the selected row has a null value in the given column,
+     * an informational dialog is shown and {@link Optional#empty()} is returned.
+     *
+     * @param table        The JTable to retrieve the value from.
+     * @param columnIndex  The index of the column from which to extract the value.
+     * @param parent       The parent component for displaying the information dialog.
+     * @param infoMessage  The message to display if no row is selected.
+     * @return An {@link Optional} containing the string value from the selected cell,
+     *         or {@link Optional#empty()} if the row is not selected or the cell is null.
+     */
+    public static Optional<String> getSelectedTableValue(JTable table, int columnIndex, Component parent, String infoMessage) {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow < 0) {
+            showInfo(parent, infoMessage);
+            return Optional.empty();
+        }
+        Object value = table.getValueAt(selectedRow, columnIndex);
+        if (value == null) {
+            showInfo(parent, "Selected row has no value in column " + columnIndex);
+            return Optional.empty();
+        }
+        return Optional.of(value.toString());
+    }
+
+    /**
+     * Registers an ActionListener to a JComboBox that triggers when a user selects an item.
+     * The selected item is passed to the given Consumer as a String.
+     *
+     * @param comboBox The JComboBox to attach the listener to.
+     * @param onSelect A Consumer that handles the selected item string.
+     */
+    public static void registerComboBoxListener(JComboBox<?> comboBox, Consumer<String> onSelect) {
+        comboBox.addActionListener(e -> {
+            Object selectedItem = comboBox.getSelectedItem();
+            if (selectedItem != null) {
+                onSelect.accept(selectedItem.toString());
+            }
+        });
     }
 }

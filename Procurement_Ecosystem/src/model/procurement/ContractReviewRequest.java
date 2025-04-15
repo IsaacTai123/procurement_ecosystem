@@ -1,7 +1,7 @@
 package model.procurement;
 
-import model.procurement.Contract;
-import model.procurement.Quotation;
+import model.quotation.Contract;
+import model.quotation.Quotation;
 
 public class ContractReviewRequest {
     private Quotation quotation;

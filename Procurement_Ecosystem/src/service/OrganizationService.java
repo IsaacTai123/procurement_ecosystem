@@ -15,7 +15,7 @@ public class OrganizationService {
     }
 
     public Organization createOrgFromEnterprise(String name, Enterprise enterprise) {
-        Organization org = enterprise.getOrganizationDir().createOrganization(name);
+        Organization org = enterprise.getOrganizationDir().createOrganization(name, enterprise);
         globalOrgDir.AddOrganization(org);
         return org;
     }
