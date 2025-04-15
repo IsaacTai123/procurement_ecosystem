@@ -2,6 +2,7 @@ package model.procurement;
 
 import java.util.Date;
 import java.util.UUID;
+import model.quotation.Quotation;
 
 public class Contract {
     private String contractId;
