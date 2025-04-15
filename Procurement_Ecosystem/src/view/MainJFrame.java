@@ -221,18 +221,6 @@ public class MainJFrame extends javax.swing.JFrame {
                 NavigationUtil.getInstance().showCard(adminWorkspace, "EcosystemWorkArea");
             }
 
-            case IT_ADMIN -> {
-
-            }
-
-            case SHIPPING_COORDINATOR -> {
-                // shipmentDirectories.getShipmentDirectory(enterprise)
-                // NavigationUtil.getInstance().showCard(new
-                // DeliveryCompanyWorkspacePanel(shipmentDirectory),
-                // "DeliveryCompanyWorkspacePanel");
-
-            }
-
             default -> {
                 DashboardPanel dashboard = new DashboardPanel();
                 NavigationUtil.getInstance().showCard(dashboard, "Dashboard");
@@ -311,11 +299,13 @@ public class MainJFrame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void toggleAuthUIState() {
-        btnLogin.setEnabled(!btnLogin.isEnabled());
-        btnLogout.setEnabled(!btnLogout.isEnabled());
-        txtUserId.setEnabled(!txtUserId.isEnabled());
-        pwdPwd.setEnabled(!pwdPwd.isEnabled());
-        cmbNetwork.setEnabled(!cmbNetwork.isEnabled());
+        UIUtil.toggleComponentsEnabled(
+                btnLogin,
+                btnLogout,
+                txtUserId,
+                pwdPwd,
+                cmbNetwork
+        );
     }
 
     private void generateNetworkList() {

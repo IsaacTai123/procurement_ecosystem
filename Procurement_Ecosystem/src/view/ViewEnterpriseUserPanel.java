@@ -9,7 +9,7 @@ import model.user.UserAccount;
 import util.UIUtil;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 import util.NavigationUtil;
 
 /**
@@ -35,7 +35,7 @@ public class ViewEnterpriseUserPanel extends javax.swing.JPanel {
         UIUtil.reloadTable(
                 tblUserAccount,
                 userList,
-                u -> new Object[]{ u.getUserId(), u.getUsername(), u.getOrg().getName(), u.getUserType() }
+                u -> new Object[]{ u.getUserId(), u.getUsername(), u.getOrg().getTypeName(), u.getUserType() }
         );
     }
 

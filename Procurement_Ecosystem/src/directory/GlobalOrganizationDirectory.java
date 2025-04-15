@@ -46,7 +46,7 @@ public class GlobalOrganizationDirectory {
     }
 
     public void deleteOrganization(String orgName) {
-        organizationDir.removeIf(org -> org.getName().equals(orgName));
+        organizationDir.removeIf(org -> org.getTypeName().equals(orgName));
         orgRegistry.unregister(orgName);
     }
 

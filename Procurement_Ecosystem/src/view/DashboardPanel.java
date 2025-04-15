@@ -5,15 +5,25 @@
 package view;
 
 import common.Session;
+import interfaces.IDataRefreshCallback;
+import interfaces.IDataRefreshCallbackAware;
 import model.user.UserAccount;
+import registry.ServiceRegistry;
+import util.NavigationUtil;
 import util.UIUtil;
+
+import javax.swing.*;
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  *
  * @author linweihong
  */
-public class DashboardPanel extends javax.swing.JPanel {
+public class DashboardPanel extends javax.swing.JPanel implements IDataRefreshCallback {
 
+    private final UserAccount currentUser = Session.getCurrentUser();
+    private List<ServiceRegistry.ServiceItem> services;
     /**
      * Creates new form DashboardPanel
      */
@@ -21,10 +31,12 @@ public class DashboardPanel extends javax.swing.JPanel {
         initComponents();
         // tabs or cards for different role panels
 
+        UIUtil.setEnterpriseTitle(lbTitle, currentUser.getEnterpriseName());
         UserAccount user = Session.getCurrentUser();
         lbUserId.setText("User Id: " + user.getUserId());
         lbUserName.setText("User Name: " + user.getUsername());
         UIUtil.clearTable(tblServices);
+        showServices();
     }
 
     /**
@@ -36,16 +48,17 @@ public class DashboardPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        lbTitle = new javax.swing.JLabel();
         lbUserId = new javax.swing.JLabel();
         lbUserName = new javax.swing.JLabel();
         btnProfile = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblServices = new javax.swing.JTable();
+        btnNext = new javax.swing.JButton();
 
-        jLabel1.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("User Dashboard");
+        lbTitle.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
+        lbTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbTitle.setText("User Dashboard");
 
         lbUserId.setText("User Id: ");
 
@@ -55,25 +68,45 @@ public class DashboardPanel extends javax.swing.JPanel {
 
         tblServices.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null},
+                {null},
+                {null},
+                {null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Services"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tblServices);
+        if (tblServices.getColumnModel().getColumnCount() > 0) {
+            tblServices.getColumnModel().getColumn(0).setResizable(false);
+        }
+
+        btnNext.setText("Next>>");
+        btnNext.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNextActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addComponent(lbTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
                 .addGap(47, 47, 47)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -85,7 +118,7 @@ public class DashboardPanel extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -95,17 +128,55 @@ public class DashboardPanel extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addComponent(btnProfile))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 125, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnNext)
+                .addGap(0, 90, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
+        UIUtil.getSelectedTableValue(tblServices, 0, this, "Please select one service")
+                .ifPresent(s -> {
+                    Supplier<JPanel> supplier = ServiceRegistry.getServicePanel(s);
+                    JPanel panel = supplier.get();
+
+                    if (panel instanceof IDataRefreshCallbackAware) {
+                        ((IDataRefreshCallbackAware) panel).setCallback(this); // 👈 this 是 DashboardPanel
+                    }
+
+                    NavigationUtil.getInstance().showCard(panel, s);
+                });
+
+
+    }//GEN-LAST:event_btnNextActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnNext;
     private javax.swing.JButton btnProfile;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lbTitle;
     private javax.swing.JLabel lbUserId;
     private javax.swing.JLabel lbUserName;
     private javax.swing.JTable tblServices;
     // End of variables declaration//GEN-END:variables
+
+    // TODO: Generate service that is available to the user
+    private void showServices() {
+        services = ServiceRegistry.getServicesFor(
+                currentUser.getUserType(),
+                currentUser.getOrg().getTypeName()
+        );
+
+        UIUtil.reloadTable(tblServices,
+                services,
+                u -> new Object[]{
+                        u.toString()
+                });
+    }
+
+    @Override
+    public void refreshData() {
+        showServices();
+    }
 }

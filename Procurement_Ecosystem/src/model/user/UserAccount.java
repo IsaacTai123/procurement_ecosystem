@@ -77,6 +77,10 @@ public class UserAccount {
         this.org = org;
     }
 
+    public String getEnterpriseName() {
+        return org.getEnterprise().getName();
+    }
+
     @Override
     public String toString() {
         return getUsername();

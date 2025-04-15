@@ -66,6 +66,14 @@ public class UIUtil {
         }
     }
 
+    public static void toggleComponentsEnabled(boolean enable, JComponent... components) {
+        for (JComponent comp : components) {
+            if (comp != null) {
+                comp.setEnabled(enable);
+            }
+        }
+    }
+
     /**
      * Populates a JComboBox with items from a data list.
      *

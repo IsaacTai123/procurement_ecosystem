@@ -1,14 +1,12 @@
 package directory;
 
-import common.NetworkManager;
-import model.ecosystem.Ecosystem;
+import enums.OrganizationType;
 import model.ecosystem.Enterprise;
-import model.ecosystem.Network;
 import model.ecosystem.Organization;
-import registry.OrganizationRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author tisaac
@@ -20,7 +18,7 @@ public class OrganizationDirectory {
         this.organizationList = new ArrayList<>();
     }
 
-    public Organization createOrganization(String name, Enterprise enterprise) {
+    public Organization createOrganization(OrganizationType name, Enterprise enterprise) {
         Organization org = new Organization(name, enterprise);
         organizationList.add(org);
         return org;
@@ -36,8 +34,9 @@ public class OrganizationDirectory {
     }
 
     public Organization findOrganizationByName(String name) {
+        System.out.println("organization List size " + organizationList.size());
         return organizationList.stream()
-                .filter(org -> org.getName().equals(name))
+                .filter(org -> Objects.equals(org.getTypeName().toString(), name))
                 .findFirst()
                 .orElse(null);
     }

@@ -6,6 +6,7 @@ package view;
 
 import common.NetworkManager;
 import enums.EnterpriseType;
+import enums.OrganizationType;
 import enums.Role;
 import model.ecosystem.Ecosystem;
 import model.ecosystem.Enterprise;
@@ -298,7 +299,7 @@ public class EcosystemWorkAreaPanel extends javax.swing.JPanel {
                 userName,
                 password,
                 Role.IT_ADMIN,
-                selectedNetwork.getOrgService().createOrgFromEnterprise("IT", ent)
+                selectedNetwork.getOrgService().createOrgFromEnterprise(OrganizationType.IT, ent)
         );
 
         // reload Table

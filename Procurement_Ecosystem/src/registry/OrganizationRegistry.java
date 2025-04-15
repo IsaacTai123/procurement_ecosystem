@@ -17,7 +17,7 @@ public class OrganizationRegistry {
     }
 
     public void register(Organization org) {
-        organizationIndex.put(org.getName(), org);
+        organizationIndex.put(org.getTypeName().toString(), org);
     }
 
     public void unregister(String orgName) {

@@ -17,6 +17,7 @@ package config;
 import controller.DeliveryController;
 import directory.OrganizationDirectory;
 import enums.EnterpriseType;
+import enums.OrganizationType;
 import enums.Role;
 import model.ecosystem.Ecosystem;
 import model.ecosystem.Enterprise;
@@ -51,20 +52,20 @@ public class MockDataInitializer {
         // Google
         Enterprise google = network.getEnterpriseDir().createEnterprise("Google", EnterpriseType.BUYER);
 
-        Organization googleIT = orgService.createOrgFromEnterprise("IT", google);
-        UserAccount googleITManager = userAccountService.createUserFromOrganization("Alvin", "Alvin", Role.MANAGER, googleIT);
+        Organization googleIT = orgService.createOrgFromEnterprise(OrganizationType.IT, google);
+        UserAccount googleITManager = userAccountService.createUserFromOrganization("alvin", "alvin", Role.MANAGER, googleIT);
 
-        Organization googleProcurement = orgService.createOrgFromEnterprise("Procurement", google);
+        Organization googleProcurement = orgService.createOrgFromEnterprise(OrganizationType.PROCUREMENT, google);
         UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac", Role.MANAGER, googleProcurement);
 
         // FedEx
         Enterprise fedEx = network.getEnterpriseDir().createEnterprise("FedEx", EnterpriseType.LOGISTICS);
-        Organization fedExShipping = orgService.createOrgFromEnterprise("Shipping", fedEx);
+        Organization fedExShipping = orgService.createOrgFromEnterprise(OrganizationType.LOGISTICS, fedEx);
         UserAccount fedExShippingCoordinator = userAccountService.createUserFromOrganization("CarrierA", "CarrierA", Role.SHIPPING_COORDINATOR, fedExShipping);
 
         // Asus
         Enterprise asus = network.getEnterpriseDir().createEnterprise("ASUS", EnterpriseType.VENDOR);
-        Organization asusSales = orgService.createOrgFromEnterprise("Sales", fedEx);
+        Organization asusSales = orgService.createOrgFromEnterprise(OrganizationType.SALES, fedEx);
         UserAccount asusSalesManager = userAccountService.createUserFromOrganization("SalesManagerA", "SalesManagerA", Role.MANAGER, asusSales);
 
         
