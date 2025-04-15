@@ -1,6 +1,6 @@
 package model.procurement;
 
-import model.quotation.Contract;
+import model.procurement.Contract;
 import model.quotation.Quotation;
 
 public class ContractReviewRequest {

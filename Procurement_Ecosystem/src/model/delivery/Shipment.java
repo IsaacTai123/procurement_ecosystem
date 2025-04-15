@@ -108,6 +108,12 @@ public class Shipment {
     public void setReceiver(UserAccount receiver) {
         this.receiver = receiver;
     }
+
+    public DeliveryRequest getDeliveryReq() {
+        return deliveryReq;
+    }
+    
+    
     
     
 

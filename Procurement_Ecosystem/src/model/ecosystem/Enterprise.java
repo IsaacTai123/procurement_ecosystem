@@ -20,7 +20,7 @@ public class Enterprise {
     private EnterpriseType type; // enum: BUYER, VENDOR, LOGISTICS
     private final OrganizationDirectory organizationList;
     
-    public Enterprise(String name, EnterpriseType type) {
+    public Enterprise(String name) {
         this.name = name;
         this.type = type;
         organizationList = new OrganizationDirectory();

@@ -61,7 +61,7 @@ public class MockDataInitializer {
         // FedEx
         Enterprise fedEx = network.getEnterpriseDir().createEnterprise("FedEx", EnterpriseType.LOGISTICS);
         Organization fedExShipping = orgService.createOrgFromEnterprise(OrganizationType.LOGISTICS, fedEx);
-        UserAccount fedExShippingCoordinator = userAccountService.createUserFromOrganization("CarrierA", "CarrierA", Role.SHIPPING_COORDINATOR, fedExShipping);
+        UserAccount fedExShippingCoordinator = userAccountService.createUserFromOrganization("A0003", "A0003", Role.SHIPPING_COORDINATOR, fedExShipping);
 
         // Asus
         Enterprise asus = network.getEnterpriseDir().createEnterprise("ASUS", EnterpriseType.VENDOR);
