@@ -1,6 +1,7 @@
 package service;
 
 import directory.GlobalOrganizationDirectory;
+import enums.OrganizationType;
 import model.ecosystem.Enterprise;
 import model.ecosystem.Organization;
 
@@ -14,14 +15,14 @@ public class OrganizationService {
         this.globalOrgDir = globalOrgDir;
     }
 
-    public Organization createOrgFromEnterprise(String name, Enterprise enterprise) {
-        Organization org = enterprise.getOrganizationDir().createOrganization(name);
+    public Organization createOrgFromEnterprise(OrganizationType name, Enterprise enterprise) {
+        Organization org = enterprise.getOrganizationDir().createOrganization(name, enterprise);
         globalOrgDir.AddOrganization(org);
         return org;
     }
 
     public void deleteOrgFromEnterprise(Organization org, Enterprise enterprise) {
         enterprise.getOrganizationDir().deleteOrganization(org);
-        globalOrgDir.deleteOrganization(org.getName());
+        globalOrgDir.deleteOrganization(org.getTypeName().toString());
     }
 }

@@ -11,9 +11,9 @@ package enums;
 public enum Role {
     SYS_ADMIN,
     IT_ADMIN,
-    SPECIALIST,
     ENGINEER,
     ANALYST,
+    SPECIALIST,
     LEGAL_REVIEWER,
     MANAGER,
     SHIPPING_COORDINATOR;

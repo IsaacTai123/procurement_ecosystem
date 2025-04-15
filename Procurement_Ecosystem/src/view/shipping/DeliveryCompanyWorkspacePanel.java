@@ -22,9 +22,8 @@ public class DeliveryCompanyWorkspacePanel extends javax.swing.JPanel {
     ShipmentDirectory shipmentDirectory;
     
     
-    public DeliveryCompanyWorkspacePanel(ShipmentDirectory shipmentDirectory) {
+    public DeliveryCompanyWorkspacePanel() {
         initComponents();
-        this.shipmentDirectory = shipmentDirectory;
         
 
     }
@@ -93,7 +92,7 @@ public class DeliveryCompanyWorkspacePanel extends javax.swing.JPanel {
         
 
 
-        NavigationUtil.getInstance().showCard(new ManageDeliveryReqPanel(shipmentDirectory), "ManageDeliveryReqPanel");
+        NavigationUtil.getInstance().showCard(new ManageDeliveryReqPanel(), "ManageDeliveryReqPanel");
 
         
         

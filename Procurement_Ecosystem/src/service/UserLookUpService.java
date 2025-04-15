@@ -32,7 +32,7 @@ public class UserLookUpService {
                 .flatMap(network ->
                         network.getEnterpriseDir().getEnterprisesList().stream()
                                 .flatMap(ent -> ent.getOrganizationDir().getOrganizationList().stream())
-                                .filter(org -> org.getName().equals(orgName))
+                                .filter(org -> org.getTypeName().equals(orgName))
                                 .findFirst()
                 );
     }

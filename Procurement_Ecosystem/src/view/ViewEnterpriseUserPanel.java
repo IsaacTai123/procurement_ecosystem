@@ -9,7 +9,7 @@ import model.user.UserAccount;
 import util.UIUtil;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 import util.NavigationUtil;
 
 /**
@@ -30,14 +30,12 @@ public class ViewEnterpriseUserPanel extends javax.swing.JPanel {
         lbTitle.setText("User Accounts in " + enterprise.getName());
 
         // Populate the table with all user accounts
-        List<UserAccount> userList = enterprise.getOrganizationDir().getOrganizationList().stream()
-                        .flatMap(org -> org.getUserAccountDir().getUserAccountList().stream())
-                                .collect(Collectors.toList());
+        List<UserAccount> userList = enterprise.getAllUserAccounts();
 
         UIUtil.reloadTable(
                 tblUserAccount,
                 userList,
-                u -> new Object[]{ u.getUserId(), u.getUsername(), u.getOrg().getName(), u.getUserType() }
+                u -> new Object[]{ u.getUserId(), u.getUsername(), u.getOrg().getTypeName(), u.getUserType() }
         );
     }
 

@@ -38,10 +38,10 @@ public class IdGenerateUtil {
     /**
      * Generates the next user ID in sequence.
      * <p>
-     * Example outputs: A0000, A0001, ..., A9999, B0000, ..., Z9999.
+     * Example outputs: A000, A001, ..., A999, B000, ..., Z999.
      *
      * @return The next sequential user ID string.
-     * @throws RuntimeException if the ID exceeds Z9999.
+     * @throws RuntimeException if the ID exceeds Z999.
      */
     public static String generateUserId() {
         int current = counter.getAndIncrement();
@@ -54,7 +54,7 @@ public class IdGenerateUtil {
         }
 
         char letter = (char) ('A' + letterIndex);
-        String number = String.format("%04d", numberPart);
+        String number = String.format("%03d", numberPart);
 
         return letter + number;
     }
