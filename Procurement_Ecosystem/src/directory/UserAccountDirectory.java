@@ -31,6 +31,10 @@ public class UserAccountDirectory {
         return account;
     }
     
+    public void addUserAccount(UserAccount userAccount) {
+        userAccountList.add(userAccount);
+    }
+    
     public void deleteUserAccount(UserAccount account){
         userAccountList.remove(account);
     }

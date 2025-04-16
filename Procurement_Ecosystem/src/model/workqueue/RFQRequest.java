@@ -36,6 +36,10 @@ public class RFQRequest extends WorkRequest {
         this.quotations.add(quotation);
     }
     
+    public List<Quotation> getQuotations() {
+        return this.quotations;
+    }
+    
     public Quotation getBestQuotation() {
         return quotations.stream()
             .min(Comparator.comparingDouble(Quotation::getPrice))

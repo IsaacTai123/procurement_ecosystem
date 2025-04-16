@@ -22,9 +22,14 @@ public class PurchaseRequest extends WorkRequest {
     private PurchaseItemDirectory purchaseItems;
     private List<ApprovalStep> actionSteps;
 
-    public PurchaseRequest(String description, PurchaseItemDirectory purchaseItems) {
+//    public PurchaseRequest(String description, String purchaseItems, PurchaseItemDirectory items, int par) {
+//        this.description = description;
+//        this.purchaseItems = purchaseItems;
+//    }
+    
+    public PurchaseRequest(String description) {
         this.description = description;
-        this.purchaseItems = purchaseItems;
+        this.purchaseItems = null; // just for mock testing
     }
 
     public String getDescription() {
