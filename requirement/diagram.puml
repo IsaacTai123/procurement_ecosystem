@@ -41,6 +41,7 @@ Enterprise "1" --> "*" Organization : contains
 Organization "1" --> "*" UserAccount : manages
 
 ' ================= Layer 2: Users =================
+
 class UserAccount {
     - username : String
     - password : String
@@ -63,92 +64,149 @@ UserAccount --> Role
 
 ' ================= Layer 3: WorkRequest Superclass =================
 
+abstract class WorkRequest {
+    # id : String
+    # sender : UserAccount
+    # receiver : UserAccount
+    # requestDate : Date
+    # status : RequestStatus
+    # workflowSteps : List<WorkflowStep>
+    {abstract} # initWorkflowSteps(): void
+    + getCurrentStep() : WorkflowStep
+}
+
 enum RequestStatus {
     PENDING
+    RECEIVED
     APPROVED
+    ACCEPTED
     REJECTED
     COMPLETED
 }
 
-class WorkRequest {
-    - id : String
-    - sender : UserAccount
-    - receiver : UserAccount
-    - requestDate : Date
-    - status : RequestStatus
+class WorkflowStep {
+    - organization : OrganizationType
+    - assignedTo : UserAccount
+    - stepStatus : ApprovalStatus
+    - active : boolean
+    - actionTime : LocalDate
+    - remarks : String
 }
 
+enum ApprovalStatus {
+    PENDING
+    SUBMITTED,
+    APPROVED
+    REJECTED
+    SKIPPED
+}
+
+WorkflowStep --> ApprovalStatus
+
 WorkRequest --> RequestStatus
+WorkRequest --> WorkflowStep
 
 WorkRequest <|-- PurchaseRequest
-WorkRequest <|-- RFQRequest
-WorkRequest <|-- PORequest
+WorkRequest <|-- SubmitQuotation
+WorkRequest <|-- PurchaseOrder
 WorkRequest <|-- ContractReviewRequest
 WorkRequest <|-- DeliveryRequest
-WorkRequest <|-- ProcurementClosure
 
 ' ================= Layer 4: WorkRequest Subclasses =================
+
 class PurchaseRequest {
-    - description : String
+    - reason : String
     - purchaseItems : List<PurchaseItem>
     - estimatedBudget : double
 }
 
-class RFQRequest {
-    - linkedPR : PurchaseRequest
-    - vendors : List<Enterprise>
+class SubmitQuotation {
+    - rfqId : String
+    - vendor : Enterprise
+    - purchaseItems : List<PurchaseItem>
+    - paymentTerms : String
+    - remarks : String
+    + getTotalAmount() : double
 }
 
-class PORequest {
-    - approvedQuotation : Quotation
-    - purchaseOrder : PurchaseOrder
+class PurchaseOrder {
+    - id : String
+    - quotationId : String
+    - vendor : Enterprise
+    - purchaseItems : List<PurchaseItem>
+    - shippingAddress : String
+    - totalAmount : double
+    - remarks : String
 }
 
-' File by Vendor (TSMC), Update approved & contract signed field
 class ContractReviewRequest {
-    - quotation : Quotation
+    - quotationId : String
     - contract : Contract
+    - remarks : String
 }
 
 class DeliveryRequest {
-    - product : Product
+    - products : List<PurchaseItem>
     - logisticsPartner : Enterprise
     - shipment : Shipment
 }
 
 class ProcurementClosure {
-    - pr : PurchaseRequest
-    - receipt : DeliveryReceipt
+    - id : String
+    - prId : String
+    - deliveryReceiptId : String
+    - closureDate : LocalDate
+    - closedBy : UserAccount
+    - remarks : String
 }
 
 ' ================= Layer 5: Supporting Domain Models =================
-class Quotation {
-    - vendor : Enterprise
-    - price : double
-    - spec : String
-    - selected : boolean
+
+class RFQ {
+    - id : String
+    - linkedPRId : String
+    - vendors : List<Enterprise>
+    - purchaseItems : List<PurchaseItem>
+    - deadline : LocalDate
+    - status : RFQStatus
+    - remarks : String
 }
 
-class PurchaseOrder {
-    - poNumber : String
-    - quotation : Quotation
-    - totalAmount : double
-    - issueDate : Date
-    - status : POStatus
+enum RFQStatus {
+    DRAFT
+    SENT
+    RECEIVED
+    EXPIRED
+    CLOSED
 }
+
+RFQ --> RFQStatus
 
 class Contract {
     - contractId : String
-    - quotation : Quotation
-    - enterprise : Enterprise
+    - quotationId : String
+    - vendor : Enterprise
+    - purchaseItems : List<PurchaseItem>
     - terms : String
-    - effectiveDate : Date
+    - effectiveDate : LocalDate
+    - expirationDate : LocalDate
+    - status : ContractStatus
     - signed : boolean
 }
 
+enum ContractStatus {
+    DRAFT
+    UNDER_REVIEW
+    APPROVED
+    ACTIVE
+    TERMINATED
+}
+
+Contract --> ContractStatus
+
 class Shipment {
     - trackingNumber : String
-    - product : Product
+    - products : PurchaseItem
     - quantity : int
     - shipDate : Date
     - expectedArrival : Date
@@ -163,11 +221,6 @@ enum ShipmentStatus {
 
 Shipment --> ShipmentStatus
 
-enum ReceiptStatus {
-    PENDING_REVIEW
-    COMPLETED
-}
-
 class DeliveryReceipt {
     - confirmedBy : UserAccount
     - reviewedBy : UserAccount
@@ -175,6 +228,11 @@ class DeliveryReceipt {
     - shipmentId : String
     - status : ReceiptStatus
     - conditionNotes : String
+}
+
+enum ReceiptStatus {
+    PENDING_REVIEW
+    COMPLETED
 }
 
 DeliveryReceipt --> ReceiptStatus
@@ -185,13 +243,12 @@ class Spec {
     - size : String
     - material : String
     - category : String
-    - additionalNotes : String
+    - remarks : String
 }
 
-class Product extends Spec {
+class Product {
     - id : String
     - name : String
-    - description : String
 }
 
 class PurchaseItem {
@@ -202,27 +259,26 @@ class PurchaseItem {
 }
 
 PurchaseRequest --> PurchaseItem
+PurchaseItem --> Product
+PurchaseItem --> Spec
 
 ' ================= Relationships (Flow) =================
-RFQRequest --> PurchaseRequest : refers to
-RFQRequest --> Enterprise : invites
 
-PORequest --> Quotation : based on
-PORequest --> PurchaseOrder : generates
+RFQ --> PurchaseRequest : refers to
+RFQ --> Enterprise : invites
 
-ContractReviewRequest --> Quotation : reviews
+SubmitQuotation --> RFQ : responds to
+
+ContractReviewRequest --> SubmitQuotation : reviews
 ContractReviewRequest --> Contract : creates
 
-DeliveryRequest --> Product : ships
+PurchaseOrder --> SubmitQuotation : derived from
+Contract --> Enterprise : with
+Contract --> SubmitQuotation : based on
+
 DeliveryRequest --> Enterprise : via logistics
 DeliveryRequest --> Shipment : dispatches
 
 ProcurementClosure --> PurchaseRequest : closes
 ProcurementClosure --> DeliveryReceipt : confirms
-
-Quotation --> Enterprise : from
-PurchaseOrder --> Quotation : derived from
-Contract --> Enterprise : with
-Contract --> Quotation : based on
-Shipment --> Product : includes
 @enduml

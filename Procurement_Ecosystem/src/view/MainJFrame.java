@@ -18,13 +18,13 @@ import model.delivery.ShipmentDirectory;
 
 import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
+import model.quotation.RFQ;
 import model.user.UserAccount;
 import service.UserService;
 import util.NavigationUtil;
 import enums.Role;
 import model.procurement.PurchaseRequest;
 import model.quotation.Quotation;
-import model.workqueue.RFQRequest;
 import util.UIUtil;
 import view.quotation.QuotationPanel;
 import view.shipping.DeliveryCompanyWorkspacePanel;
@@ -249,7 +249,7 @@ public class MainJFrame extends javax.swing.JFrame {
             case SPECIALIST -> {
                 // Create dummy PR for test
                 PurchaseRequest dummyPR = new PurchaseRequest("PR-001");
-                RFQRequest rfq = new RFQRequest(dummyPR);
+                RFQ rfq = new RFQ(dummyPR.getId());
                 rfq.addQuotation(new Quotation("Vendor A", 1000.0, "Spec A"));
                 rfq.addQuotation(new Quotation("Vendor B", 900.0, "Spec B"));
 

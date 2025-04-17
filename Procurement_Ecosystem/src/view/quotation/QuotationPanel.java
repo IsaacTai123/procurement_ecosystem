@@ -8,7 +8,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 import model.quotation.Quotation;
-import model.workqueue.RFQRequest;
+import model.quotation.RFQ;
+import model.procurement.PurchaseRequest;
 import model.procurement.Contract;
 import model.procurement.ContractReviewRequest;
 import util.NavigationUtil;
@@ -20,13 +21,13 @@ import util.NavigationUtil;
  */
 public class QuotationPanel extends javax.swing.JPanel {
     
-    private RFQRequest rfqRequest;
+    private RFQ rfq;
 
     /**
      * Creates new form QuotationPanel
      */
-    public QuotationPanel(RFQRequest rfqRequest) {
-        this.rfqRequest = rfqRequest;
+    public QuotationPanel(RFQ rfq) {
+        this.rfq = rfq;
         initComponents();
         populateTable();
     }
@@ -35,7 +36,7 @@ public class QuotationPanel extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) quotationTable.getModel();
         model.setRowCount(0); // clear table
 
-        List<Quotation> list = rfqRequest.getQuotations();
+        List<Quotation> list = rfq.getQuotations();
         for (Quotation q : list) {
             Object[] row = new Object[] {
                 q.getVendorName(),
@@ -165,7 +166,7 @@ public class QuotationPanel extends javax.swing.JPanel {
             return;
         }
 
-        Quotation q = rfqRequest.getQuotations().get(selectedRow);
+        Quotation q = rfq.getQuotations().get(selectedRow);
         StringBuilder sb = new StringBuilder();
         sb.append("Vendor: ").append(q.getVendorName()).append("\n");
         sb.append("Price: $").append(q.getPrice()).append("\n");
@@ -184,16 +185,16 @@ public class QuotationPanel extends javax.swing.JPanel {
             return;
         }
 
-        Quotation selected = rfqRequest.getQuotations().get(selectedRow);
+        Quotation selected = rfq.getQuotations().get(selectedRow);
 
         // Clear other selections
-        for (Quotation q : rfqRequest.getQuotations()) {
+        for (Quotation q : rfq.getQuotations()) {
             q.setSelected(false);
         }
         selected.setSelected(true);
 
         // Approve + generate contract
-        ContractReviewRequest review = rfqRequest.toContractReviewRequest(selected);
+        ContractReviewRequest review = rfq.toContractReviewRequest(selected);
         review.approve();
         Contract contract = review.createContract();
 

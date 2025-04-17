@@ -5,14 +5,14 @@
 package controller;
 
 import model.ecosystem.Enterprise;
-import model.workqueue.RFQRequest;
+import model.quotation.RFQ;
 
 /**
  *
  * @author linweihong
  */
 public class VendorController {
-    public void submitQuotation(RFQRequest rfq, Enterprise vendor, double price, String spec) {
+    public void submitQuotation(RFQ rfq, Enterprise vendor, double price, String spec) {
         // logic to submit quotation
     }
 }

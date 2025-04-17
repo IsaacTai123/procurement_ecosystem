@@ -18,6 +18,10 @@ public class DeliveryRequest extends WorkRequest {
     private ArrayList<ShipmentItem> items;
     private Enterprise logisticsPartner;
 
+    @Override
+    protected void initWorkflowSteps() {
+
+    }
     
     public ArrayList<ShipmentItem> getItems() {
         return items;
