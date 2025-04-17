@@ -7,16 +7,17 @@
 package config;
 
 //import Business.Person.Person;
+
 //import Business.Person.PersonDirectory;
 //import Business.Profiles.EmployeeDirectory;
 //import Business.Profiles.EmployeeProfile;
 //import Business.Profiles.StudentDirectory;
 //import Business.Profiles.StudentProfile;
 
-
 import controller.DeliveryController;
 import directory.OrganizationDirectory;
 import enums.EnterpriseType;
+import enums.OrganizationType;
 import enums.Role;
 import model.ecosystem.Ecosystem;
 import model.ecosystem.Enterprise;
@@ -32,7 +33,6 @@ import model.delivery.ShipmentItem;
 import model.product.Product;
 import service.OrganizationService;
 import service.UserAccountService;
-
 
 /**
  *
@@ -51,28 +51,30 @@ public class MockDataInitializer {
         // Google
         Enterprise google = network.getEnterpriseDir().createEnterprise("Google", EnterpriseType.BUYER);
 
-        Organization googleIT = orgService.createOrgFromEnterprise("IT", google);
-        UserAccount googleITManager = userAccountService.createUserFromOrganization("Alvin", "Alvin", Role.MANAGER, googleIT);
+        Organization googleIT = orgService.createOrgFromEnterprise(OrganizationType.IT, google);
+        UserAccount googleITManager = userAccountService.createUserFromOrganization("alvin", "alvin", Role.MANAGER,
+                googleIT);
 
-        Organization googleProcurement = orgService.createOrgFromEnterprise("Procurement", google);
-        UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac", Role.MANAGER, googleProcurement);
+        Organization googleProcurement = orgService.createOrgFromEnterprise(OrganizationType.PROCUREMENT, google);
+        UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac",
+                Role.MANAGER, googleProcurement);
 
         // FedEx
         Enterprise fedEx = network.getEnterpriseDir().createEnterprise("FedEx", EnterpriseType.LOGISTICS);
-        Organization fedExShipping = orgService.createOrgFromEnterprise("Shipping", fedEx);
-        UserAccount fedExShippingCoordinator = userAccountService.createUserFromOrganization("A0003", "A0003", Role.SHIPPING_COORDINATOR, fedExShipping);
+
+        Organization fedExShipping = orgService.createOrgFromEnterprise(OrganizationType.LOGISTICS, fedEx);
+        UserAccount fedExShippingCoordinator = userAccountService.createUserFromOrganization("A003", "A003",
+                Role.SHIPPING_COORDINATOR, fedExShipping);
 
         // Asus
         Enterprise asus = network.getEnterpriseDir().createEnterprise("ASUS", EnterpriseType.VENDOR);
-        Organization asusSales = orgService.createOrgFromEnterprise("Sales", fedEx);
-        UserAccount asusSalesManager = userAccountService.createUserFromOrganization("SalesManagerA", "SalesManagerA", Role.MANAGER, asusSales);
+        Organization asusSales = orgService.createOrgFromEnterprise(OrganizationType.SALES, fedEx);
+        UserAccount asusSalesManager = userAccountService.createUserFromOrganization("SalesManagerA", "SalesManagerA",
+                Role.MANAGER, asusSales);
 
-        
-        
-        
         // Add new delivery Request
         DeliveryController deliveryController = new DeliveryController();
-        
+
         ShipmentDirectory fedEx_shipmentDirectory = new ShipmentDirectory(fedEx);
         network.getShipmentDirectories().addShipmentDirectory(fedEx_shipmentDirectory);
         ArrayList<ShipmentItem> items = new ArrayList<>();
@@ -80,14 +82,12 @@ public class MockDataInitializer {
         ShipmentItem itemB = new ShipmentItem(new Product("Asus adaptor"), 1);
         items.add(itemA);
         items.add(itemB);
-        
+
         Date currentDate = new Date();
-        
 
-        deliveryController.requestShipping(items, fedEx, asusSalesManager, googleProcurementManager, currentDate, currentDate, fedEx_shipmentDirectory, "Laptops");
+        deliveryController.requestShipping(items, fedEx, asusSalesManager, googleProcurementManager, currentDate,
+                currentDate, fedEx_shipmentDirectory, "Laptops");
 
-        
-        
         return network;
     }
 }

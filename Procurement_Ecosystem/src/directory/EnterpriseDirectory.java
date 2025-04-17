@@ -18,7 +18,7 @@ public class EnterpriseDirectory {
     }
 
     public Enterprise createEnterprise(String name, EnterpriseType type) {
-        Enterprise enterprise = new Enterprise(name, type);
+        Enterprise enterprise = new Enterprise(name);
         enterprisesList.add(enterprise);
         return enterprise;
     }

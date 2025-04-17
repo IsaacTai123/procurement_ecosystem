@@ -28,22 +28,20 @@ flowchart TB
 
         subgraph Procurement
             A3_1[Procurement Specialist]
+            A3_2[Vendor Compliance Officer]
         end
 
         subgraph Legal
             A4_1[Legal Reviewer]
+            A4_2[Contract Coordinator]
         end
-
-        subgraph Contract_Management
-            A5_1[Contract Coordinator]
-        end
-
-        subgraph Vendor_Management
-            A6_1[Vendor Compliance Officer]
+        
+        subgraph HR
+            A5_1[HR Manager]
         end
 
         subgraph Warehouse
-            A7_1[Warehouse Specialist]
+            A6_1[Warehouse Specialist]
         end
     end
 

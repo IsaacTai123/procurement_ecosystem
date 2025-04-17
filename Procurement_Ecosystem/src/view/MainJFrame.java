@@ -224,6 +224,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 NavigationUtil.getInstance().showCard(adminWorkspace, "EcosystemWorkArea");
             }
 
+
             case IT_ADMIN -> {
                 
             }
@@ -232,9 +233,23 @@ public class MainJFrame extends javax.swing.JFrame {
                 // todo: login as UPS, not only FedEx
                 Enterprise enterprise = enterpriseDirectory.findEnterpriseByName("FedEx");
                 ShipmentDirectory shipmentDirectory = shipmentDirectories.getShipmentDirectory(enterprise);
-                NavigationUtil.getInstance().showCard(new DeliveryCompanyWorkspacePanel(shipmentDirectory),"DeliveryCompanyWorkspacePanel");
+//                NavigationUtil.getInstance().showCard(new DeliveryCompanyWorkspacePanel(shipmentDirectory),"DeliveryCompanyWorkspacePanel");
 
             }
+
+//            case SHIPPING_COORDINATOR -> {
+                // This would have some problem, you call network.getEnterpriseDir(); in constructor, but the use haven't login yet.
+                // if you create another network, this will cause unexpected behavior!!
+                // recommend you use Session.getCurrentNetwork() to get the network in Shipment UI
+                // and then use network.getEnterpriseDir() to get the enterprise directory
+
+                // todo: login as UPS, not only FedEx
+//                Enterprise enterprise = enterpriseDirectory.findEnterpriseByName("FedEx");
+//                ShipmentDirectory shipmentDirectory = shipmentDirectories.getShipmentDirectory(enterprise);
+//                NavigationUtil.getInstance().showCard(new DeliveryCompanyWorkspacePanel(shipmentDirectory),"DeliveryCompanyWorkspacePanel");
+
+//            }
+
 
             default -> {
                 DashboardPanel dashboard = new DashboardPanel();
@@ -314,11 +329,13 @@ public class MainJFrame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void toggleAuthUIState() {
-        btnLogin.setEnabled(!btnLogin.isEnabled());
-        btnLogout.setEnabled(!btnLogout.isEnabled());
-        txtUserId.setEnabled(!txtUserId.isEnabled());
-        pwdPwd.setEnabled(!pwdPwd.isEnabled());
-        cmbNetwork.setEnabled(!cmbNetwork.isEnabled());
+        UIUtil.toggleComponentsEnabled(
+                btnLogin,
+                btnLogout,
+                txtUserId,
+                pwdPwd,
+                cmbNetwork
+        );
     }
 
     private void generateNetworkList() {

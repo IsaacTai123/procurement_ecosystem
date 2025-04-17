@@ -6,6 +6,7 @@ package view;
 
 import common.NetworkManager;
 import enums.EnterpriseType;
+import enums.OrganizationType;
 import enums.Role;
 import model.ecosystem.Ecosystem;
 import model.ecosystem.Enterprise;
@@ -279,10 +280,10 @@ public class EcosystemWorkAreaPanel extends javax.swing.JPanel {
         UIUtil.reloadTable(tblNetwork, NetworkManager.getNetworks(), n -> new Object[]{
                 n.getName()
         });
+        UIUtil.clearTextFields(txtNetworkName);
     }//GEN-LAST:event_btnCreateNetworkActionPerformed
 
     private void btnCreateEnterpriseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateEnterpriseActionPerformed
-        String networkName = txtNetworkName.getText();
         String enterpriseName = txtEnterpriseName.getText();
         String userName = txtAdminUserName.getText();
         String password = new String(pwdAdminUserPwd.getPassword());
@@ -298,7 +299,7 @@ public class EcosystemWorkAreaPanel extends javax.swing.JPanel {
                 userName,
                 password,
                 Role.IT_ADMIN,
-                selectedNetwork.getOrgService().createOrgFromEnterprise("IT", ent)
+                selectedNetwork.getOrgService().createOrgFromEnterprise(OrganizationType.IT, ent)
         );
 
         // reload Table
@@ -363,19 +364,13 @@ public class EcosystemWorkAreaPanel extends javax.swing.JPanel {
     private void setupListeners() {
         tblNetwork.getSelectionModel().addListSelectionListener(n -> {
             if (!n.getValueIsAdjusting()) {
-                // select a network first
-                int selectedRow = tblNetwork.getSelectedRow();
-                if (selectedRow < 0) {
-                    UIUtil.showInfo(this, "Please select a network to continue");
-                    return;
-                }
-                String networkName = (String) tblNetwork.getValueAt(selectedRow, 0);
-                selectedNetwork = NetworkManager.findByName(networkName).orElse(null);
-                toogleEnterpriseFields(true);
-                UIUtil.populateComboBoxFromEnum(cmbEnterpriseType, EnterpriseType.class, "---Select Type ---");
-
-                // reload Enterprise Table
-                reloadEnterpriseTable();
+                UIUtil.getSelectedTableValue(tblNetwork, 0, this, "Please select a network to continue")
+                        .ifPresent(v -> {
+                            selectedNetwork = NetworkManager.findByName(v).orElse(null);
+                            toogleEnterpriseFields(true);
+                            UIUtil.populateComboBoxFromEnum(cmbEnterpriseType, EnterpriseType.class, "---Select Type ---");
+                            reloadEnterpriseTable();
+                        });
             }
         });
     }

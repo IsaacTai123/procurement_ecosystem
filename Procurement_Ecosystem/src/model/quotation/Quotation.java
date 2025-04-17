@@ -20,12 +20,24 @@ public class Quotation {
         this.description = description;
         this.selected = false;
     }
+    
+    public boolean isSelected() {
+        return selected;
+    }
 
-    public String getVendorName() { return vendorName; }
-    public double getPrice() { return price; }
-    public String getDescription() { return description; }
-    public boolean isSelected() { return selected; }
-    public void setSelected(boolean selected) { this.selected = selected; }
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public String getVendorName() { 
+        return vendorName; 
+    }
+    public double getPrice() { 
+        return price; 
+    }
+    public String getDescription() { 
+        return description; 
+    }
 
     @Override
     public String toString() {

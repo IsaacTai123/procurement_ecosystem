@@ -4,14 +4,38 @@
  */
 package model.workqueue;
 
-import model.vendor.Quotation;
+import model.quotation.Quotation;
+import model.procurement.Contract;
 
 /**
  *
  * @author linweihong
  */
-public class ContractReviewRequest extends WorkRequest {
-    private Quotation quotation;
+public class ContractReviewRequest {
+    private final Quotation quotation;
     private boolean approved;
-    // getters, setters
+
+    public ContractReviewRequest(Quotation quotation) {
+        this.quotation = quotation;
+        this.approved = false;
+    }
+
+    public void approve() {
+        this.approved = true;
+    }
+
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public Quotation getQuotation() {
+        return quotation;
+    }
+
+    public Contract createContract() {
+        if (!approved) {
+            throw new IllegalStateException("Quotation not approved yet.");
+        }
+        return new Contract(quotation);
+    }
 }

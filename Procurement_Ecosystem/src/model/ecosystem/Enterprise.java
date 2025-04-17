@@ -6,6 +6,10 @@ package model.ecosystem;
 
 import directory.OrganizationDirectory;
 import enums.EnterpriseType;
+import model.user.UserAccount;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -16,7 +20,7 @@ public class Enterprise {
     private EnterpriseType type; // enum: BUYER, VENDOR, LOGISTICS
     private final OrganizationDirectory organizationList;
     
-    public Enterprise(String name, EnterpriseType type) {
+    public Enterprise(String name) {
         this.name = name;
         this.type = type;
         organizationList = new OrganizationDirectory();
@@ -40,6 +44,12 @@ public class Enterprise {
     
     public OrganizationDirectory getOrganizationDir() {
         return organizationList;
+    }
+
+    public List<UserAccount> getAllUserAccounts() {
+        return organizationList.getOrganizationList().stream()
+                .flatMap(org -> org.getUserAccountDir().getUserAccountList().stream())
+                .collect(Collectors.toList());
     }
     
 }
