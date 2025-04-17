@@ -22,9 +22,15 @@ public class RFQ {
         this.quotations = new ArrayList<>();
     }
 
-    public String getRfqId() { return rfqId; }
-    public String getRequester() { return requester; }
-    public List<Quotation> getQuotations() { return quotations; }
+    public String getRfqId() { 
+        return rfqId; 
+    }
+    public String getRequester() { 
+        return requester; 
+    }
+    public List<Quotation> getQuotations() { 
+        return quotations; 
+    }
 
     public void addQuotation(Quotation q) {
         quotations.add(q);
