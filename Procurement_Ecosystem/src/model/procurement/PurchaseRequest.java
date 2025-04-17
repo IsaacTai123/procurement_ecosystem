@@ -7,6 +7,7 @@ package model.procurement;
 import directory.PurchaseItemDirectory;
 import enums.ApprovalStatus;
 import enums.OrganizationType;
+import enums.StepType;
 import model.user.UserAccount;
 import model.workqueue.WorkRequest;
 import model.workqueue.WorkflowStep;
@@ -35,9 +36,9 @@ public class PurchaseRequest extends WorkRequest {
     @Override
     protected void initWorkflowSteps() {
         // Initialize the workflow steps for the purchase request
-        workflowSteps.add(new WorkflowStep(null, null)); // Requestor (null by default)
-        workflowSteps.add(new WorkflowStep(OrganizationType.IT, null)); // IT
-        workflowSteps.add(new WorkflowStep(OrganizationType.PROCUREMENT, null)); // Procurement
+        workflowSteps.add(new WorkflowStep(null, null, StepType.REQUESTOR)); // Requestor (null by default)
+        workflowSteps.add(new WorkflowStep(OrganizationType.IT, null, StepType.APPROVAL)); // IT
+        workflowSteps.add(new WorkflowStep(OrganizationType.PROCUREMENT, null, StepType.APPROVAL)); // Procurement
     }
 
     public String getDescription() {

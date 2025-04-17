@@ -5,7 +5,7 @@
 package controller;
 
 import model.ecosystem.Enterprise;
-import model.procurement.RFQ;
+import model.quotation.RFQ;
 
 /**
  *
