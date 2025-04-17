@@ -68,9 +68,11 @@ public class MockDataInitializer {
 
         // Asus
         Enterprise asus = network.getEnterpriseDir().createEnterprise("ASUS", EnterpriseType.VENDOR);
-        Organization asusSales = orgService.createOrgFromEnterprise(OrganizationType.SALES, fedEx);
-        UserAccount asusSalesManager = userAccountService.createUserFromOrganization("SalesManagerA", "SalesManagerA",
-                Role.MANAGER, asusSales);
+        Organization asusSales = orgService.createOrgFromEnterprise(OrganizationType.SALES, asus); 
+        UserAccount asusSalesManager = userAccountService.createUserFromOrganization("SalesManagerA", "SalesManagerA", Role.MANAGER, asusSales);
+        UserAccount asusSpecialist = userAccountService.createUserFromOrganization("peter", "peter", Role.SPECIALIST, asusSales);
+
+
 
         // Add new delivery Request
         DeliveryController deliveryController = new DeliveryController();
