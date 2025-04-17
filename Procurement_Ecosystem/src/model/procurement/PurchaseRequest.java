@@ -6,9 +6,10 @@ package model.procurement;
 
 import directory.PurchaseItemDirectory;
 import enums.ApprovalStatus;
+import enums.OrganizationType;
 import model.user.UserAccount;
-import model.workqueue.ApprovalStep;
 import model.workqueue.WorkRequest;
+import model.workqueue.WorkflowStep;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,6 @@ import java.util.Map;
 public class PurchaseRequest extends WorkRequest {
     private final String description;
     private PurchaseItemDirectory purchaseItems;
-    private List<ApprovalStep> actionSteps;
 
 //    public PurchaseRequest(String description, String purchaseItems, PurchaseItemDirectory items, int par) {
 //        this.description = description;
@@ -30,6 +30,14 @@ public class PurchaseRequest extends WorkRequest {
     public PurchaseRequest(String description) {
         this.description = description;
         this.purchaseItems = null; // just for mock testing
+    }
+
+    @Override
+    protected void initWorkflowSteps() {
+        // Initialize the workflow steps for the purchase request
+        workflowSteps.add(new WorkflowStep(null, null)); // Requestor (null by default)
+        workflowSteps.add(new WorkflowStep(OrganizationType.IT, null)); // IT
+        workflowSteps.add(new WorkflowStep(OrganizationType.PROCUREMENT, null)); // Procurement
     }
 
     public String getDescription() {
@@ -44,14 +52,6 @@ public class PurchaseRequest extends WorkRequest {
         }
 
         return estimatedBudget;
-    }
-
-    public List<ApprovalStep> getActionSteps() {
-        return actionSteps;
-    }
-
-    public void setActionSteps(List<ApprovalStep> actionSteps) {
-        this.actionSteps = actionSteps;
     }
 
     public PurchaseItemDirectory getPurchaseItems() {

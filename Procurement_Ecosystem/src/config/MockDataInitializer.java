@@ -49,7 +49,7 @@ public class MockDataInitializer {
         OrganizationService orgService = network.getOrgService();
         UserAccountService userAccountService = network.getUserAccountService();
 
-        // Google
+        // GoogleX
         Enterprise google = network.getEnterpriseDir().createEnterprise("Google", EnterpriseType.BUYER);
 
         Organization googleIT = orgService.createOrgFromEnterprise(OrganizationType.IT, google);

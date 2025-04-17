@@ -11,13 +11,18 @@ import model.procurement.Contract;
  *
  * @author linweihong
  */
-public class ContractReviewRequest {
+public class ContractReviewRequest extends WorkRequest{
     private final Quotation quotation;
     private boolean approved;
 
     public ContractReviewRequest(Quotation quotation) {
         this.quotation = quotation;
         this.approved = false;
+    }
+
+    @Override
+    protected void initWorkflowSteps() {
+
     }
 
     public void approve() {

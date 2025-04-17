@@ -2,27 +2,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package model.workqueue;
+package model.procurement;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import model.ecosystem.Enterprise;
-import model.procurement.PurchaseRequest;
 import model.quotation.Quotation;
-import model.procurement.ContractReviewRequest;
 
 /**
  *
  * @author linweihong
  */
-public class RFQRequest extends WorkRequest {
+public class RFQ {
     private PurchaseRequest linkedPR;
     private ArrayList<Enterprise> vendors;
     private List<Quotation> quotations;
     // getters, setters
     
-    public RFQRequest(PurchaseRequest linkedPR) {
+    public RFQ(PurchaseRequest linkedPR) {
         this.linkedPR = linkedPR;
         this.vendors = new ArrayList<>();
         this.quotations = new ArrayList<>();
