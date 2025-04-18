@@ -5,6 +5,7 @@
  */
 package directory;
 
+import enums.OrganizationType;
 import enums.Role;
 import java.util.ArrayList;
 import java.util.List;

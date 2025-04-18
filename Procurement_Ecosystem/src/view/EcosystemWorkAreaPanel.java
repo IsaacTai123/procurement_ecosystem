@@ -14,9 +14,6 @@ import model.ecosystem.Network;
 import util.NavigationUtil;
 import util.UIUtil;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-
 /**
  *
  * @author tisaac
@@ -280,7 +277,7 @@ public class EcosystemWorkAreaPanel extends javax.swing.JPanel {
         UIUtil.reloadTable(tblNetwork, NetworkManager.getNetworks(), n -> new Object[]{
                 n.getName()
         });
-        UIUtil.clearTextFields(txtNetworkName);
+        UIUtil.clearTextComponents(txtNetworkName);
     }//GEN-LAST:event_btnCreateNetworkActionPerformed
 
     private void btnCreateEnterpriseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateEnterpriseActionPerformed
@@ -306,7 +303,7 @@ public class EcosystemWorkAreaPanel extends javax.swing.JPanel {
         reloadEnterpriseTable();
 
         // Clear fields
-        UIUtil.clearTextFields(txtAdminUserName, txtEnterpriseName);
+        UIUtil.clearTextComponents(txtAdminUserName, txtEnterpriseName);
         UIUtil.clearPasswordFields(pwdAdminUserPwd);
         UIUtil.resetComboBoxes(cmbEnterpriseType);
         

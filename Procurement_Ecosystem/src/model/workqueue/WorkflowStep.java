@@ -1,9 +1,7 @@
 package model.workqueue;
 
-import enums.ApprovalStatus;
-import enums.OrganizationType;
-import enums.RequestStatus;
-import enums.StepType;
+import directory.GlobalUserAccountDirectory;
+import enums.*;
 import model.user.UserAccount;
 
 import java.time.LocalDateTime;
@@ -33,7 +31,8 @@ import java.time.LocalDateTime;
  * @author tisaac
  */
 public class WorkflowStep {
-    private OrganizationType organization;   // The organization responsible for this step (e.g., IT, Procurement)
+    private OrganizationType orgType;   // The organization responsible for this step (e.g., IT, Procurement)
+    private Role requiredRole;
     private UserAccount assignedUser;         // The specific user assigned to handle this step (optional)
     private StepType stepType;               // The type of step (e.g., REQUESTOR, APPROVER)
     private ApprovalStatus status;            // The current status of this step (e.g., PENDING, COMPLETED, SKIPPED)
@@ -41,20 +40,29 @@ public class WorkflowStep {
     private LocalDateTime actionTime;         // The time when this step was last acted upon (e.g., approved, rejected)
     private String remarks;                    // Comments or notes related to this step (e.g., approval reason, rejection notes)
 
-    public WorkflowStep(OrganizationType organization, UserAccount assignedUser, StepType stepType) {
-        this.organization = organization;
-        this.assignedUser = assignedUser;
+    public WorkflowStep(OrganizationType orgType, Role requiredRole, StepType stepType, boolean isActive) {
+        this.orgType = orgType;
+        this.requiredRole = requiredRole;
         this.stepType = stepType;
         this.actionTime = LocalDateTime.now(); // Initialize with the current time
         this.status = ApprovalStatus.PENDING; // Default status
+        this.active = isActive; // Set the active status
     }
 
-    public OrganizationType getOrganization() {
-        return organization;
+    public OrganizationType getOrganizationType() {
+        return orgType;
     }
 
-    public void setOrganization(OrganizationType organization) {
-        this.organization = organization;
+    public void setOrgType(OrganizationType orgType) {
+        this.orgType = orgType;
+    }
+
+    public Role getRequiredRole() {
+        return requiredRole;
+    }
+
+    public void setRequiredRole(Role requiredRole) {
+        this.requiredRole = requiredRole;
     }
 
     public UserAccount getAssignedUser() {
@@ -81,12 +89,25 @@ public class WorkflowStep {
         this.active = active;
     }
 
+    public LocalDateTime getActionTime() {
+        return actionTime;
+    }
+
+    public void setActionTime(LocalDateTime actionTime) {
+        this.actionTime = actionTime;
+    }
+
     public String getRemarks() {
         return remarks;
     }
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public void resolveAssignedUser(GlobalUserAccountDirectory allUsersDir) {
+        allUsersDir.findUserByOrgAndRole(orgType, requiredRole)
+                .ifPresent(this::setAssignedUser);
     }
 }
 
