@@ -9,11 +9,15 @@ import common.dto.PurchaseItemDTO;
 import common.dto.PurchaseRequestDTO;
 import common.dto.SpecDTO;
 import controller.procurement.PurchaseRequestController;
+import enums.Mode;
 import interfaces.IDataRefreshCallback;
 import interfaces.IDataRefreshCallbackAware;
 import model.procurement.PurchaseItem;
+import org.jetbrains.annotations.Nullable;
 import util.NavigationUtil;
 import util.UIUtil;
+
+import java.util.Map;
 
 /**
  *
@@ -22,20 +26,26 @@ import util.UIUtil;
 public class PurchaseItemFormPanel extends javax.swing.JPanel implements IDataRefreshCallbackAware {
 
     private PurchaseRequestDTO dto;
+    private PurchaseItemDTO editingItem;
     private IDataRefreshCallback callback;
+    private Mode mode;
 
     /**
      * Creates new form PurchaseItemFormPanel
      */
-    public PurchaseItemFormPanel(PurchaseRequestDTO dto) {
+    public PurchaseItemFormPanel(PurchaseRequestDTO dto, @Nullable PurchaseItemDTO editingItem, Mode mode) {
         initComponents();
         this.dto = dto;
+        this.editingItem = editingItem;
+        this.mode = mode;
         setupListeners();
+        configureUIByMode();
     }
 
     private void setupListeners() {
         btnAdd.addActionListener(e -> handleAddButton());
         btnBack.addActionListener(e -> handleBackButton());
+        btnSave.addActionListener(e -> handleSaveButton());
     }
 
     /**
@@ -69,6 +79,7 @@ public class PurchaseItemFormPanel extends javax.swing.JPanel implements IDataRe
         lbQuantity = new javax.swing.JLabel();
         lbUnitPrice = new javax.swing.JLabel();
         txtUnitPrice = new javax.swing.JTextField();
+        btnSave = new javax.swing.JButton();
 
         lbTitle.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
         lbTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -100,6 +111,8 @@ public class PurchaseItemFormPanel extends javax.swing.JPanel implements IDataRe
 
         lbUnitPrice.setText("Unit Price");
 
+        btnSave.setText("Save Changes");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -108,7 +121,9 @@ public class PurchaseItemFormPanel extends javax.swing.JPanel implements IDataRe
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnAdd)
-                .addGap(402, 402, 402))
+                .addGap(269, 269, 269)
+                .addComponent(btnSave)
+                .addGap(62, 62, 62))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -195,7 +210,9 @@ public class PurchaseItemFormPanel extends javax.swing.JPanel implements IDataRe
                     .addComponent(lbRemarks)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28)
-                .addComponent(btnAdd)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAdd)
+                    .addComponent(btnSave))
                 .addGap(0, 29, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -204,6 +221,7 @@ public class PurchaseItemFormPanel extends javax.swing.JPanel implements IDataRe
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnSave;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbCategory;
     private javax.swing.JLabel lbMaterial;
@@ -233,6 +251,7 @@ public class PurchaseItemFormPanel extends javax.swing.JPanel implements IDataRe
             UIUtil.showError(this, prDTO.getMessage());
             return;
         }
+        UIUtil.showInfo(this, prDTO.getMessage());
 
         // Clear the form fields
         clearFields();
@@ -242,6 +261,19 @@ public class PurchaseItemFormPanel extends javax.swing.JPanel implements IDataRe
         // Navigate back to the previous screen
         NavigationUtil.getInstance().goBack();
         callback.refreshData();
+    }
+
+    private void handleSaveButton() {
+        PurchaseItemDTO itemDTO = formPurchaseItem(getSpecData());
+        Result<PurchaseRequestDTO> prDTO = PurchaseRequestController.getInstance().handleUpdatePurchaseItem(dto, editingItem, itemDTO);
+        if (!prDTO.isSuccess()) {
+            UIUtil.showError(this, prDTO.getMessage());
+            return;
+        }
+        UIUtil.showInfo(this, prDTO.getMessage());
+
+        // Set all field to ineditable
+        disableAllFields();
     }
 
     public PurchaseItemDTO formPurchaseItem(SpecDTO spec) {
@@ -263,9 +295,46 @@ public class PurchaseItemFormPanel extends javax.swing.JPanel implements IDataRe
         return new SpecDTO(modelNumber, color, size, material, category, remarks);
     }
 
-    public void clearFields() {
+    private void disableAllFields() {
+        UIUtil.setEnabled(
+                false,
+                txtProductName, txtModelNumber, txtCategory, txtColor, txtSize, txtMaterial, txtRemarks, txtQuantity, txtUnitPrice
+        );
+    }
+
+    private void clearFields() {
         UIUtil.clearTextComponents(
                 txtProductName, txtModelNumber, txtCategory, txtColor, txtSize, txtMaterial, txtRemarks, txtQuantity, txtUnitPrice
+        );
+    }
+
+    private void configureUIByMode() {
+        switch (mode) {
+            case ADD -> {
+                UIUtil.show(btnAdd);
+                UIUtil.hide(btnSave);
+                clearFields();
+            }
+            case UPDATE -> {
+                UIUtil.show(btnSave);
+                UIUtil.hide(btnAdd);
+                populateFields();
+            }
+        }
+    }
+
+    private void populateFields() {
+        UIUtil.setTextFields(Map.of(
+                        txtProductName, editingItem.getName(),
+                        txtModelNumber, editingItem.getSpec().getModelNumber(),
+                        txtCategory, editingItem.getSpec().getCategory(),
+                        txtColor, editingItem.getSpec().getColor(),
+                        txtSize, editingItem.getSpec().getSize(),
+                        txtMaterial, editingItem.getSpec().getMaterial(),
+                        txtRemarks, editingItem.getSpec().getRemarks(),
+                        txtQuantity, editingItem.getQuantity(),
+                        txtUnitPrice, editingItem.getUnitPrice()
+                )
         );
     }
 

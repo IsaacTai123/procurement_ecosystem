@@ -24,33 +24,21 @@ public class PurchaseRequestService {
     private Network network;
 
     public Result<Void> submitPR(PurchaseRequest pr) {
-        // validate the purchase request
+        // validate the status of purchase request
         try {
-            if (pr == null) {
-                throw new IllegalArgumentException("Purchase request cannot be null");
-            }
-
             if (pr.getStatus() != RequestStatus.PENDING) {
                 throw new IllegalStateException("Purchase request is not in a valid state for submission");
             }
 
-            if (pr.getPurchaseItems().getPurchaseItemList().isEmpty()) {
-                throw new IllegalArgumentException("Purchase request must have at least one item");
-            }
-
-            if (pr.getReason() == null || pr.getReason().isEmpty()) {
-                throw new IllegalArgumentException("Must provide a description for the purchase request");
-            }
-
         } catch (Exception e) {
-            // Handle exception
             return ResultUtil.failure("Error submitting purchase request: " + e.getMessage());
         }
 
-        // Get current user & network
+        // Get current user to initialize a requester step
         currentUser = Session.getCurrentUser();
-        network = Session.getCurrentNetwork();
+        pr.createRequesterStep(currentUser);
 
+        network = Session.getCurrentNetwork();
         GlobalUserAccountDirectory allUserDir = network.getGlobalUserAccountDir();
 
         // Change the workflowStep to submitted

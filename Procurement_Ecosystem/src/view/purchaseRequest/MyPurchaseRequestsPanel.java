@@ -4,6 +4,7 @@
  */
 package view.purchaseRequest;
 
+import interfaces.IDataRefreshCallback;
 import util.NavigationUtil;
 import util.UIUtil;
 
@@ -11,7 +12,7 @@ import util.UIUtil;
  *
  * @author tisaac
  */
-public class MyPurchaseRequestsPanel extends javax.swing.JPanel {
+public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IDataRefreshCallback {
 
     /**
      * Creates new form MyPurchaseRequestsPanel
@@ -149,5 +150,17 @@ public class MyPurchaseRequestsPanel extends javax.swing.JPanel {
                 new CreatePurchaseRequestPanel(),
                 "Create Purchase Request"
         );
+    }
+
+    private void refreshOngoingPRTable() {
+        // TODO: find the ongoing purchase requests
+
+
+//        UIUtil.reloadTable(tblPR, );
+    }
+
+    @Override
+    public void refreshData() {
+
     }
 }

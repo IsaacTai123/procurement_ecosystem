@@ -39,4 +39,25 @@ public class PurchaseItemDTO {
     public String getUnitPrice() {
         return unitPrice;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setUnitPrice(String unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public void setSpec(SpecDTO spec) {
+        this.spec = spec;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

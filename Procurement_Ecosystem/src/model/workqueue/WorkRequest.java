@@ -104,12 +104,13 @@ public abstract class WorkRequest {
                 .orElse(null);
     }
 
-    protected void createRequesterStep(UserAccount requestor) {
+    public void createRequesterStep(UserAccount requestor) {
         WorkflowStep step = new WorkflowStep(null, null, StepType.REQUESTOR, true);
         step.setAssignedUser(requestor);
         step.setOrgType(requestor.getOrg().getTypeName());
         step.setRequiredRole(requestor.getUserType());
         step.setActive(true);
+        workflowSteps.add(0, step); // Add to the beginning of the list to maintain approval sequence
     }
 
     public Result<Void> advanceToNextStep(GlobalUserAccountDirectory allUsersDir, String remarks, ApprovalStatus status) {

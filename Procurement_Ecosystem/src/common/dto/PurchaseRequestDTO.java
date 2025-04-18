@@ -34,4 +34,8 @@ public class PurchaseRequestDTO {
     public void addPurchaseItem(PurchaseItemDTO item) {
         this.purchaseItems.add(item);
     }
+
+    public void removePurchaseItem(PurchaseItemDTO item) {
+        this.purchaseItems.remove(item);
+    }
 }
