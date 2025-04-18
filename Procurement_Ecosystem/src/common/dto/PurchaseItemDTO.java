@@ -1,37 +1,42 @@
 package common.dto;
 
-import model.product.Product;
-import model.product.Spec;
-
 /**
  * @author tisaac
  */
 public class PurchaseItemDTO {
-    private String productName;
-    private int quantity;
-    private double unitPrice;
+    private String name;
+    private String quantity;
+    private String unitPrice;
     private SpecDTO spec;
 
-    public PurchaseItemDTO(String productName, SpecDTO spec, int quantity, double unitPrice) {
-        this.productName = productName;
+    public PurchaseItemDTO(String name, SpecDTO spec, String quantity, String unitPrice) {
+        this.name = name;
         this.spec = spec;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
     }
 
-    public String getProductName() {
-        return productName;
+    public int getQuantityAsInt() {
+        return Integer.parseInt(quantity);
+    }
+
+    public double getUnitPriceAsDouble() {
+        return Double.parseDouble(unitPrice);
+    }
+
+    public String getName() {
+        return name;
     }
 
     public SpecDTO getSpec() {
         return spec;
     }
 
-    public int getQuantity() {
+    public String getQuantity() {
         return quantity;
     }
 
-    public double getUnitPrice() {
+    public String getUnitPrice() {
         return unitPrice;
     }
 }

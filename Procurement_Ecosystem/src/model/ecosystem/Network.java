@@ -22,6 +22,8 @@ public class Network {
     private final UserAccountDirectory useraccountDir;
     private final EnterpriseDirectory enterpriseDir;
     private final ShipmentDirectories shipmentDirectories;
+    private final GlobalUserAccountDirectory globalUserAccountDir;
+    private final GlobalOrganizationDirectory globalOrgDir;
 
 
 
@@ -42,10 +44,10 @@ public class Network {
         this.useraccountDir = new UserAccountDirectory();
         this.enterpriseDir = new EnterpriseDirectory();
 
-        GlobalUserAccountDirectory globalUserAccountDir = new GlobalUserAccountDirectory(userRegistry);
+        globalUserAccountDir = new GlobalUserAccountDirectory(userRegistry);
         this.userAccountService = new UserAccountService(globalUserAccountDir);
 
-        GlobalOrganizationDirectory globalOrgDir = new GlobalOrganizationDirectory(orgRegistry);
+        globalOrgDir = new GlobalOrganizationDirectory(orgRegistry);
         this.orgService = new OrganizationService(globalOrgDir);
         
         this.shipmentDirectories = new ShipmentDirectories();
@@ -77,6 +79,14 @@ public class Network {
 
     public UserAccountService getUserAccountService() {
         return userAccountService;
+    }
+
+    public GlobalUserAccountDirectory getGlobalUserAccountDir() {
+        return globalUserAccountDir;
+    }
+
+    public GlobalOrganizationDirectory getGlobalOrgDir() {
+        return globalOrgDir;
     }
 
     public OrganizationService getOrgService() {

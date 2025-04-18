@@ -2,6 +2,7 @@ package util;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -33,9 +34,9 @@ public class UIUtil {
         JOptionPane.showMessageDialog(parent, message, "Info", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public static void clearTextFields(JTextField... fields) {
-        for (JTextField field : fields) {
-            field.setText("");
+    public static void clearTextComponents(JTextComponent... components) {
+        for (JTextComponent component : components) {
+            component.setText("");
         }
     }
 
@@ -202,6 +203,38 @@ public class UIUtil {
             return Optional.empty();
         }
         return Optional.of(value.toString());
+    }
+
+    /**
+     * Retrieves the original object from a selected row and column in a JTable.
+     * <p>
+     * If no row is selected, or the cell is null, an informational dialog is shown and {@link Optional#empty()} is returned.
+     *
+     * @param table       The JTable to retrieve the object from.
+     * @param columnIndex The column index to extract the value from.
+     * @param parent      The parent component to show the dialog.
+     * @param infoMessage The message to show if nothing is selected.
+     * @param <T>         The expected type of the object.
+     * @return An {@link Optional} containing the object, or empty if not found or invalid.
+     */
+    public static <T> Optional<T> getSelectedTableObject(JTable table, int columnIndex, Component parent, String infoMessage) {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow < 0) {
+            showInfo(parent, infoMessage);
+            return Optional.empty();
+        }
+        Object value = table.getValueAt(selectedRow, columnIndex);
+        if (value == null) {
+            showInfo(parent, "Selected row has no value in column " + columnIndex);
+            return Optional.empty();
+        }
+
+        try {
+            return Optional.of((T) value);
+        } catch (ClassCastException e) {
+            showError(parent, "Unexpted type in selected cell: " + e.getMessage());
+            return Optional.empty();
+        }
     }
 
     /**

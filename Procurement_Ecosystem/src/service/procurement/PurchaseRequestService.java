@@ -1,17 +1,27 @@
 package service.procurement;
 
 import common.Result;
+import common.Session;
+import common.dto.PurchaseItemDTO;
+import common.dto.PurchaseRequestDTO;
+import directory.GlobalUserAccountDirectory;
+import enums.ApprovalStatus;
 import enums.RequestStatus;
+import model.ecosystem.Network;
 import model.procurement.PurchaseItem;
 import model.product.Spec;
 import model.user.UserAccount;
 import model.procurement.PurchaseRequest;
+import model.workqueue.WorkflowStep;
 import util.ResultUtil;
 
 /**
  * @author tisaac
  */
 public class PurchaseRequestService {
+
+    private UserAccount currentUser;
+    private Network network;
 
     public Result<Void> submitPR(PurchaseRequest pr) {
         // validate the purchase request
@@ -28,7 +38,7 @@ public class PurchaseRequestService {
                 throw new IllegalArgumentException("Purchase request must have at least one item");
             }
 
-            if (pr.getDescription() == null || pr.getDescription().isEmpty()) {
+            if (pr.getReason() == null || pr.getReason().isEmpty()) {
                 throw new IllegalArgumentException("Must provide a description for the purchase request");
             }
 
@@ -37,48 +47,24 @@ public class PurchaseRequestService {
             return ResultUtil.failure("Error submitting purchase request: " + e.getMessage());
         }
 
-        // Change the current status
+        // Get current user & network
+        currentUser = Session.getCurrentUser();
+        network = Session.getCurrentNetwork();
 
-        // Set the next reviewer
-        pr.setReceiver(null); // TODO: Set the receiver to the appropriate user account
+        GlobalUserAccountDirectory allUserDir = network.getGlobalUserAccountDir();
 
-        // TODO: Set the next reviewer "Procurement Manager" of Procurement Organization in ApprovalStep
-
-        // TODO: Update database
+        // Change the workflowStep to submitted
+        Result<Void> result = pr.advanceToNextStep(allUserDir, pr.getReason(), ApprovalStatus.SUBMITTED);
 
         // This could involve saving the request to a database or sending it to a queue for processing
-        return ResultUtil.success("Purchase request submitted successfully");
-    }
-
-    public Result<Void> addPurchaseItem(PurchaseItem item, PurchaseRequest request) {
-        // Logic to add a purchase item to the request
-        try {
-            if (item.getProduct() == null || request == null) {
-                throw new IllegalArgumentException("Item's product and request cannot be null");
-            }
-
-            if (request.getStatus() != RequestStatus.PENDING) {
-                throw new IllegalStateException("Purchase request is not in a valid state for adding items");
-            }
-
-            // Add item to the request
-            request.getPurchaseItems().getPurchaseItemList().add(item);
-
-            // TODO: Update database
-
-        } catch (Exception e) {
-            // Handle exception
-            return ResultUtil.failure("Error adding purchase item: " + e.getMessage());
-        }
-
-        return ResultUtil.success("Purchase item added successfully");
+        return result;
     }
 
     public void reviewRRByProcurement(PurchaseRequest pr, PurchaseItem item, Spec spec) {
         addSpecDetails(pr, item, spec);
 
         // send it back to the IT organization for confirmation by changing the receiver to the IT manager
-        pr.setReceiver(null); // TODO: Set the receiver to the appropriate IT manager
+        // TODO: Set the receiver to the appropriate IT manager
     }
 
     public void confirmSpecsByIT(PurchaseRequest pr) {

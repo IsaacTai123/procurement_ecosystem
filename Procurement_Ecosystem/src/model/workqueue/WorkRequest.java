@@ -4,14 +4,17 @@
  */
 package model.workqueue;
 
-import enums.ApprovalStatus;
-import enums.RequestStatus;
+import common.Result;
+import directory.GlobalUserAccountDirectory;
+import enums.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import model.user.UserAccount;
+import util.ResultUtil;
 
 /**
  *
@@ -20,7 +23,6 @@ import model.user.UserAccount;
 public abstract class WorkRequest {
     protected String id;
     protected UserAccount sender;
-    protected UserAccount receiver;
     protected Date requestDate;
     protected RequestStatus status = RequestStatus.PENDING; // enum: PENDING, APPROVED, REJECTED, COMPLETED
     protected List<WorkflowStep> workflowSteps;
@@ -51,6 +53,11 @@ public abstract class WorkRequest {
      */
     protected abstract void initWorkflowSteps(); // Subclasses must implement this
 
+    protected void addStep(OrganizationType org, Role role, StepType type, boolean isActive) {
+        WorkflowStep step = new WorkflowStep(org, role, type, isActive);
+        workflowSteps.add(step);
+    }
+
     public String getId() {
         return id;
     }
@@ -65,14 +72,6 @@ public abstract class WorkRequest {
 
     public void setSender(UserAccount sender) {
         this.sender = sender;
-    }
-
-    public UserAccount getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(UserAccount receiver) {
-        this.receiver = receiver;
     }
 
     public Date getRequestDate() {
@@ -91,10 +90,45 @@ public abstract class WorkRequest {
         this.status = status;
     }
 
-    public WorkflowStep getCurrentStep() {
+    public WorkflowStep getCurrentActiveStep() {
         return workflowSteps.stream()
                 .filter(s -> s.isActive() && s.getStatus() == ApprovalStatus.PENDING)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public WorkflowStep getNextPendingStep() {
+        return workflowSteps.stream()
+                .filter(s -> !s.isActive() && s.getStatus() == ApprovalStatus.PENDING)
+                .findFirst()
+                .orElse(null);
+    }
+
+    protected void createRequesterStep(UserAccount requestor) {
+        WorkflowStep step = new WorkflowStep(null, null, StepType.REQUESTOR, true);
+        step.setAssignedUser(requestor);
+        step.setOrgType(requestor.getOrg().getTypeName());
+        step.setRequiredRole(requestor.getUserType());
+        step.setActive(true);
+    }
+
+    public Result<Void> advanceToNextStep(GlobalUserAccountDirectory allUsersDir, String remarks, ApprovalStatus status) {
+        WorkflowStep current = getCurrentActiveStep();
+        if (current == null) { return ResultUtil.failure("No active step available or found"); }
+
+        // Set the current step to completed
+        current.setStatus(status);
+        current.setActive(false);
+        current.setActionTime(LocalDateTime.now());
+        current.setRemarks(remarks);
+
+        WorkflowStep next = getNextPendingStep();
+        if (next == null) {
+            return ResultUtil.failure("No next step available or found");
+        }
+        next.resolveAssignedUser(allUsersDir);
+        next.setActive(true);
+
+        return ResultUtil.success("Successfully advanced to the next step");
     }
 }

@@ -9,14 +9,9 @@ import common.Result;
 import common.Session;
 import config.MockDataInitializer;
 import directory.EnterpriseDirectory;
-import directory.PurchaseItemDirectory;
 import directory.ShipmentDirectories;
 import directory.UserAccountDirectory;
 
-import java.util.Date;
-import model.delivery.ShipmentDirectory;
-
-import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import model.quotation.RFQ;
 import model.user.UserAccount;
@@ -27,11 +22,6 @@ import model.procurement.PurchaseRequest;
 import model.quotation.Quotation;
 import util.UIUtil;
 import view.quotation.QuotationPanel;
-import view.shipping.DeliveryCompanyWorkspacePanel;
-import java.util.List;
-import java.util.ArrayList;
-import model.procurement.PurchaseItem;
-import directory.PurchaseItemDirectory;
 
 /**
  *
@@ -268,7 +258,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnLogoutActionPerformed
         toggleAuthUIState();
         UIUtil.clearPasswordFields(pwdPwd);
-        UIUtil.clearTextFields(txtUserId);
+        UIUtil.clearTextComponents(txtUserId);
         NavigationUtil.getInstance().reset();
         NavigationUtil.getInstance().showCard(new WelcomePanel(), "Welcome");
 

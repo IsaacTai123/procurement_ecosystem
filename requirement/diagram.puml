@@ -95,7 +95,7 @@ class WorkflowStep {
 
 enum ApprovalStatus {
     PENDING
-    SUBMITTED,
+    SUBMITTED
     APPROVED
     REJECTED
     SKIPPED

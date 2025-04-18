@@ -1,10 +1,13 @@
 package directory;
 
+import enums.OrganizationType;
+import enums.Role;
 import model.user.UserAccount;
 import registry.UserRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * GlobalUserAccountDirectory is a centralized container for all user accounts created in the system,
@@ -30,32 +33,51 @@ import java.util.List;
  * userService.createUserForOrganization("isaac", "123", Role.EMPLOYEE, org);
  * }</pre>
  *
- * @author Isaac
+ * @author tisaac
  */
 public class GlobalUserAccountDirectory {
-    private final List<UserAccount> globalUserAccountList;
+    private final List<UserAccount> allUsers;
     private final UserRegistry userRegistry;
 
     public GlobalUserAccountDirectory(UserRegistry userRegistry) {
-        this.globalUserAccountList = new ArrayList<>();
+        this.allUsers = new ArrayList<>();
         this.userRegistry = userRegistry;
     }
 
-    public List<UserAccount> getUserAccountList() {
-        return globalUserAccountList;
+    public List<UserAccount> getAllUsers() {
+        return allUsers;
     }
 
     public void addUser(UserAccount user) {
-        globalUserAccountList.add(user);
+        allUsers.add(user);
         userRegistry.register(user);
     }
 
     public void deleteUser(String userId) {
-        globalUserAccountList.removeIf(user -> user.getUserId().equals(userId));
+        allUsers.removeIf(user -> user.getUserId().equals(userId));
         userRegistry.unregister(userId);
     }
 
     public UserRegistry getUserRegistry() {
         return userRegistry;
+    }
+
+    /**
+     * Finds a user by their organization type and role.
+     *
+     * @param orgType The type of organization to search for.
+     * @param role    The role of the user to search for.
+     * @return An Optional containing the UserAccount if found, or empty if not found.
+     *
+     * <h3>Example usage:</h3>
+     * <pre>{@code
+     * userDirectory.findUserByOrganizationAndRole(OrganizationType.FINANCE, Role.MANAGER)
+     *     .ifPresent(step::setAssignedUser);
+     * }</pre>
+     */
+    public Optional<UserAccount> findUserByOrgAndRole(OrganizationType orgType, Role role) {
+        return allUsers.stream()
+                .filter(user -> user.getOrg().getTypeName() == orgType && user.getUserType() == role)
+                .findFirst();
     }
 }

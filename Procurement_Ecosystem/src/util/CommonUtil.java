@@ -1,6 +1,9 @@
 package util;
 
+import enums.OrganizationType;
+import enums.Role;
 import interfaces.Identifiable;
+import model.user.UserAccount;
 
 import java.util.List;
 import java.util.Optional;

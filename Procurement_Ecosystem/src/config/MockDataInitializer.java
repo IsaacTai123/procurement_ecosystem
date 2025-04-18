@@ -56,7 +56,7 @@ public class MockDataInitializer {
         UserAccount googleITManager = userAccountService.createUserFromOrganization("alvin", "alvin", Role.MANAGER, googleIT);
 
         Organization googleProcurement = orgService.createOrgFromEnterprise(OrganizationType.PROCUREMENT, google);
-        UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac", Role.MANAGER, googleProcurement);
+        UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac", Role.SPECIALIST, googleProcurement);
 
         // FedEx
         Enterprise fedEx = network.getEnterpriseDir().createEnterprise("FedEx", EnterpriseType.LOGISTICS);
