@@ -216,7 +216,8 @@ public class HRServicePanel extends javax.swing.JPanel implements IDataRefreshCa
                 userName,
                 userPwd,
                 Role.valueOf(role),
-                selectedOrg
+                selectedOrg,
+                enterprise
         );
 
         // clear fields

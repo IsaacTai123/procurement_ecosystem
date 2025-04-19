@@ -54,12 +54,9 @@ public class MainJFrame extends javax.swing.JFrame {
         // show network list
         generateNetworkList();
 
-        userAccountDirectory = network.getUserAccountDir();
+//        userAccountDirectory = network.getUserAccountDir();
         shipmentDirectories = network.getShipmentDirectories();
         enterpriseDirectory = network.getEnterpriseDir();
-
-        System.out.println("user accounts: " + userAccountDirectory.getUserAccountList());
-
     }
 
     /**

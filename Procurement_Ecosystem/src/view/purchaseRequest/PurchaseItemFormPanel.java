@@ -33,7 +33,7 @@ public class PurchaseItemFormPanel extends javax.swing.JPanel implements IDataRe
     /**
      * Creates new form PurchaseItemFormPanel
      */
-    public PurchaseItemFormPanel(PurchaseRequestDTO dto, @Nullable PurchaseItemDTO editingItem, Mode mode) {
+    public PurchaseItemFormPanel(PurchaseRequestDTO dto, PurchaseItemDTO editingItem, Mode mode) {
         initComponents();
         this.dto = dto;
         this.editingItem = editingItem;

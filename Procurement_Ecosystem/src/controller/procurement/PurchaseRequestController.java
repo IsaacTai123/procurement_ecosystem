@@ -54,8 +54,9 @@ public class PurchaseRequestController {
         return prService.submitPR(pr);
     }
 
-    public Result<List<PurchaseRequest>> handleMyRequests() {
-        return null;
+    public Result<List<PurchaseRequest>> handleUserPR(String userId) {
+        List<PurchaseRequest> pr = prService.getPRbyUserId(userId);
+        return ResultUtil.success("Purchase requests retrieved successfully.", pr);
     }
 
     // Handle purchaseItem

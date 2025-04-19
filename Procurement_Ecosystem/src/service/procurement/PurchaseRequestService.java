@@ -1,19 +1,22 @@
 package service.procurement;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import common.Result;
 import common.Session;
-import common.dto.PurchaseItemDTO;
-import common.dto.PurchaseRequestDTO;
 import directory.GlobalUserAccountDirectory;
+import directory.PurchaseRequestDirectory;
 import enums.ApprovalStatus;
 import enums.RequestStatus;
+import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import model.procurement.PurchaseItem;
 import model.product.Spec;
 import model.user.UserAccount;
 import model.procurement.PurchaseRequest;
-import model.workqueue.WorkflowStep;
 import util.ResultUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
 
 /**
  * @author tisaac
@@ -21,7 +24,8 @@ import util.ResultUtil;
 public class PurchaseRequestService {
 
     private UserAccount currentUser;
-    private Network network;
+    private Network currentNetwork;
+    private PurchaseRequestDirectory purchaseRequestList;
 
     public Result<Void> submitPR(PurchaseRequest pr) {
         // validate the status of purchase request
@@ -38,11 +42,15 @@ public class PurchaseRequestService {
         currentUser = Session.getCurrentUser();
         pr.createRequesterStep(currentUser);
 
-        network = Session.getCurrentNetwork();
-        GlobalUserAccountDirectory allUserDir = network.getGlobalUserAccountDir();
+        currentNetwork = Session.getCurrentNetwork();
+        GlobalUserAccountDirectory allUserDir = currentNetwork.getGlobalUserAccountDir();
 
         // Change the workflowStep to submitted
         Result<Void> result = pr.advanceToNextStep(allUserDir, pr.getReason(), ApprovalStatus.SUBMITTED);
+
+        // Store purchase request in the purchase request list
+        purchaseRequestList = currentUser.getEnterprise().getPurchaseRequestList();
+        purchaseRequestList.addPurchaseRequest(pr);
 
         // This could involve saving the request to a database or sending it to a queue for processing
         return result;
@@ -88,4 +96,10 @@ public class PurchaseRequestService {
     }
 
     public void loadPurchaseItemsTable() {}
+
+    public List<PurchaseRequest> getPRbyUserId(String userId) {
+        // Find user Enterprise then get the purchase request list
+        Enterprise enterprise = currentNetwork.getEnterpriseDir().findEnterpriseByName(currentUser.getEnterprise().getName());
+        return enterprise.getPurchaseRequestList().getRequestsBySenderId(currentUser.getUserId());
+    }
 }

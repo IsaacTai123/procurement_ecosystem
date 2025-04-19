@@ -9,6 +9,7 @@ import common.dto.PurchaseRequestDTO;
 import controller.procurement.PurchaseRequestController;
 import enums.Mode;
 import interfaces.IDataRefreshCallback;
+import interfaces.IDataRefreshCallbackAware;
 import model.procurement.PurchaseRequest;
 import util.NavigationUtil;
 import util.UIUtil;
@@ -19,10 +20,11 @@ import java.util.List;
  *
  * @author tisaac
  */
-public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements IDataRefreshCallback {
+public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements IDataRefreshCallback, IDataRefreshCallbackAware {
 
     private NavigationUtil nu = NavigationUtil.getInstance();
     private PurchaseRequestDTO prDTO;
+    private IDataRefreshCallback callback;
 
     /**
      * Creates new form CreatePurchaseRequestPanel
@@ -252,11 +254,13 @@ public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements ID
         PurchaseRequestController.getInstance().handlePRSubmit(prDTO)
                 .onFailure(r -> UIUtil.showError(this, r))
                 .onSuccess(r -> UIUtil.showInfo(this, r));
+
+        clearForm();
     }
 
     private void handleBack() {
         nu.goBack();
-
+        callback.refreshData();
     }
 
     public void reloadPurchaseItemTable(List<PurchaseItemDTO> purchaseItems) {
@@ -270,8 +274,21 @@ public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements ID
                 });
     }
 
+    private void clearForm() {
+        UIUtil.clearTextComponents(
+                txtReason
+        );
+
+        UIUtil.clearTable(tblPurchaseItems);
+    }
+
     @Override
     public void refreshData() {
         reloadPurchaseItemTable(prDTO.getPurchaseItems());
+    }
+
+    @Override
+    public void setCallback(IDataRefreshCallback callback) {
+        this.callback = callback;
     }
 }

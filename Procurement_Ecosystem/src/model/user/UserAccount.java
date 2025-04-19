@@ -23,6 +23,7 @@ public class UserAccount {
     private Role userType;
     private String password;
     private Organization org;
+    private Enterprise enterprise;
 
 
     public UserAccount (String name, Role type, String password) {
@@ -32,12 +33,13 @@ public class UserAccount {
         this.password = password;
     }
 
-    public UserAccount (String name, Role type, String password, Organization org) {
+    public UserAccount (String name, Role type, String password, Organization org, Enterprise enterprise) {
         this.userId = IdGenerateUtil.generateUserId();
         this.userName = name;
         this.userType = type;
         this.password = password;
         this.org = org;
+        this.enterprise = enterprise;
     }
 
     public String getUserId() {
@@ -78,6 +80,10 @@ public class UserAccount {
 
     public Enterprise getEnterprise() {
         return org.getEnterprise();
+    }
+
+    public void setEnterprise(Enterprise enterprise) {
+        this.enterprise = enterprise;
     }
 
     @Override

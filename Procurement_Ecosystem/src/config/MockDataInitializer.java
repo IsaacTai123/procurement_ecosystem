@@ -53,21 +53,21 @@ public class MockDataInitializer {
         Enterprise google = network.getEnterpriseDir().createEnterprise("Google", EnterpriseType.BUYER);
 
         Organization googleIT = orgService.createOrgFromEnterprise(OrganizationType.IT, google);
-        UserAccount googleITManager = userAccountService.createUserFromOrganization("alvin", "alvin", Role.MANAGER, googleIT);
+        UserAccount googleITManager = userAccountService.createUserFromOrganization("A001", "alvin", Role.MANAGER, googleIT, google);
 
         Organization googleProcurement = orgService.createOrgFromEnterprise(OrganizationType.PROCUREMENT, google);
-        UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac", Role.SPECIALIST, googleProcurement);
+        UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac", Role.SPECIALIST, googleProcurement, google);
 
         // FedEx
         Enterprise fedEx = network.getEnterpriseDir().createEnterprise("FedEx", EnterpriseType.LOGISTICS);
         Organization fedExShipping = orgService.createOrgFromEnterprise(OrganizationType.LOGISTICS, fedEx);
-        UserAccount fedExShippingCoordinator = userAccountService.createUserFromOrganization("A003", "A003", Role.SHIPPING_COORDINATOR, fedExShipping);
+        UserAccount fedExShippingCoordinator = userAccountService.createUserFromOrganization("A003", "A003", Role.SHIPPING_COORDINATOR, fedExShipping, google);
 
         // Asus
         Enterprise asus = network.getEnterpriseDir().createEnterprise("ASUS", EnterpriseType.VENDOR);
         Organization asusSales = orgService.createOrgFromEnterprise(OrganizationType.SALES, asus); 
-        UserAccount asusSalesManager = userAccountService.createUserFromOrganization("SalesManagerA", "SalesManagerA", Role.MANAGER, asusSales);
-        UserAccount asusSpecialist = userAccountService.createUserFromOrganization("peter", "peter", Role.SPECIALIST, asusSales);
+        UserAccount asusSalesManager = userAccountService.createUserFromOrganization("SalesManagerA", "SalesManagerA", Role.MANAGER, asusSales, google);
+        UserAccount asusSpecialist = userAccountService.createUserFromOrganization("peter", "peter", Role.SPECIALIST, asusSales, google);
 
 
         // Add new delivery Request

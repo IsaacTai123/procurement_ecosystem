@@ -2,6 +2,7 @@ package service;
 
 import directory.GlobalUserAccountDirectory;
 import enums.Role;
+import model.ecosystem.Enterprise;
 import model.ecosystem.Organization;
 import model.user.UserAccount;
 
@@ -34,8 +35,8 @@ public class UserAccountService {
         this.globalDir = globalDir;
     }
 
-    public UserAccount createUserFromOrganization(String name, String pw, Role type, Organization org) {
-        UserAccount account = org.getUserAccountDir().createUserAccount(name, pw, type, org);
+    public UserAccount createUserFromOrganization(String name, String pw, Role type, Organization org, Enterprise ent) {
+        UserAccount account = org.getUserAccountDir().createUserAccount(name, pw, type, org, ent);
         globalDir.addUser(account);
         return account;
     }

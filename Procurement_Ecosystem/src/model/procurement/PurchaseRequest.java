@@ -54,4 +54,9 @@ public class PurchaseRequest extends WorkRequest {
     public PurchaseItemDirectory getPurchaseItems() {
         return purchaseItems;
     }
+
+    @Override
+    public String toString() {
+        return id;
+    }
 }

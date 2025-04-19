@@ -2,12 +2,16 @@ package service;
 
 import common.NetworkManager;
 import common.Result;
+import directory.PurchaseRequestDirectory;
 import model.ecosystem.Ecosystem;
+import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
+import model.procurement.PurchaseRequest;
 import model.user.UserAccount;
 import registry.UserRegistry;
 import util.ResultUtil;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -16,6 +20,7 @@ import java.util.Optional;
 public class UserService {
     private static UserService instance = new UserService();
     private static UserAccount currentUsr;
+    private static Network currentNetwork;
 
     private UserService() {
     }
@@ -43,7 +48,13 @@ public class UserService {
         // Check the user level
         return Optional.ofNullable(network.getUserRegistry()) // Optional<Network> → Optional<UserRegistry>
                 .flatMap(reg -> reg.findByUserId(userId))// Optional<UserAccount>
-                .map(user -> checkPassword(user, pwd)) // Optional<Result<UserAccount>>
+                .map(user -> {
+                    Result<UserAccount> result = checkPassword(user, pwd);
+                    if (result.isSuccess()) {
+                        currentNetwork = network;
+                    }
+                    return result;
+                }) // Optional<Result<UserAccount>>
                 .orElse(ResultUtil.failure("User not found")); // If user not found, return failure
     }
 

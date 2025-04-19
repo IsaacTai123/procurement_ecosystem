@@ -1,5 +1,6 @@
 package util;
 
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -65,5 +66,18 @@ public class IdGenerateUtil {
      */
     public static void reset() {
         counter.set(0);
+    }
+
+    private static final String CHAR_POOL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final int ID_LENGTH = 10;
+    private static final SecureRandom random = new SecureRandom();
+
+    public static String generateWorkRequestId() {
+        StringBuilder sb = new StringBuilder(ID_LENGTH);
+        for (int i = 0; i < ID_LENGTH; i++) {
+            int index = random.nextInt(CHAR_POOL.length());
+            sb.append(CHAR_POOL.charAt(index));
+        }
+        return sb.toString();
     }
 }

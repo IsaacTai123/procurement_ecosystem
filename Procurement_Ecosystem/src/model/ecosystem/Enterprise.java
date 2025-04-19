@@ -26,6 +26,7 @@ public class Enterprise {
         this.name = name;
         this.type = type;
         organizationList = new OrganizationDirectory();
+        purchaseRequestList = new PurchaseRequestDirectory();
     }
 
     public String getName() {
@@ -52,6 +53,10 @@ public class Enterprise {
         return organizationList.getOrganizationList().stream()
                 .flatMap(org -> org.getUserAccountDir().getUserAccountList().stream())
                 .collect(Collectors.toList());
+    }
+
+    public PurchaseRequestDirectory getPurchaseRequestList() {
+        return purchaseRequestList;
     }
     
 }
