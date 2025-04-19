@@ -3,6 +3,10 @@ package model.procurement;
 import model.procurement.Contract;
 import model.quotation.Quotation;
 
+/**
+ *
+ * @author qiyaochen
+ */
 public class ContractReviewRequest {
     private Quotation quotation;
     private boolean approved;

@@ -4,21 +4,59 @@
  */
 package model.workqueue;
 
-import enums.RequestStatus;
+import common.Result;
+import directory.GlobalUserAccountDirectory;
+import enums.*;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import model.user.UserAccount;
+import util.ResultUtil;
 
 /**
  *
  * @author linweihong
  */
 public abstract class WorkRequest {
-    private String id;
-    private UserAccount sender;
-    private UserAccount receiver;
-    private Date requestDate;
-    private RequestStatus status = RequestStatus.PENDING; // enum: PENDING, APPROVED, REJECTED, COMPLETED
-    
+    protected String id;
+    protected UserAccount sender;
+    protected Date requestDate;
+    protected RequestStatus status = RequestStatus.PENDING; // enum: PENDING, APPROVED, REJECTED, COMPLETED
+    protected List<WorkflowStep> workflowSteps;
+
+    // Constructor
+    public WorkRequest() {
+        this.requestDate = new Date();
+        this.workflowSteps = new ArrayList<>();
+        initWorkflowSteps();  // // Let each subclass define its own workflow steps
+    }
+
+    /**
+     * Initializes the workflow steps for this specific type of WorkRequest.
+     * <p>
+     * Each subclass must implement this method to define its own approval or processing workflow,
+     * by adding one or more {@link WorkflowStep} instances to the {@code workflowSteps} list.
+     * This method is automatically called during object construction.
+     * </p>
+     *
+     * <p>Example usage in a subclass:</p>
+     * <pre>{@code
+     * @Override
+     * protected void initWorkflowSteps() {
+     *     workflowSteps.add(new WorkflowStep(OrganizationType.IT, null));
+     *     workflowSteps.add(new WorkflowStep(OrganizationType.PROCUREMENT, null));
+     * }
+     * }</pre>
+     */
+    protected abstract void initWorkflowSteps(); // Subclasses must implement this
+
+    protected void addStep(OrganizationType org, Role role, StepType type, boolean isActive) {
+        WorkflowStep step = new WorkflowStep(org, role, type, isActive);
+        workflowSteps.add(step);
+    }
 
     public String getId() {
         return id;
@@ -36,14 +74,6 @@ public abstract class WorkRequest {
         this.sender = sender;
     }
 
-    public UserAccount getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(UserAccount receiver) {
-        this.receiver = receiver;
-    }
-
     public Date getRequestDate() {
         return requestDate;
     }
@@ -59,9 +89,46 @@ public abstract class WorkRequest {
     public void setStatus(RequestStatus status) {
         this.status = status;
     }
-   
-    
-    
-    
-    
+
+    public WorkflowStep getCurrentActiveStep() {
+        return workflowSteps.stream()
+                .filter(s -> s.isActive() && s.getStatus() == ApprovalStatus.PENDING)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public WorkflowStep getNextPendingStep() {
+        return workflowSteps.stream()
+                .filter(s -> !s.isActive() && s.getStatus() == ApprovalStatus.PENDING)
+                .findFirst()
+                .orElse(null);
+    }
+
+    protected void createRequesterStep(UserAccount requestor) {
+        WorkflowStep step = new WorkflowStep(null, null, StepType.REQUESTOR, true);
+        step.setAssignedUser(requestor);
+        step.setOrgType(requestor.getOrg().getTypeName());
+        step.setRequiredRole(requestor.getUserType());
+        step.setActive(true);
+    }
+
+    public Result<Void> advanceToNextStep(GlobalUserAccountDirectory allUsersDir, String remarks, ApprovalStatus status) {
+        WorkflowStep current = getCurrentActiveStep();
+        if (current == null) { return ResultUtil.failure("No active step available or found"); }
+
+        // Set the current step to completed
+        current.setStatus(status);
+        current.setActive(false);
+        current.setActionTime(LocalDateTime.now());
+        current.setRemarks(remarks);
+
+        WorkflowStep next = getNextPendingStep();
+        if (next == null) {
+            return ResultUtil.failure("No next step available or found");
+        }
+        next.resolveAssignedUser(allUsersDir);
+        next.setActive(true);
+
+        return ResultUtil.success("Successfully advanced to the next step");
+    }
 }

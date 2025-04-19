@@ -40,56 +40,56 @@ import service.UserAccountService;
  */
 public class MockDataInitializer {
 
-    public static Network initialize() {
-        Ecosystem eco = Ecosystem.getInstance();
-        eco.init(new UserAccount("admin", Role.SYS_ADMIN, "admin"));
-        Network network = eco.AddNetwork("Tech");
+        public static Network initialize() {
+                Ecosystem eco = Ecosystem.getInstance();
+                eco.init(new UserAccount("admin", Role.SYS_ADMIN, "admin"));
+                Network network = eco.AddNetwork("Tech");
 
-        OrganizationService orgService = network.getOrgService();
-        UserAccountService userAccountService = network.getUserAccountService();
+                OrganizationService orgService = network.getOrgService();
+                UserAccountService userAccountService = network.getUserAccountService();
 
-        // Google
-        Enterprise google = network.getEnterpriseDir().createEnterprise("Google", EnterpriseType.BUYER);
+                // GoogleX
+                Enterprise google = network.getEnterpriseDir().createEnterprise("Google", EnterpriseType.BUYER);
 
-        Organization googleIT = orgService.createOrgFromEnterprise(OrganizationType.IT, google);
-        UserAccount googleITManager = userAccountService.createUserFromOrganization("alvin", "alvin", Role.MANAGER,
-                googleIT);
+                Organization googleIT = orgService.createOrgFromEnterprise(OrganizationType.IT, google);
+                UserAccount googleITManager = userAccountService.createUserFromOrganization("alvin", "alvin",
+                                Role.MANAGER, googleIT);
 
-        Organization googleProcurement = orgService.createOrgFromEnterprise(OrganizationType.PROCUREMENT, google);
-        UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac",
-                Role.MANAGER, googleProcurement);
+                Organization googleProcurement = orgService.createOrgFromEnterprise(OrganizationType.PROCUREMENT,
+                                google);
+                UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac",
+                                Role.SPECIALIST, googleProcurement);
 
-        // FedEx
-        Enterprise fedEx = network.getEnterpriseDir().createEnterprise("FedEx", EnterpriseType.LOGISTICS);
+                // FedEx
+                Enterprise fedEx = network.getEnterpriseDir().createEnterprise("FedEx", EnterpriseType.LOGISTICS);
+                Organization fedExShipping = orgService.createOrgFromEnterprise(OrganizationType.LOGISTICS, fedEx);
+                UserAccount fedExShippingCoordinator = userAccountService.createUserFromOrganization("A003", "A003",
+                                Role.SHIPPING_COORDINATOR, fedExShipping);
 
-        Organization fedExShipping = orgService.createOrgFromEnterprise(OrganizationType.LOGISTICS, fedEx);
-        UserAccount fedExShippingCoordinator = userAccountService.createUserFromOrganization("A003", "A003",
-                Role.SHIPPING_COORDINATOR, fedExShipping);
+                // Asus
+                Enterprise asus = network.getEnterpriseDir().createEnterprise("ASUS", EnterpriseType.VENDOR);
+                Organization asusSales = orgService.createOrgFromEnterprise(OrganizationType.SALES, asus);
+                UserAccount asusSalesManager = userAccountService.createUserFromOrganization("SalesManagerA",
+                                "SalesManagerA", Role.MANAGER, asusSales);
+                UserAccount asusSpecialist = userAccountService.createUserFromOrganization("peter", "peter",
+                                Role.SPECIALIST, asusSales);
 
-        // Asus
-        Enterprise asus = network.getEnterpriseDir().createEnterprise("ASUS", EnterpriseType.VENDOR);
-        Organization asusSales = orgService.createOrgFromEnterprise(OrganizationType.SALES, asus); 
-        UserAccount asusSalesManager = userAccountService.createUserFromOrganization("SalesManagerA", "SalesManagerA", Role.MANAGER, asusSales);
-        UserAccount asusSpecialist = userAccountService.createUserFromOrganization("peter", "peter", Role.SPECIALIST, asusSales);
+                // Add new delivery Request
+                DeliveryController deliveryController = new DeliveryController();
 
+                ShipmentDirectory fedEx_shipmentDirectory = new ShipmentDirectory(fedEx);
+                network.getShipmentDirectories().addShipmentDirectory(fedEx_shipmentDirectory);
+                ArrayList<ShipmentItem> items = new ArrayList<>();
+                ShipmentItem itemA = new ShipmentItem(new Product("Asus Laptop"), 1);
+                ShipmentItem itemB = new ShipmentItem(new Product("Asus adaptor"), 1);
+                items.add(itemA);
+                items.add(itemB);
 
+                Date currentDate = new Date();
 
-        // Add new delivery Request
-        DeliveryController deliveryController = new DeliveryController();
+                deliveryController.requestShipping(items, fedEx, asusSalesManager, googleProcurementManager,
+                                currentDate, currentDate, fedEx_shipmentDirectory, "Laptops");
 
-        ShipmentDirectory fedEx_shipmentDirectory = new ShipmentDirectory(fedEx);
-        network.getShipmentDirectories().addShipmentDirectory(fedEx_shipmentDirectory);
-        ArrayList<ShipmentItem> items = new ArrayList<>();
-        ShipmentItem itemA = new ShipmentItem(new Product("Asus Laptop"), 1);
-        ShipmentItem itemB = new ShipmentItem(new Product("Asus adaptor"), 1);
-        items.add(itemA);
-        items.add(itemB);
-
-        Date currentDate = new Date();
-
-        deliveryController.requestShipping(items, fedEx, asusSalesManager, googleProcurementManager, currentDate,
-                currentDate, fedEx_shipmentDirectory, "Laptops");
-
-        return network;
-    }
+                return network;
+        }
 }

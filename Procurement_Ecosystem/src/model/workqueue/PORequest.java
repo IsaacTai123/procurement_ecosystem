@@ -13,4 +13,9 @@ import model.vendor.Quotation;
 public class PORequest extends WorkRequest {
     private Quotation approvedQuotation;
     // getters, setters
+
+    @Override
+    protected void initWorkflowSteps() {
+
+    }
 }

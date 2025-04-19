@@ -9,29 +9,19 @@ import common.Result;
 import common.Session;
 import config.MockDataInitializer;
 import directory.EnterpriseDirectory;
-import directory.PurchaseItemDirectory;
 import directory.ShipmentDirectories;
 import directory.UserAccountDirectory;
 
-import java.util.Date;
-import model.delivery.ShipmentDirectory;
-
-import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
+import model.quotation.RFQ;
 import model.user.UserAccount;
 import service.UserService;
 import util.NavigationUtil;
 import enums.Role;
 import model.procurement.PurchaseRequest;
 import model.quotation.Quotation;
-import model.workqueue.RFQRequest;
 import util.UIUtil;
 import view.quotation.QuotationPanel;
-import view.shipping.DeliveryCompanyWorkspacePanel;
-import java.util.List;
-import java.util.ArrayList;
-import model.procurement.PurchaseItem;
-import directory.PurchaseItemDirectory;
 
 /**
  *
@@ -262,7 +252,7 @@ public class MainJFrame extends javax.swing.JFrame {
             case SPECIALIST -> {
                 // Create dummy PR for test
                 PurchaseRequest dummyPR = new PurchaseRequest("PR-001");
-                RFQRequest rfq = new RFQRequest(dummyPR);
+                RFQ rfq = new RFQ(dummyPR.getId());
                 rfq.addQuotation(new Quotation("Vendor A", 1000.0, "Spec A"));
                 rfq.addQuotation(new Quotation("Vendor B", 900.0, "Spec B"));
 
@@ -282,7 +272,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnLogoutActionPerformed
         toggleAuthUIState();
         UIUtil.clearPasswordFields(pwdPwd);
-        UIUtil.clearTextFields(txtUserId);
+        UIUtil.clearTextComponents(txtUserId);
         NavigationUtil.getInstance().reset();
         NavigationUtil.getInstance().showCard(new WelcomePanel(), "Welcome");
 
