@@ -7,6 +7,7 @@ package view.purchaseRequest;
 import common.Result;
 import common.Session;
 import controller.procurement.PurchaseRequestController;
+import enums.RequestStatus;
 import interfaces.IDataRefreshCallback;
 import model.procurement.PurchaseRequest;
 import model.user.UserAccount;
@@ -35,6 +36,9 @@ public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IData
 
     private void setupListeners() {
         btnCreate.addActionListener(e -> handleCreateNewPR());
+        btnOngoing.addActionListener(e -> handleOngoingPR());
+        btnCompleted.addActionListener(e -> handleCompletedPR());
+        btnBack.addActionListener(e -> NavigationUtil.getInstance().goBack());
     }
 
     /**
@@ -163,26 +167,38 @@ public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IData
         );
     }
 
-    private void refreshOngoingPRTable() {
+    private void handleCompletedPR() {
         // find the ongoing purchase requests
-        Result<List<PurchaseRequest>> result = PurchaseRequestController.getInstance().handleUserPR(currentUser.getUserId());
+        Result<List<PurchaseRequest>> result = PurchaseRequestController.getInstance().handleUserPR(currentUser.getUserId(), RequestStatus.COMPLETED);
         if (!result.isSuccess()) {
             UIUtil.showError(this, result.getMessage());
         }
 
-        UIUtil.reloadTable(tblPR,
-                result.getData(),
+        refreshPRTable(result.getData());
+    }
+
+    private void handleOngoingPR() {
+        // find the ongoing purchase requests
+        Result<List<PurchaseRequest>> result = PurchaseRequestController.getInstance().handleUserPR(currentUser.getUserId(), RequestStatus.PENDING);
+        if (!result.isSuccess()) {
+            UIUtil.showError(this, result.getMessage());
+        }
+
+        refreshPRTable(result.getData());
+    }
+
+    private void refreshPRTable(List<PurchaseRequest> data) {
+        UIUtil.reloadTable(tblPR, data,
                 e -> new Object[] {
                         e,
                         e.getRequestDate(),
                         e.getStatus()
                 }
-
         );
     }
 
     @Override
     public void refreshData() {
-        refreshOngoingPRTable();
+        handleOngoingPR();
     }
 }

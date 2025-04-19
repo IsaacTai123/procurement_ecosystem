@@ -5,6 +5,7 @@ import common.dto.PurchaseItemDTO;
 import common.dto.PurchaseRequestDTO;
 import common.dto.SpecDTO;
 import directory.PurchaseItemDirectory;
+import enums.RequestStatus;
 import model.procurement.PurchaseRequest;
 import model.product.Product;
 import model.product.Spec;
@@ -13,6 +14,7 @@ import util.ResultUtil;
 import util.UIUtil;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author tisaac
@@ -54,8 +56,24 @@ public class PurchaseRequestController {
         return prService.submitPR(pr);
     }
 
-    public Result<List<PurchaseRequest>> handleUserPR(String userId) {
+    public Result<List<PurchaseRequest>> handleUserPR(String userId, RequestStatus isCompleted) {
         List<PurchaseRequest> pr = prService.getPRbyUserId(userId);
+        if (pr == null || pr.isEmpty()) {
+            return ResultUtil.failure("No purchase requests found for the user.");
+        }
+
+        // filter by completed status
+        if (isCompleted != RequestStatus.COMPLETED) {
+            pr.stream()
+                    .filter(p -> p.getStatus() != RequestStatus.COMPLETED)
+                    .collect(Collectors.toList());
+        } else {
+            pr.stream()
+                    .filter(p -> p.getStatus() == RequestStatus.COMPLETED)
+                    .collect(Collectors.toList());
+        }
+
+
         return ResultUtil.success("Purchase requests retrieved successfully.", pr);
     }
 

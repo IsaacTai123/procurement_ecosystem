@@ -1,6 +1,5 @@
 package service.procurement;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import common.Result;
 import common.Session;
 import directory.GlobalUserAccountDirectory;
@@ -14,9 +13,9 @@ import model.product.Spec;
 import model.user.UserAccount;
 import model.procurement.PurchaseRequest;
 import util.ResultUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author tisaac
