@@ -8,9 +8,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
-import enums.ContractStatus;
-import enums.RFQStatus;
 import enums.RequestStatus;
+import enums.RFQStatus;
 import model.quotation.Quotation;
 import model.quotation.RFQ;
 import model.procurement.Contract;
@@ -27,7 +26,7 @@ public class QuotationPanel extends javax.swing.JPanel {
     
     // TODO: Replace TestRFQGenerator usage with real data source when integrating backend
     // TEMP: For testing multiple RFQs and refresh behavior
-    private List<RFQ> rfqs = TestRFQGenerator.generateTestRFQs();  
+    private List<RFQ> rfqs = TestRFQGenerator.getCachedRFQs();  
     private int currentIndex = 0;
     private RFQ rfq;
 
@@ -35,7 +34,7 @@ public class QuotationPanel extends javax.swing.JPanel {
      * Creates new form QuotationPanel
      */
     public QuotationPanel(RFQ rfq) {
-        this.rfqs = TestRFQGenerator.generateTestRFQs(); // TEMP: Simulated list
+        this.rfqs = TestRFQGenerator.getCachedRFQs(); // TEMP: Simulated list
         this.rfq = rfqs.get(currentIndex); // use test list
         initComponents();
         populateTable();
@@ -72,7 +71,7 @@ public class QuotationPanel extends javax.swing.JPanel {
                         boolean isSelected, boolean hasFocus, int row, int column) {
                     java.awt.Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                     String status = (String) table.getModel().getValueAt(row, 3); // status column
-                    if ("REJECTED".equals(status)) {
+                    if ("REJECTED".equals(status) || "FORWARDED".equals(status)) {
                         c.setForeground(java.awt.Color.GRAY);
                     } else {
                         c.setForeground(java.awt.Color.BLACK);
@@ -110,6 +109,15 @@ public class QuotationPanel extends javax.swing.JPanel {
                 String prId = (r.getId() != null && !r.getId().isEmpty()) ? r.getId() : "(No ID)";
                 System.out.println("Loading RFQ ID into table: " + prId);
                 String vendors = vendorNames.length() > 0 ? vendorNames.toString() : "(No vendors)";
+                boolean isForwarded = r.getSelectedQuotation() != null && r.getSelectedQuotation().getStatus() == RequestStatus.PENDING;
+                if (isForwarded) {
+                    vendors += " (Forwarded)";
+                }
+                boolean allHandled = r.getQuotations().stream().allMatch(q -> q.getStatus() != RequestStatus.RECEIVED);
+                if (allHandled) {
+                    vendors = "<html><font color='gray'>" + vendors + "</font></html>";
+                    prId = "<html><font color='gray'>" + prId + "</font></html>";
+                }
 
                 model.addRow(new Object[]{
                     prId,       // ID column
@@ -250,7 +258,7 @@ public class QuotationPanel extends javax.swing.JPanel {
                         .addComponent(btnBack)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 75, Short.MAX_VALUE)
+                        .addGap(0, 76, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(forwardBtn)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -287,7 +295,7 @@ public class QuotationPanel extends javax.swing.JPanel {
                     .addComponent(viewBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(forwardBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -323,7 +331,7 @@ public class QuotationPanel extends javax.swing.JPanel {
         }
 
         Quotation selected = rfq.getQuotations().get(selectedRow);
-        selected.setStatus(ContractStatus.REJECTED);
+        selected.setStatus(RequestStatus.REJECTED);
         selected.setSelected(false);
 
         JOptionPane.showMessageDialog(this, "Quotation has been rejected.");
@@ -339,22 +347,37 @@ public class QuotationPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Please select a quotation to forward.");
             return;
         }
-
+        
+        boolean alreadyForwarded = rfq.getQuotations().stream()
+            .anyMatch(q -> q.getStatus() == RequestStatus.RECEIVED);
+        
         Quotation selected = rfq.getQuotations().get(selectedRow);
-
-        if (selected.getStatus() == ContractStatus.REJECTED) {
+ 
+        if (selected.getStatus() == RequestStatus.REJECTED) {
             JOptionPane.showMessageDialog(this, "Rejected quotation cannot be forwarded.");
             return;
         }
 
-        selected.setStatus(ContractStatus.FORWARDED);
+        if (alreadyForwarded) {
+            JOptionPane.showMessageDialog(this, "Only one quotation can be forwarded per RFQ.");
+            return;
+        }
+        
+        // Check if already forwarded to prevent duplicates
+        if (selected.getStatus() == RequestStatus.RECEIVED) {
+            JOptionPane.showMessageDialog(this, "This quotation is already forwarded.");
+            return;
+        }
+
+        selected.setStatus(RequestStatus.RECEIVED);
         rfq.setSelectedQuotation(selected);
-        rfq.setStatus(RFQStatus.RECEIVED);
+        selected.setSelected(true); // 👈 让 FinancePanel 能识别这条报价是“被选中并转发”的
 
         JOptionPane.showMessageDialog(this, "Quotation forwarded to finance.");
 
         populateTable();
         populateRFQListTable();
+        forwardBtn.setEnabled(false);
         // Don’t load next RFQ automatically if user wants to stay on the page
         // loadNextRFQ();
     }//GEN-LAST:event_forwardBtnActionPerformed

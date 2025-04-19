@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model.quotation;
 import enums.RFQStatus;
 import model.ecosystem.Enterprise;
@@ -66,6 +62,15 @@ public class RFQ {
                 .orElse(null);
     }
 
+public Quotation getSelectedQuotation() {
+        for (Quotation q : quotations) {
+            if (q.isSelected()) {
+                return q;
+            }
+        }
+        return null; // 如果没有被选中的 quotation
+    }
+
     public ContractReviewRequest toContractReviewRequest(Quotation selected) {
         selected.setSelected(true);
         return new ContractReviewRequest(selected);
@@ -76,11 +81,18 @@ public class RFQ {
     }
 
     public void setSelectedQuotation(Quotation selectedQuotation) {
-        quotations.add(selectedQuotation);
+        for (Quotation q : quotations) {
+            q.setSelected(false); // 先全部设为未选中
+        }
+        selectedQuotation.setSelected(true); // 选中传入的 quotation
     }
 
     public void setStatus(RFQStatus status){
         this.status = status;
+    }
+
+public RFQStatus getStatus() {
+        return this.status;
     }
 
     public void setId(String id) {
