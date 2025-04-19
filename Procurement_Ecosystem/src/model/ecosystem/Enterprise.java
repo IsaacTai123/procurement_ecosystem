@@ -59,4 +59,8 @@ public class Enterprise {
         return purchaseRequestList;
     }
     
+    @Override
+    public String toString() {
+        return this.name;  
+    }
 }
