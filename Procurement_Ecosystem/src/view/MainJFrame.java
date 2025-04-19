@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.ArrayList;
 import model.procurement.PurchaseItem;
 import directory.PurchaseItemDirectory;
+import enums.EnterpriseType;
+import util.TestRFQGenerator;
 
 /**
  *
@@ -248,13 +250,9 @@ public class MainJFrame extends javax.swing.JFrame {
             
             case SPECIALIST -> {
                 // Create dummy PR for test
-                PurchaseRequest dummyPR = new PurchaseRequest("PR-001");
-                RFQRequest rfq = new RFQRequest(dummyPR);
-                rfq.addQuotation(new Quotation("Vendor A", 1000.0, "Spec A"));
-                rfq.addQuotation(new Quotation("Vendor B", 900.0, "Spec B"));
-
-                QuotationPanel quotationPanel = new QuotationPanel(rfq);
-                NavigationUtil.getInstance().showCard(quotationPanel, "QuotationPanel");
+                List<RFQRequest> rfqs = TestRFQGenerator.generateTestRFQs();
+                QuotationPanel panel = new QuotationPanel(rfqs.get(0)); // or loop through with index
+                NavigationUtil.getInstance().showCard(panel, "QuotationPanel");
             }
 
             default -> {
