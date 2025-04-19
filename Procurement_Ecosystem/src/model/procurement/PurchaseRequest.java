@@ -45,7 +45,7 @@ public class PurchaseRequest extends WorkRequest {
     public double getEstimatedBudget() {
         double estimatedBudget = 0;
         for (PurchaseItem item : purchaseItems.getPurchaseItemList()) {
-            estimatedBudget += item.getPrice();
+            estimatedBudget += item.getTotalPrice();
         }
 
         return estimatedBudget;

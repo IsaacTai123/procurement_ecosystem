@@ -92,6 +92,10 @@ public abstract class WorkRequest {
         this.status = status;
     }
 
+    public List<WorkflowStep> getWorkflowSteps() {
+        return workflowSteps;
+    }
+
     public WorkflowStep getCurrentActiveStep() {
         return workflowSteps.stream()
                 .filter(s -> s.isActive() && s.getStatus() == ApprovalStatus.PENDING)

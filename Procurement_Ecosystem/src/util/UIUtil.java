@@ -36,6 +36,14 @@ public class UIUtil {
         }
     }
 
+    public static void setLabelText(Map<JLabel, String> labelMap) {
+        for (var entry : labelMap.entrySet()) {
+            if (entry.getKey() != null) {
+                entry.getKey().setText(entry.getValue());
+            }
+        }
+    }
+
     public static void showError(Component parent, String message) {
         JOptionPane.showMessageDialog(parent, message, "Error", JOptionPane.ERROR_MESSAGE);
     }

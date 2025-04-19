@@ -23,7 +23,7 @@ public class PurchaseItem {
         this.spec = spec;
     }
 
-    public double getPrice() {
+    public double getTotalPrice() {
         return unitPrice * quantity;
     }
 
@@ -60,4 +60,8 @@ public class PurchaseItem {
         this.spec = spec;
     }
 
+    @Override
+    public String toString() {
+        return product.getName();
+    }
 }

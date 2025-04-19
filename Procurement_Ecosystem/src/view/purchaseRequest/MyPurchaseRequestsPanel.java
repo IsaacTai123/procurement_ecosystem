@@ -23,6 +23,7 @@ import java.util.List;
 public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IDataRefreshCallback {
 
     private UserAccount currentUser;
+    private NavigationUtil nu = NavigationUtil.getInstance();
     /**
      * Creates new form MyPurchaseRequestsPanel
      */
@@ -38,6 +39,7 @@ public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IData
         btnCreate.addActionListener(e -> handleCreateNewPR());
         btnOngoing.addActionListener(e -> handleOngoingPR());
         btnCompleted.addActionListener(e -> handleCompletedPR());
+        btnView.addActionListener(e -> handleViewBtn());
         btnBack.addActionListener(e -> NavigationUtil.getInstance().goBack());
     }
 
@@ -97,7 +99,7 @@ public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IData
 
         btnBack.setText("<<Back");
 
-        btnView.setText("View Detail");
+        btnView.setText("View Status");
 
         btnCreate.setText("Create New PR");
 
@@ -161,7 +163,7 @@ public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IData
     private void handleCreateNewPR() {
         CreatePurchaseRequestPanel cpr = new CreatePurchaseRequestPanel();
         cpr.setCallback(() -> refreshData());
-        NavigationUtil.getInstance().showCard(
+        nu.showCard(
                 cpr,
                 "Create Purchase Request"
         );
@@ -185,6 +187,15 @@ public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IData
         }
 
         refreshPRTable(result.getData());
+    }
+
+    private void handleViewBtn() {
+        PurchaseRequest pr =  UIUtil.getSelectedTableObject(tblPR, 0,
+                PurchaseRequest.class, this, "Please select a Purchase Request")
+                .orElse(null);
+
+        ProcessPurchaseRequestPanel prp = new ProcessPurchaseRequestPanel(pr, () -> refreshData());
+        nu.showCard(prp, "Process Purchase Request");
     }
 
     private void refreshPRTable(List<PurchaseRequest> data) {
