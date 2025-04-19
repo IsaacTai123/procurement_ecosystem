@@ -9,9 +9,10 @@ import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
 import enums.ContractStatus;
+import enums.RFQStatus;
 import enums.RequestStatus;
 import model.quotation.Quotation;
-import model.workqueue.RFQRequest;
+import model.quotation.RFQ;
 import model.procurement.Contract;
 import model.procurement.ContractReviewRequest;
 import util.NavigationUtil;
@@ -26,16 +27,16 @@ public class QuotationPanel extends javax.swing.JPanel {
     
     // TODO: Replace TestRFQGenerator usage with real data source when integrating backend
     // TEMP: For testing multiple RFQs and refresh behavior
-    private List<RFQRequest> rfqs = TestRFQGenerator.generateTestRFQs();  
+    private List<RFQ> rfqs = TestRFQGenerator.generateTestRFQs();  
     private int currentIndex = 0;
-    private RFQRequest rfqRequest;
+    private RFQ rfq;
 
     /**
      * Creates new form QuotationPanel
      */
-    public QuotationPanel(RFQRequest rfqRequest) {
+    public QuotationPanel(RFQ rfq) {
         this.rfqs = TestRFQGenerator.generateTestRFQs(); // TEMP: Simulated list
-        this.rfqRequest = rfqs.get(currentIndex); // use test list
+        this.rfq = rfqs.get(currentIndex); // use test list
         initComponents();
         populateTable();
         populateRFQListTable();
@@ -56,7 +57,7 @@ public class QuotationPanel extends javax.swing.JPanel {
             DefaultTableModel model = (DefaultTableModel) quotationTable.getModel();
             model.setRowCount(0); // clear existing
 
-            for (Quotation q : rfqRequest.getQuotations()) {
+            for (Quotation q : rfq.getQuotations()) {
                 model.addRow(new Object[]{
                     q.getId(),
                     q.getVendor().getName(),
@@ -84,7 +85,7 @@ public class QuotationPanel extends javax.swing.JPanel {
         private void loadNextRFQ() {
             currentIndex++;
             if (currentIndex < rfqs.size()) {
-                rfqRequest = rfqs.get(currentIndex);
+                rfq = rfqs.get(currentIndex);
                 populateTable();
                 forwardBtn.setEnabled(false);
                 populateRFQListTable();
@@ -97,11 +98,22 @@ public class QuotationPanel extends javax.swing.JPanel {
         private void populateRFQListTable() {
             DefaultTableModel model = (DefaultTableModel) RFQListTable.getModel();
             model.setRowCount(0); // Clear old data
+        
+            for (RFQ r : rfqs) {
+                // Join vendor names from all quotations
+                StringBuilder vendorNames = new StringBuilder();
+                for (Quotation q : r.getQuotations()) {
+                    if (vendorNames.length() > 0) vendorNames.append(", ");
+                    vendorNames.append(q.getVendor().getName());
+                }
 
-            for (RFQRequest r : rfqs) {
+                String prId = (r.getId() != null && !r.getId().isEmpty()) ? r.getId() : "(No ID)";
+                System.out.println("Loading RFQ ID into table: " + prId);
+                String vendors = vendorNames.length() > 0 ? vendorNames.toString() : "(No vendors)";
+
                 model.addRow(new Object[]{
-                    r.getLinkedPR().getId(),     // ID
-                    r.getLinkedPR().getDescription() // Enterprise or Description
+                    prId,       // ID column
+                    vendors     // Enterprise/Vendor names column
                 });
             }
         }
@@ -213,6 +225,9 @@ public class QuotationPanel extends javax.swing.JPanel {
             }
         });
         jScrollPane2.setViewportView(RFQListTable);
+        if (RFQListTable.getColumnModel().getColumnCount() > 0) {
+            RFQListTable.getColumnModel().getColumn(1).setPreferredWidth(175);
+        }
 
         loadBtn.setBackground(new java.awt.Color(204, 204, 204));
         loadBtn.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
@@ -229,27 +244,27 @@ public class QuotationPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(lbTitle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(btnBack))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(557, 557, 557)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(forwardBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(rejectBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(58, 58, 58)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(viewBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(loadBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(130, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnBack)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 75, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(forwardBtn)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(viewBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(389, 389, 389)
+                                    .addComponent(rejectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(loadBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(37, 37, 37))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -264,12 +279,12 @@ public class QuotationPanel extends javax.swing.JPanel {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(153, 153, 153)
+                        .addGap(146, 146, 146)
                         .addComponent(loadBtn)))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(viewBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rejectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(rejectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(viewBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(forwardBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(31, Short.MAX_VALUE))
@@ -288,7 +303,7 @@ public class QuotationPanel extends javax.swing.JPanel {
             return;
         }
 
-        Quotation q = rfqRequest.getQuotations().get(selectedRow);
+        Quotation q = rfq.getQuotations().get(selectedRow);
         StringBuilder sb = new StringBuilder();
         sb.append("Vendor: ").append(q.getVendor()).append("\n");
         sb.append("Price: $").append(q.getPrice()).append("\n");
@@ -307,7 +322,7 @@ public class QuotationPanel extends javax.swing.JPanel {
             return;
         }
 
-        Quotation selected = rfqRequest.getQuotations().get(selectedRow);
+        Quotation selected = rfq.getQuotations().get(selectedRow);
         selected.setStatus(ContractStatus.REJECTED);
         selected.setSelected(false);
 
@@ -325,7 +340,7 @@ public class QuotationPanel extends javax.swing.JPanel {
             return;
         }
 
-        Quotation selected = rfqRequest.getQuotations().get(selectedRow);
+        Quotation selected = rfq.getQuotations().get(selectedRow);
 
         if (selected.getStatus() == ContractStatus.REJECTED) {
             JOptionPane.showMessageDialog(this, "Rejected quotation cannot be forwarded.");
@@ -333,8 +348,8 @@ public class QuotationPanel extends javax.swing.JPanel {
         }
 
         selected.setStatus(ContractStatus.FORWARDED);
-        rfqRequest.setSelectedQuotation(selected);
-        rfqRequest.setStatus(RequestStatus.COMPLETED);
+        rfq.setSelectedQuotation(selected);
+        rfq.setStatus(RFQStatus.RECEIVED);
 
         JOptionPane.showMessageDialog(this, "Quotation forwarded to finance.");
 
@@ -351,7 +366,7 @@ public class QuotationPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Select a PR to view RFQs.");
             return;
         }
-        rfqRequest = rfqs.get(selected);   // load from selected row
+        rfq = rfqs.get(selected);   // load from selected row
         currentIndex = selected;           // sync index
         populateTable();                   // reload right table
         forwardBtn.setEnabled(false);      // reset button state

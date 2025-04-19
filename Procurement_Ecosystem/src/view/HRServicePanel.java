@@ -220,7 +220,7 @@ public class HRServicePanel extends javax.swing.JPanel implements IDataRefreshCa
         );
 
         // clear fields
-        UIUtil.clearTextFields(
+        UIUtil.clearTextComponents(
                 txtUserName,
                 pwdUserPwd
         );

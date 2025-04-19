@@ -49,14 +49,14 @@ public class MockDataInitializer {
         OrganizationService orgService = network.getOrgService();
         UserAccountService userAccountService = network.getUserAccountService();
 
-        // Google
+        // GoogleX
         Enterprise google = network.getEnterpriseDir().createEnterprise("Google", EnterpriseType.BUYER);
 
         Organization googleIT = orgService.createOrgFromEnterprise(OrganizationType.IT, google);
         UserAccount googleITManager = userAccountService.createUserFromOrganization("alvin", "alvin", Role.MANAGER, googleIT);
 
         Organization googleProcurement = orgService.createOrgFromEnterprise(OrganizationType.PROCUREMENT, google);
-        UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac", Role.MANAGER, googleProcurement);
+        UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac", Role.SPECIALIST, googleProcurement);
 
         // FedEx
         Enterprise fedEx = network.getEnterpriseDir().createEnterprise("FedEx", EnterpriseType.LOGISTICS);

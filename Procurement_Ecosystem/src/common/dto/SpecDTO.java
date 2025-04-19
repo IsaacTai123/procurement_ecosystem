@@ -9,15 +9,15 @@ public class SpecDTO {
     private String size;
     private String material;
     private String category;
-    private String additionalNotes;
+    private String remarks;
 
-    public SpecDTO(String modelNumber, String color, String size, String material, String category, String additionalNotes) {
+    public SpecDTO(String modelNumber, String color, String size, String material, String category, String remarks) {
         this.modelNumber = modelNumber;
         this.color = color;
         this.size = size;
         this.material = material;
         this.category = category;
-        this.additionalNotes = additionalNotes;
+        this.remarks = remarks;
     }
 
     public String getModelNumber() {
@@ -40,7 +40,7 @@ public class SpecDTO {
         return category;
     }
 
-    public String getAdditionalNotes() {
-        return additionalNotes;
+    public String getRemarks() {
+        return remarks;
     }
 }

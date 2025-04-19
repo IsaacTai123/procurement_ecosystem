@@ -5,35 +5,39 @@
 package model.procurement;
 
 import directory.PurchaseItemDirectory;
-import enums.ApprovalStatus;
-import model.user.UserAccount;
-import model.workqueue.ApprovalStep;
+import enums.OrganizationType;
+import enums.Role;
+import enums.StepType;
 import model.workqueue.WorkRequest;
-
-import java.util.List;
-import java.util.Map;
+import model.workqueue.WorkflowStep;
 
 /**
  *
  * @author tisaac
  */
 public class PurchaseRequest extends WorkRequest {
-    private final String description;
+    private final String reason;
     private PurchaseItemDirectory purchaseItems;
-    private List<ApprovalStep> actionSteps;
 
-//    public PurchaseRequest(String description, String purchaseItems, PurchaseItemDirectory items, int par) {
-//        this.description = description;
-//        this.purchaseItems = purchaseItems;
-//    }
+    public PurchaseRequest(String reason) {
+        this.reason = reason;
+    }
     
-    public PurchaseRequest(String description) {
-        this.description = description;
-        this.purchaseItems = null; // just for mock testing
+//    public PurchaseRequest(String reason) {
+//        this.reason = reason;
+//        this.purchaseItems = null; // just for mock testing
+//    }
+
+    @Override
+    protected void initWorkflowSteps() {
+        // Initialize the workflow steps for the purchase request
+        addStep(null, null, StepType.REQUESTOR, true); // Requestor (null by default)
+        addStep(OrganizationType.IT, Role.MANAGER, StepType.APPROVAL, false); // IT
+        addStep(OrganizationType.PROCUREMENT, Role.SPECIALIST, StepType.APPROVAL, false); // Procurement
     }
 
-    public String getDescription() {
-        return description;
+    public String getReason() {
+        return reason;
     }
 
     // Calculates the total estimated budget based on the purchase items
@@ -44,14 +48,6 @@ public class PurchaseRequest extends WorkRequest {
         }
 
         return estimatedBudget;
-    }
-
-    public List<ApprovalStep> getActionSteps() {
-        return actionSteps;
-    }
-
-    public void setActionSteps(List<ApprovalStep> actionSteps) {
-        this.actionSteps = actionSteps;
     }
 
     public PurchaseItemDirectory getPurchaseItems() {

@@ -4,6 +4,8 @@ import enums.OrganizationType;
 import enums.Role;
 import view.HRServicePanel;
 import view.ITServicePanel;
+import view.purchaseRequest.MyPurchaseRequestsPanel;
+import view.purchaseRequest.PurchaseItemFormPanel;
 import view.shipping.ManageDeliveryReqPanel;
 
 import javax.swing.*;
@@ -22,26 +24,31 @@ public class ServiceRegistry {
         Supplier<JPanel> IT = ITServicePanel::new;
         Supplier<JPanel> HR = HRServicePanel::new;
         Supplier<JPanel> LOGISTICS = ManageDeliveryReqPanel::new;
+        Supplier<JPanel> MYPR = MyPurchaseRequestsPanel::new;
+
 
         JPanel hrService = new HRServicePanel();
 
         // IT Manager
         serviceMap.put(new ServiceKey(Role.MANAGER, OrganizationType.IT), List.of(
                 new ServiceItem("IT Management", IT),
-                new ServiceItem("Manage Employees", HR)
+                new ServiceItem("Manage Employees", HR),
+                new ServiceItem("Manage Purchase Requests", MYPR)
         ));
 
         // IT Engineer
         serviceMap.put(new ServiceKey(Role.ENGINEER, OrganizationType.IT), List.of(
-                new ServiceItem("IT Management", IT)
+                new ServiceItem("IT Management", IT),
+                new ServiceItem("Manage Purchase Requests", MYPR)
         ));
 
         // Finance Manager
         serviceMap.put(new ServiceKey(Role.ANALYST, OrganizationType.FINANCE), List.of(
         ));
 
-        // Procurement Manager
+        // Procurement Specialist
         serviceMap.put(new ServiceKey(Role.SPECIALIST, OrganizationType.PROCUREMENT), List.of(
+                new ServiceItem("Manage Purchase Requests", MYPR)
         ));
 
         // Legal Manager
@@ -50,7 +57,8 @@ public class ServiceRegistry {
 
         // HR Manager
         serviceMap.put(new ServiceKey(Role.MANAGER, OrganizationType.HR), List.of(
-                new ServiceItem("Manage Employees", HR)
+                new ServiceItem("Manage Employees", HR),
+                new ServiceItem("Manage Purchase Requests", MYPR)
         ));
 
         // Warehouse Manager

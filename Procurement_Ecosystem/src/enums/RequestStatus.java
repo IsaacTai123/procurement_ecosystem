@@ -9,5 +9,5 @@ package enums;
  * @author linweihong
  */
 public enum RequestStatus {
-    PENDING, APPROVED, REJECTED, COMPLETED;
+    PENDING, RECEIVED, APPROVED, ACCEPTED, REJECTED, COMPLETED;
 }

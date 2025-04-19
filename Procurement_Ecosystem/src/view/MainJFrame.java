@@ -12,19 +12,15 @@ import directory.EnterpriseDirectory;
 import directory.PurchaseItemDirectory;
 import directory.ShipmentDirectories;
 import directory.UserAccountDirectory;
-
-import java.util.Date;
-import model.delivery.ShipmentDirectory;
-
-import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
+import model.quotation.RFQ;
 import model.user.UserAccount;
 import service.UserService;
 import util.NavigationUtil;
 import enums.Role;
 import model.procurement.PurchaseRequest;
 import model.quotation.Quotation;
-import model.workqueue.RFQRequest;
+import model.quotation.RFQ;
 import util.UIUtil;
 import view.quotation.QuotationPanel;
 import view.shipping.DeliveryCompanyWorkspacePanel;
@@ -250,7 +246,7 @@ public class MainJFrame extends javax.swing.JFrame {
             
             case SPECIALIST -> {
                 // Create dummy PR for test
-                List<RFQRequest> rfqs = TestRFQGenerator.generateTestRFQs();
+                List<RFQ> rfqs = TestRFQGenerator.generateTestRFQs();
                 QuotationPanel panel = new QuotationPanel(rfqs.get(0)); // or loop through with index
                 NavigationUtil.getInstance().showCard(panel, "QuotationPanel");
             }
@@ -266,7 +262,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnLogoutActionPerformed
         toggleAuthUIState();
         UIUtil.clearPasswordFields(pwdPwd);
-        UIUtil.clearTextFields(txtUserId);
+        UIUtil.clearTextComponents(txtUserId);
         NavigationUtil.getInstance().reset();
         NavigationUtil.getInstance().showCard(new WelcomePanel(), "Welcome");
 

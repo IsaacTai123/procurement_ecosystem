@@ -4,6 +4,7 @@ import enums.RequestStatus;
 import model.procurement.PurchaseItem;
 import model.user.UserAccount;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,38 +12,26 @@ import java.util.List;
  * @author tisaac
  */
 public class PurchaseRequestDTO {
-    private String id;
-    private String sender;
-    private Date requestDate;
-
-    private String description;
+    private String reason;
     private List<PurchaseItemDTO> purchaseItems;
 
-    public PurchaseRequestDTO(String id, String sender, Date requestDate, String description, List<PurchaseItemDTO> purchaseItems) {
-        this.id = id;
-        this.sender = sender;
-        this.requestDate = requestDate;
-        this.description = description;
-        this.purchaseItems = purchaseItems;
+    public PurchaseRequestDTO() {
+        this.purchaseItems = new ArrayList<>();
     }
 
-    public String getId() {
-        return id;
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
-    public String getSender() {
-        return sender;
-    }
-
-    public Date getRequestDate() {
-        return requestDate;
-    }
-
-    public String getDescription() {
-        return description;
+    public String getReason() {
+        return reason;
     }
 
     public List<PurchaseItemDTO> getPurchaseItems() {
         return purchaseItems;
+    }
+
+    public void addPurchaseItem(PurchaseItemDTO item) {
+        this.purchaseItems.add(item);
     }
 }
