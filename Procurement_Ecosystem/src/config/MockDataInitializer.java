@@ -57,7 +57,11 @@ public class MockDataInitializer {
 
         Organization googleProcurement = orgService.createOrgFromEnterprise(OrganizationType.PROCUREMENT, google);
         UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac", Role.SPECIALIST, googleProcurement, google);
-
+        UserAccount googleSpecialist = userAccountService.createUserFromOrganization("A003", "peter", Role.SPECIALIST, googleProcurement, google);
+        
+        Organization googleFinance = orgService.createOrgFromEnterprise(OrganizationType.FINANCE, google);
+        UserAccount googleFinanceSpecialist = userAccountService.createUserFromOrganization("A004", "peter", Role.SPECIALIST, googleFinance, google);
+        
         // FedEx
         Enterprise fedEx = network.getEnterpriseDir().createEnterprise("FedEx", EnterpriseType.LOGISTICS);
         Organization fedExShipping = orgService.createOrgFromEnterprise(OrganizationType.LOGISTICS, fedEx);
@@ -66,8 +70,8 @@ public class MockDataInitializer {
         // Asus
         Enterprise asus = network.getEnterpriseDir().createEnterprise("ASUS", EnterpriseType.VENDOR);
         Organization asusSales = orgService.createOrgFromEnterprise(OrganizationType.SALES, asus); 
-        UserAccount asusSalesManager = userAccountService.createUserFromOrganization("SalesManagerA", "SalesManagerA", Role.MANAGER, asusSales, google);
-        UserAccount asusSpecialist = userAccountService.createUserFromOrganization("peter", "peter", Role.SPECIALIST, asusSales, google);
+        UserAccount asusSalesManager = userAccountService.createUserFromOrganization("SalesManagerA", "SalesManagerA", Role.MANAGER, asusSales, asus);
+        UserAccount asusSpecialist = userAccountService.createUserFromOrganization("Test", "peter", Role.SPECIALIST, asusSales, asus);
 
 
         // Add new delivery Request

@@ -29,7 +29,10 @@ import java.util.ArrayList;
 import model.procurement.PurchaseItem;
 import directory.PurchaseItemDirectory;
 import enums.EnterpriseType;
+import enums.OrganizationType;
+import model.ecosystem.Organization;
 import util.TestRFQGenerator;
+import view.quotation.FinancePanel;
 
 /**
  *
@@ -242,10 +245,17 @@ public class MainJFrame extends javax.swing.JFrame {
 
             
             case SPECIALIST -> {
-                // Create dummy PR for test
-                List<RFQ> rfqs = TestRFQGenerator.generateTestRFQs();
-                QuotationPanel panel = new QuotationPanel(rfqs.get(0)); // or loop through with index
-                NavigationUtil.getInstance().showCard(panel, "QuotationPanel");
+                Organization org = user.getOrg();
+                if (org.getTypeName() == OrganizationType.FINANCE) {
+                    FinancePanel financePanel = new FinancePanel(); 
+                    NavigationUtil.getInstance().showCard(financePanel, "FinancePanel");
+                } else if (org.getTypeName()== OrganizationType.PROCUREMENT) {
+                    QuotationPanel quotationPanel = new QuotationPanel(null); // or pass actual RFQ
+                    NavigationUtil.getInstance().showCard(quotationPanel, "QuotationPanel");
+                } else {
+                    DashboardPanel dashboard = new DashboardPanel();
+                    NavigationUtil.getInstance().showCard(dashboard, "Dashboard");
+                }
             }
 
             default -> {
