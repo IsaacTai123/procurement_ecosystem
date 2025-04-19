@@ -11,7 +11,15 @@ class Ecosystem {
 
 class Network {
     - name : String
-    - enterprises : List<Enterprise>
+    - enterpriseDir : EnterpriseDirectory
+    - orgDir : OrganizationDirectory
+    - shipmentDirectories : ShipmentDirectory
+    - globalUserAccountDir : GlobalUserAccountDirectory
+    - globalOrgDir : GlobalOrganizationDirectory
+    - userRegistry : UserRegistry
+    - orgRegistry : OrganizationRegistry
+    - userAccountService : UserAccountService
+    - orgService : OrganizationService
 }
 
 Ecosystem "1" --> "*" Network : manages
@@ -166,6 +174,7 @@ class RFQ {
     - id : String
     - linkedPRId : String
     - vendors : List<Enterprise>
+    - quotations : List<SubmitQuotation>
     - purchaseItems : List<PurchaseItem>
     - deadline : LocalDate
     - status : RFQStatus

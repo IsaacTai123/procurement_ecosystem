@@ -21,6 +21,7 @@ public class PurchaseRequest extends WorkRequest {
 
     public PurchaseRequest(String reason) {
         this.reason = reason;
+        this.purchaseItems = new PurchaseItemDirectory();
     }
     
 //    public PurchaseRequest(String reason) {
@@ -31,7 +32,7 @@ public class PurchaseRequest extends WorkRequest {
     @Override
     protected void initWorkflowSteps() {
         // Initialize the workflow steps for the purchase request
-        addStep(null, null, StepType.REQUESTOR, true); // Requestor (null by default)
+        // Requestor would be create during the run-time
         addStep(OrganizationType.IT, Role.MANAGER, StepType.APPROVAL, false); // IT
         addStep(OrganizationType.PROCUREMENT, Role.SPECIALIST, StepType.APPROVAL, false); // Procurement
     }
@@ -52,5 +53,10 @@ public class PurchaseRequest extends WorkRequest {
 
     public PurchaseItemDirectory getPurchaseItems() {
         return purchaseItems;
+    }
+
+    @Override
+    public String toString() {
+        return id;
     }
 }

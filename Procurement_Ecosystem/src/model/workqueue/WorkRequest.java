@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import model.user.UserAccount;
+import util.IdGenerateUtil;
 import util.ResultUtil;
 
 /**
@@ -29,6 +30,7 @@ public abstract class WorkRequest {
 
     // Constructor
     public WorkRequest() {
+        this.id = IdGenerateUtil.generateWorkRequestId();
         this.requestDate = new Date();
         this.workflowSteps = new ArrayList<>();
         initWorkflowSteps();  // // Let each subclass define its own workflow steps
@@ -104,12 +106,14 @@ public abstract class WorkRequest {
                 .orElse(null);
     }
 
-    protected void createRequesterStep(UserAccount requestor) {
+    public void createRequesterStep(UserAccount requestor) {
         WorkflowStep step = new WorkflowStep(null, null, StepType.REQUESTOR, true);
+        setSender(requestor);
         step.setAssignedUser(requestor);
         step.setOrgType(requestor.getOrg().getTypeName());
         step.setRequiredRole(requestor.getUserType());
         step.setActive(true);
+        workflowSteps.add(0, step); // Add to the beginning of the list to maintain approval sequence
     }
 
     public Result<Void> advanceToNextStep(GlobalUserAccountDirectory allUsersDir, String remarks, ApprovalStatus status) {

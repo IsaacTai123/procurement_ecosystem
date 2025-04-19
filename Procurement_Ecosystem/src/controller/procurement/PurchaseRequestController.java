@@ -32,10 +32,14 @@ public class PurchaseRequestController {
     }
 
     public Result<Void> handlePRSubmit(PurchaseRequestDTO dto) {
-        // create PurchaseRequest with the given DTO
+        // validate the purchase request
+        Result<Void> r = validatePurchaseRequestDTO(dto);
+        if (!r.isSuccess()) {
+            return r;
+        }
 
-        // convert DTO to PurchaseItem
-        PurchaseItemDirectory items = new PurchaseItemDirectory();
+        // convert DTO to Entity
+        PurchaseRequest pr = new PurchaseRequest(dto.getReason());
 
         dto.getPurchaseItems().stream()
                 .forEach(itemDTO -> {
@@ -44,21 +48,19 @@ public class PurchaseRequestController {
                     Spec spec = new Spec(specDTO.getModelNumber(), specDTO.getColor(), specDTO.getSize(),
                             specDTO.getMaterial(), specDTO.getCategory(), specDTO.getRemarks());
 
-                    items.newPurchaseItem(product, itemDTO.getQuantityAsInt(), itemDTO.getUnitPriceAsDouble(), spec);
+                    pr.getPurchaseItems().newPurchaseItem(product, itemDTO.getQuantityAsInt(), itemDTO.getUnitPriceAsDouble(), spec);
                 });
 
-        PurchaseRequest pr = new PurchaseRequest(dto.getReason());
         return prService.submitPR(pr);
     }
 
-    public Result<List<PurchaseRequest>> handleMyRequests() {
-        return null;
+    public Result<List<PurchaseRequest>> handleUserPR(String userId) {
+        List<PurchaseRequest> pr = prService.getPRbyUserId(userId);
+        return ResultUtil.success("Purchase requests retrieved successfully.", pr);
     }
 
     // Handle purchaseItem
     public Result<PurchaseRequestDTO> handlePurchaseItem(PurchaseRequestDTO prDTO, PurchaseItemDTO itemDTO) {
-
-
         Result<Void> r = validatePurchaseItemDTO(itemDTO);
         if (!r.isSuccess()) {
             return ResultUtil.failure(r.getMessage(), null);
@@ -66,6 +68,23 @@ public class PurchaseRequestController {
 
         prDTO.addPurchaseItem(itemDTO);
         return ResultUtil.success("Purchase item added successfully.", prDTO);
+    }
+
+    public Result<PurchaseRequestDTO> handleUpdatePurchaseItem(PurchaseRequestDTO prDTO, PurchaseItemDTO editingItemDTO, PurchaseItemDTO newItemDTO) {
+        Result<Void> r = validatePurchaseItemDTO(newItemDTO);
+        if (!r.isSuccess()) {
+            return ResultUtil.failure(r.getMessage(), null);
+        }
+
+        updatePurchaseItemFields(editingItemDTO, newItemDTO);
+        return ResultUtil.success("Purchase item updated successfully.", prDTO);
+    }
+
+    private void updatePurchaseItemFields(PurchaseItemDTO target, PurchaseItemDTO source) {
+        target.setName(source.getName());
+        target.setQuantity(source.getQuantity());
+        target.setUnitPrice(source.getUnitPrice());
+        target.setSpec(source.getSpec());
     }
 
     private Result<Void> validatePurchaseItemDTO(PurchaseItemDTO dto) {
@@ -94,6 +113,18 @@ public class PurchaseRequestController {
         }
 
         return ResultUtil.success("Valid purchase item.");
+    }
+
+    private Result<Void> validatePurchaseRequestDTO(PurchaseRequestDTO dto) {
+        if (dto.getReason() == null || dto.getReason().isBlank()) {
+            return ResultUtil.failure("Reason cannot be blank.");
+        }
+
+        if (dto.getPurchaseItems().isEmpty()) {
+            return ResultUtil.failure("At least one purchase item is required.");
+        }
+
+        return ResultUtil.success("Valid purchase request.");
     }
 
 }

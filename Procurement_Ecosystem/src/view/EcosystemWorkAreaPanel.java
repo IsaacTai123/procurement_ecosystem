@@ -296,7 +296,8 @@ public class EcosystemWorkAreaPanel extends javax.swing.JPanel {
                 userName,
                 password,
                 Role.IT_ADMIN,
-                selectedNetwork.getOrgService().createOrgFromEnterprise(OrganizationType.IT, ent)
+                selectedNetwork.getOrgService().createOrgFromEnterprise(OrganizationType.IT, ent),
+                ent
         );
 
         // reload Table

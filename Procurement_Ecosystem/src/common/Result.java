@@ -1,5 +1,7 @@
 package common;
 
+import java.util.function.Consumer;
+
 /**
  * @author tisaac
  */
@@ -29,5 +31,19 @@ public class Result<T> {
 
     public T getData() {
         return data;
+    }
+
+    public Result<T> onFailure(Consumer<String> errorHandler) {
+        if (!success) {
+            errorHandler.accept(message);
+        }
+        return this;
+    }
+
+    public Result<T> onSuccess(Consumer<String> successHandler) {
+        if (success) {
+            successHandler.accept(message);
+        }
+        return this;
     }
 }

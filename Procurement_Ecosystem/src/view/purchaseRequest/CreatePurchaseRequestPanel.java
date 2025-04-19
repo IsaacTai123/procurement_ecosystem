@@ -6,7 +6,10 @@ package view.purchaseRequest;
 
 import common.dto.PurchaseItemDTO;
 import common.dto.PurchaseRequestDTO;
+import controller.procurement.PurchaseRequestController;
+import enums.Mode;
 import interfaces.IDataRefreshCallback;
+import interfaces.IDataRefreshCallbackAware;
 import model.procurement.PurchaseRequest;
 import util.NavigationUtil;
 import util.UIUtil;
@@ -17,10 +20,11 @@ import java.util.List;
  *
  * @author tisaac
  */
-public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements IDataRefreshCallback {
+public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements IDataRefreshCallback, IDataRefreshCallbackAware {
 
     private NavigationUtil nu = NavigationUtil.getInstance();
     private PurchaseRequestDTO prDTO;
+    private IDataRefreshCallback callback;
 
     /**
      * Creates new form CreatePurchaseRequestPanel
@@ -39,6 +43,7 @@ public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements ID
         btnUpdate.addActionListener(e -> handleItemUpdate());
         btnRemove.addActionListener(e -> handleItemRemove());
         btnSubmit.addActionListener(e -> handleSubmit());
+        btnBack.addActionListener(e -> handleBack());
     }
 
     /**
@@ -64,6 +69,7 @@ public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements ID
         txtReason = new javax.swing.JTextArea();
         btnUpdate = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
+        btnBack = new javax.swing.JButton();
 
         lbTitle.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
         lbTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -118,11 +124,17 @@ public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements ID
 
         btnRemove.setText("Remove");
 
+        btnBack.setText("<<Back");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lbTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnBack)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 812, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(49, 49, 49)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -158,7 +170,9 @@ public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements ID
                 .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBack)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lbPurchaseItems)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -187,6 +201,7 @@ public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements ID
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddProduct;
+    private javax.swing.JButton btnBack;
     private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnSubmit;
     private javax.swing.JButton btnUpdate;
@@ -204,35 +219,48 @@ public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements ID
 
     private void handleAddItem() {
         // Navigate to new purchase item form
-        PurchaseItemFormPanel prItemForm = new PurchaseItemFormPanel(prDTO);
+        PurchaseItemFormPanel prItemForm = new PurchaseItemFormPanel(prDTO, null, Mode.ADD);
         prItemForm.setCallback(() -> reloadPurchaseItemTable(prDTO.getPurchaseItems()));
         nu.showCard(prItemForm, "PurchaseItemForm");
     }
 
     private void handleItemUpdate() {
+
         UIUtil.getSelectedTableObject(
-                tblPurchaseItems, 0, this, "Please select a purchase item to update")
+                tblPurchaseItems, 0, PurchaseItemDTO.class,
+                        this, "Please select a purchase item to update")
                 .ifPresent(item -> {
-                    nu.showCard(new PurchaseItemFormPanel(prDTO), "PurchaseItemForm");
+                    PurchaseItemFormPanel prItemForm = new PurchaseItemFormPanel(prDTO, item, Mode.UPDATE);
+                    prItemForm.setCallback(() -> reloadPurchaseItemTable(prDTO.getPurchaseItems()));
+                    nu.showCard(prItemForm, "PurchaseItemForm");
                 });
     }
 
     // TODO: Remove button
     private void handleItemRemove() {
         UIUtil.getSelectedTableObject(
-                tblPurchaseItems, 0, this, "Please select a purchase item to update")
+                tblPurchaseItems, 0, PurchaseItemDTO.class,
+                        this, "Please select a purchase item to update")
                 .ifPresent(item -> {
                     // remove item from table
+                    prDTO.removePurchaseItem(item);
+                    refreshData();
                 });
     }
 
     // TODO: Submit button
     private void handleSubmit() {
-        // Validate inputs
-        // Check if budget is valid
-        // Check if purchase items are empty
-        // Check if reason is empty
+        prDTO.setReason(txtReason.getText());
+        PurchaseRequestController.getInstance().handlePRSubmit(prDTO)
+                .onFailure(r -> UIUtil.showError(this, r))
+                .onSuccess(r -> UIUtil.showInfo(this, r));
 
+        clearForm();
+    }
+
+    private void handleBack() {
+        nu.goBack();
+        callback.refreshData();
     }
 
     public void reloadPurchaseItemTable(List<PurchaseItemDTO> purchaseItems) {
@@ -240,14 +268,27 @@ public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements ID
                 tblPurchaseItems,
                 purchaseItems,
                 e -> new Object[]{
-                        e.getName(),
+                        e,
                         e.getQuantity(),
                         e.getUnitPrice()
                 });
     }
 
+    private void clearForm() {
+        UIUtil.clearTextComponents(
+                txtReason
+        );
+
+        UIUtil.clearTable(tblPurchaseItems);
+    }
+
     @Override
     public void refreshData() {
         reloadPurchaseItemTable(prDTO.getPurchaseItems());
+    }
+
+    @Override
+    public void setCallback(IDataRefreshCallback callback) {
+        this.callback = callback;
     }
 }

@@ -1,19 +1,22 @@
 package service.procurement;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import common.Result;
 import common.Session;
-import common.dto.PurchaseItemDTO;
-import common.dto.PurchaseRequestDTO;
 import directory.GlobalUserAccountDirectory;
+import directory.PurchaseRequestDirectory;
 import enums.ApprovalStatus;
 import enums.RequestStatus;
+import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import model.procurement.PurchaseItem;
 import model.product.Spec;
 import model.user.UserAccount;
 import model.procurement.PurchaseRequest;
-import model.workqueue.WorkflowStep;
 import util.ResultUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
 
 /**
  * @author tisaac
@@ -21,40 +24,33 @@ import util.ResultUtil;
 public class PurchaseRequestService {
 
     private UserAccount currentUser;
-    private Network network;
+    private Network currentNetwork;
+    private PurchaseRequestDirectory purchaseRequestList;
 
     public Result<Void> submitPR(PurchaseRequest pr) {
-        // validate the purchase request
+        // validate the status of purchase request
         try {
-            if (pr == null) {
-                throw new IllegalArgumentException("Purchase request cannot be null");
-            }
-
             if (pr.getStatus() != RequestStatus.PENDING) {
                 throw new IllegalStateException("Purchase request is not in a valid state for submission");
             }
 
-            if (pr.getPurchaseItems().getPurchaseItemList().isEmpty()) {
-                throw new IllegalArgumentException("Purchase request must have at least one item");
-            }
-
-            if (pr.getReason() == null || pr.getReason().isEmpty()) {
-                throw new IllegalArgumentException("Must provide a description for the purchase request");
-            }
-
         } catch (Exception e) {
-            // Handle exception
             return ResultUtil.failure("Error submitting purchase request: " + e.getMessage());
         }
 
-        // Get current user & network
+        // Get current user to initialize a requester step
         currentUser = Session.getCurrentUser();
-        network = Session.getCurrentNetwork();
+        pr.createRequesterStep(currentUser);
 
-        GlobalUserAccountDirectory allUserDir = network.getGlobalUserAccountDir();
+        currentNetwork = Session.getCurrentNetwork();
+        GlobalUserAccountDirectory allUserDir = currentNetwork.getGlobalUserAccountDir();
 
         // Change the workflowStep to submitted
         Result<Void> result = pr.advanceToNextStep(allUserDir, pr.getReason(), ApprovalStatus.SUBMITTED);
+
+        // Store purchase request in the purchase request list
+        purchaseRequestList = currentUser.getEnterprise().getPurchaseRequestList();
+        purchaseRequestList.addPurchaseRequest(pr);
 
         // This could involve saving the request to a database or sending it to a queue for processing
         return result;
@@ -100,4 +96,10 @@ public class PurchaseRequestService {
     }
 
     public void loadPurchaseItemsTable() {}
+
+    public List<PurchaseRequest> getPRbyUserId(String userId) {
+        // Find user Enterprise then get the purchase request list
+        Enterprise enterprise = currentNetwork.getEnterpriseDir().findEnterpriseByName(currentUser.getEnterprise().getName());
+        return enterprise.getPurchaseRequestList().getRequestsBySenderId(currentUser.getUserId());
+    }
 }

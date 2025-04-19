@@ -4,15 +4,24 @@
  */
 package view.purchaseRequest;
 
+import common.Result;
+import common.Session;
+import controller.procurement.PurchaseRequestController;
+import interfaces.IDataRefreshCallback;
+import model.procurement.PurchaseRequest;
+import model.user.UserAccount;
 import util.NavigationUtil;
 import util.UIUtil;
+
+import java.util.List;
 
 /**
  *
  * @author tisaac
  */
-public class MyPurchaseRequestsPanel extends javax.swing.JPanel {
+public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IDataRefreshCallback {
 
+    private UserAccount currentUser;
     /**
      * Creates new form MyPurchaseRequestsPanel
      */
@@ -20,6 +29,7 @@ public class MyPurchaseRequestsPanel extends javax.swing.JPanel {
         initComponents();
         setupListeners();
 
+        currentUser = Session.getCurrentUser();
         UIUtil.clearTable(tblPR);
     }
 
@@ -145,9 +155,34 @@ public class MyPurchaseRequestsPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void handleCreateNewPR() {
+        CreatePurchaseRequestPanel cpr = new CreatePurchaseRequestPanel();
+        cpr.setCallback(() -> refreshData());
         NavigationUtil.getInstance().showCard(
-                new CreatePurchaseRequestPanel(),
+                cpr,
                 "Create Purchase Request"
         );
+    }
+
+    private void refreshOngoingPRTable() {
+        // find the ongoing purchase requests
+        Result<List<PurchaseRequest>> result = PurchaseRequestController.getInstance().handleUserPR(currentUser.getUserId());
+        if (!result.isSuccess()) {
+            UIUtil.showError(this, result.getMessage());
+        }
+
+        UIUtil.reloadTable(tblPR,
+                result.getData(),
+                e -> new Object[] {
+                        e,
+                        e.getRequestDate(),
+                        e.getStatus()
+                }
+
+        );
+    }
+
+    @Override
+    public void refreshData() {
+        refreshOngoingPRTable();
     }
 }

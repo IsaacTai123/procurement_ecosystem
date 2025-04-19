@@ -3,7 +3,9 @@ package util;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.JTextComponent;
+import javax.swing.text.html.Option;
 import java.awt.*;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -26,8 +28,20 @@ public class UIUtil {
         }
     }
 
+    public static void setTextFields(Map<JTextComponent, String> fieldValueMap) {
+        for (Map.Entry<JTextComponent, String> entry : fieldValueMap.entrySet()) {
+            if (entry.getKey() != null) {
+                entry.getKey().setText(entry.getValue());
+            }
+        }
+    }
+
     public static void showError(Component parent, String message) {
         JOptionPane.showMessageDialog(parent, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static void showWarning(Component parent, String message) {
+        JOptionPane.showMessageDialog(parent, message, "Warning", JOptionPane.WARNING_MESSAGE);
     }
 
     public static void showInfo(Component parent, String message) {
@@ -50,6 +64,22 @@ public class UIUtil {
         for (JComponent comp : components) {
             comp.setEnabled(enabled);
         }
+    }
+
+    private static void setComponentVisibility(boolean visible, JComponent... components) {
+        for (JComponent comp : components) {
+            if (comp != null) {
+                comp.setVisible(visible);
+            }
+        }
+    }
+
+    public static void show(JComponent... components) {
+        setComponentVisibility(true, components);
+    }
+
+    public static void hide(JComponent... components) {
+        setComponentVisibility(false, components);
     }
 
     public static void setEnterpriseTitle(JLabel lb, String enterpriseName) {
@@ -194,12 +224,12 @@ public class UIUtil {
     public static Optional<String> getSelectedTableValue(JTable table, int columnIndex, Component parent, String infoMessage) {
         int selectedRow = table.getSelectedRow();
         if (selectedRow < 0) {
-            showInfo(parent, infoMessage);
+            showWarning(parent, infoMessage);
             return Optional.empty();
         }
         Object value = table.getValueAt(selectedRow, columnIndex);
         if (value == null) {
-            showInfo(parent, "Selected row has no value in column " + columnIndex);
+            showWarning(parent, "Selected row has no value in column " + columnIndex);
             return Optional.empty();
         }
         return Optional.of(value.toString());
@@ -217,22 +247,22 @@ public class UIUtil {
      * @param <T>         The expected type of the object.
      * @return An {@link Optional} containing the object, or empty if not found or invalid.
      */
-    public static <T> Optional<T> getSelectedTableObject(JTable table, int columnIndex, Component parent, String infoMessage) {
+    public static <T> Optional<T> getSelectedTableObject(JTable table, int columnIndex, Class<T> clazz, Component parent, String infoMessage) {
         int selectedRow = table.getSelectedRow();
         if (selectedRow < 0) {
-            showInfo(parent, infoMessage);
+            showWarning(parent, infoMessage);
             return Optional.empty();
         }
         Object value = table.getValueAt(selectedRow, columnIndex);
         if (value == null) {
-            showInfo(parent, "Selected row has no value in column " + columnIndex);
+            showWarning(parent, "Selected row has no value in column " + columnIndex);
             return Optional.empty();
         }
 
-        try {
-            return Optional.of((T) value);
-        } catch (ClassCastException e) {
-            showError(parent, "Unexpted type in selected cell: " + e.getMessage());
+        if (clazz.isInstance(value)) {
+            return Optional.of(clazz.cast(value));
+        } else {
+            showError(parent, "Unexpted type in selected cell. Expected: " + clazz.getSimpleName() + ", but got: " + value.getClass().getSimpleName());
             return Optional.empty();
         }
     }

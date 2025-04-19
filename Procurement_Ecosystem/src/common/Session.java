@@ -1,5 +1,6 @@
 package common;
 
+import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import model.user.UserAccount;
 
@@ -22,6 +23,7 @@ import model.user.UserAccount;
 public class Session {
     private static UserAccount currentUser;
     private static Network currentNetwork;
+    private static Enterprise userEnterprise;
 
     private Session() {
         // Prevent instantiation
