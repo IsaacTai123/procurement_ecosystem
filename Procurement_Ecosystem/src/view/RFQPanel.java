@@ -4,17 +4,29 @@
  */
 package view;
 
+import common.AppContext;
+import enums.EnterpriseType;
+import interfaces.IDataRefreshCallback;
+import model.ecosystem.Enterprise;
+import model.procurement.PurchaseRequest;
+import util.UIUtil;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  *
  * @author linweihong
  */
 public class RFQPanel extends javax.swing.JPanel {
 
+
     /**
      * Creates new form RFQPanel
      */
     public RFQPanel() {
         initComponents();
+
     }
 
     /**
@@ -26,19 +38,28 @@ public class RFQPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        lbTitle = new javax.swing.JLabel();
+
+        lbTitle.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
+        lbTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbTitle.setText("RFQ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addComponent(lbTitle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 504, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel lbTitle;
     // End of variables declaration//GEN-END:variables
 }

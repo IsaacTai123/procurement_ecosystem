@@ -11,6 +11,9 @@ import enums.StepType;
 import model.workqueue.WorkRequest;
 import model.workqueue.WorkflowStep;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author tisaac
@@ -18,18 +21,13 @@ import model.workqueue.WorkflowStep;
 public class PurchaseRequest extends WorkRequest {
     private final String reason;
     private PurchaseItemDirectory purchaseItems;
-    private String rfqId;
+    private List<String> rfqId;
 
     public PurchaseRequest(String reason) {
         this.reason = reason;
-        this.rfqId = "";
+        this.rfqId = new ArrayList<>();
         this.purchaseItems = new PurchaseItemDirectory();
     }
-    
-//    public PurchaseRequest(String reason) {
-//        this.reason = reason;
-//        this.purchaseItems = null; // just for mock testing
-//    }
 
     @Override
     protected void initWorkflowSteps() {
@@ -57,7 +55,7 @@ public class PurchaseRequest extends WorkRequest {
         return purchaseItems;
     }
 
-    public String getRfqId() {
+    public List<String> getRfqId() {
         return rfqId;
     }
 

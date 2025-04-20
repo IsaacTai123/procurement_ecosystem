@@ -10,6 +10,7 @@ import common.Session;
 import controller.procurement.PurchaseRequestController;
 import enums.ApprovalStatus;
 import enums.OrganizationType;
+import enums.RequestStatus;
 import enums.Role;
 import interfaces.IDataRefreshCallback;
 import interfaces.IDataRefreshCallbackAware;
@@ -18,6 +19,8 @@ import model.procurement.PurchaseRequest;
 import model.user.UserAccount;
 import util.NavigationUtil;
 import util.UIUtil;
+import view.RFQFormPanel;
+import view.RFQPanel;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,8 +30,7 @@ import java.util.stream.Collectors;
  *
  * @author tisaac
  */
-public class ManagePurchaseRequestsPanel extends javax.swing.JPanel implements IDataRefreshCallbackAware {
-
+public class ManagePurchaseRequestsPanel extends javax.swing.JPanel implements IDataRefreshCallbackAware, IDataRefreshCallback {
     private IDataRefreshCallback callback;
     private PurchaseRequestController prController = PurchaseRequestController.getInstance();
     /**
@@ -96,7 +98,7 @@ public class ManagePurchaseRequestsPanel extends javax.swing.JPanel implements I
     private void handleCreateRFQBtn() {
         getSelectedPR()
                 .ifPresent(pr -> {
-//                    NavigationUtil.getInstance().showCard(, "Create RFQ");
+                    NavigationUtil.getInstance().showCard(new RFQFormPanel(pr, () -> refreshData()), "Create RFQ");
                 });
     }
 
@@ -110,7 +112,7 @@ public class ManagePurchaseRequestsPanel extends javax.swing.JPanel implements I
                 .getPurchaseRequestList()
                 .getPurchaseRequestList()
                 .stream()
-                .filter(pr -> pr.getRfqId().isEmpty()) // Filter out PR already converted to RFQ
+                .filter(pr -> pr.getStatus() == RequestStatus.COMPLETED) // Filter out PR that are not completed
                 .collect(Collectors.toList());
 
         UIUtil.reloadTable(tblPR, requests, pr -> {
@@ -123,7 +125,8 @@ public class ManagePurchaseRequestsPanel extends javax.swing.JPanel implements I
                     pr.getSender().getUsername(),
                     pr.getRequestDate(),
                     pr.getStatus(),
-                    approvalStatus
+                    approvalStatus,
+                    pr.getRfqId().size()
             };
         });
     }
@@ -154,17 +157,17 @@ public class ManagePurchaseRequestsPanel extends javax.swing.JPanel implements I
 
         tblPR.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "PR Id", "Requestor", "Request Date", "Request Status", "Approval Status"
+                "PR Id", "Requestor", "Request Date", "Request Status", "Approval Status", "RFQ Count"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -177,6 +180,8 @@ public class ManagePurchaseRequestsPanel extends javax.swing.JPanel implements I
             tblPR.getColumnModel().getColumn(1).setResizable(false);
             tblPR.getColumnModel().getColumn(2).setResizable(false);
             tblPR.getColumnModel().getColumn(3).setResizable(false);
+            tblPR.getColumnModel().getColumn(4).setResizable(false);
+            tblPR.getColumnModel().getColumn(5).setResizable(false);
         }
 
         btnBack.setText("<<Back");
@@ -207,25 +212,23 @@ public class ManagePurchaseRequestsPanel extends javax.swing.JPanel implements I
                         .addContainerGap()
                         .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(127, 127, 127)
+                        .addGap(433, 433, 433)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(516, 516, 516))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(lbRFQ)
-                                    .addComponent(lbFoward))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnForward, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(btnCreateRFQ, javax.swing.GroupLayout.Alignment.TRAILING)))))
+                            .addComponent(lbRFQ)
+                            .addComponent(lbFoward))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnForward, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnCreateRFQ, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(60, 60, 60)
+                        .addComponent(btnApprove))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(33, 33, 33)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnApprove)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 725, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel1)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 838, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -233,9 +236,9 @@ public class ManagePurchaseRequestsPanel extends javax.swing.JPanel implements I
                 .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnBack)
-                .addGap(29, 29, 29)
+                .addGap(35, 35, 35)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnApprove)
@@ -263,6 +266,11 @@ public class ManagePurchaseRequestsPanel extends javax.swing.JPanel implements I
     private javax.swing.JLabel lbRFQ;
     private javax.swing.JLabel lbTitle;
     private javax.swing.JTable tblPR;
+
+    @Override
+    public void refreshData() {
+        refreshPRTable();
+    }
 
     @Override
     public void setCallback(IDataRefreshCallback callback) {

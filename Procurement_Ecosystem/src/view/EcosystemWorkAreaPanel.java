@@ -362,15 +362,19 @@ public class EcosystemWorkAreaPanel extends javax.swing.JPanel {
     private void setupListeners() {
         tblNetwork.getSelectionModel().addListSelectionListener(n -> {
             if (!n.getValueIsAdjusting()) {
-                UIUtil.getSelectedTableValue(tblNetwork, 0, this, "Please select a network to continue")
-                        .ifPresent(v -> {
-                            selectedNetwork = NetworkManager.findByName(v).orElse(null);
-                            toogleEnterpriseFields(true);
-                            UIUtil.populateComboBoxFromEnum(cmbEnterpriseType, EnterpriseType.class, "---Select Type ---");
-                            reloadEnterpriseTable();
-                        });
+                handleNetworkSelection();
             }
         });
+    }
+
+    private void handleNetworkSelection() {
+        UIUtil.getSelectedTableValue(tblNetwork, 0, this, "Please select a network to continue")
+                .ifPresent(v -> {
+                    selectedNetwork = NetworkManager.findByName(v).orElse(null);
+                    toogleEnterpriseFields(true);
+                    UIUtil.populateComboBoxFromEnum(cmbEnterpriseType, EnterpriseType.class, "---Select Type ---");
+                    reloadEnterpriseTable();
+                });
     }
 
     private void reloadNetworkTable() {

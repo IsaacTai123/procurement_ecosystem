@@ -4,9 +4,12 @@
  */
 package controller.procurement;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import common.AppContext;
 import common.Result;
 import common.dto.PurchaseItemDTO;
 import common.dto.PurchaseRequestDTO;
@@ -15,10 +18,14 @@ import model.ecosystem.Enterprise;
 import model.procurement.PurchaseItem;
 import model.product.Product;
 import model.product.Spec;
+import model.quotation.RFQ;
 import model.user.UserAccount;
 import model.vendor.Quotation;
 import model.procurement.PurchaseRequest;
 import service.procurement.PurchaseRequestService;
+import service.procurement.RFQService;
+import util.ResultUtil;
+import util.UIUtil;
 
 /**
  *
@@ -26,16 +33,48 @@ import service.procurement.PurchaseRequestService;
  */
 public class ProcurementController {
 
-    public Result<Void> handlePRConfirm() {
-        // logic to confirm PR
-        return null;
+    private RFQService getService() {
+        return new RFQService(
+                AppContext.getUser(),
+                AppContext.getNetwork()
+        );
     }
 
-    public void issueRFQ(PurchaseRequest pr, ArrayList<Enterprise> vendors) {
+    private static class ProcurementControllerHolder {
+        private static final ProcurementController INSTANCE = new ProcurementController();
+    }
+
+    public static ProcurementController getInstance() {
+        return ProcurementControllerHolder.INSTANCE;
+    }
+
+    public void handleRFQForm(PurchaseRequest pr, ArrayList<Enterprise> vendors) {
         // create RFQRequest
+    }
+
+    // TODO: Should use DTO to prevent they didn't submit the form
+    public void handleRFQSubmit(RFQ rfq, Enterprise vendor, String deadline, String remark) {
+        rfq.addVendor(vendor);
+        rfq.setRemarks(remark);
+
+        try {
+            LocalDate localDate = LocalDate.parse(deadline);
+            rfq.setDeadline(localDate);
+        } catch (DateTimeParseException e) {
+            UIUtil.showError(null, "Invalid date format. Please use yyyy-MM-dd.");
+        }
     }
 
     public void compareQuotations(ArrayList<Quotation> quotations) {
         // logic to select quotation
+    }
+
+    public Result<Void> handleUpdatePurchaseItem(PurchaseItem item, SpecDTO specDTO) {
+        // Validate spec data
+        Spec spec = new Spec(specDTO.getModelNumber(), specDTO.getColor(), specDTO.getSize(),
+                specDTO.getMaterial(), specDTO.getCategory(), specDTO.getRemarks());
+
+        item.setSpec(spec);
+        return ResultUtil.success("Purchase item updated successfully.");
     }
 }

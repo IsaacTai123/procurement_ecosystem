@@ -23,6 +23,7 @@ public class Network {
     private final ShipmentDirectories shipmentDirectories;
     private final GlobalUserAccountDirectory globalUserAccountDir;
     private final GlobalOrganizationDirectory globalOrgDir;
+    private final RFQDirectory rfqDirectory;
 
 
     // Helper classes
@@ -48,6 +49,7 @@ public class Network {
         this.orgService = new OrganizationService(globalOrgDir);
         
         this.shipmentDirectories = new ShipmentDirectories();
+        this.rfqDirectory = new RFQDirectory();
     }
 
     public String getName() {
@@ -93,6 +95,8 @@ public class Network {
     public ShipmentDirectories getShipmentDirectories() {
         return shipmentDirectories;
     }
-    
-    
+
+    public RFQDirectory getRfqDirectory() {
+        return rfqDirectory;
+    }
 }

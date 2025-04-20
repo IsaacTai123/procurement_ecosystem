@@ -96,7 +96,7 @@ public class UIUtil {
         if (lb == null) return;
         String safeEnterpriseName = enterpriseName == null ? "" : enterpriseName;
         String safeTitle = lb.getText() == null ? "" : lb.getText();
-        lb.setText(safeEnterpriseName + " " + safeTitle);
+        lb.setText(safeEnterpriseName + ": " + safeTitle);
     }
 
     public static void toggleComponentsEnabled(JComponent... components) {
