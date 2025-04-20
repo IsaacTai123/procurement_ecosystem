@@ -1,35 +1,47 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package util;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Properties;
+import jakarta.mail.*;
+import jakarta.mail.internet.*;
+import java.io.FileInputStream;
+import java.io.IOException;
 
-/**
- *
- * @author linweihong
- */
-public class TimeUtil {
-    
-    public static String getCurrentDate() {
+public class MailUtil {
+    public static String EMAIL;
+    public static String APP_PASSWORD;
 
-        LocalDateTime now = LocalDateTime.now();
-        String date = now.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
-
-        System.out.println("date: " + date);
-
-        return date;
+    static {
+        try {
+            Properties props = new Properties();
+            FileInputStream in = new FileInputStream("email.properties"); // project root
+            props.load(in);
+            EMAIL = props.getProperty("email");
+            APP_PASSWORD = props.getProperty("app_password");
+        } catch (IOException e) {
+            System.err.println("⚠️ Failed to load email.properties");
+            e.printStackTrace();
+        }
     }
-    
-    public static String getCurrentTime() {
 
-        LocalDateTime now = LocalDateTime.now();
-        String time = now.format(DateTimeFormatter.ofPattern("hh:mma")); // 12-hour with AM/PM
+    public static void sendLogisticsStatusEmail(String to, String subject, String body) throws Exception {
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
 
-        System.out.println("time: " + time);
+        Session session = Session.getInstance(props, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(EMAIL, APP_PASSWORD);
+            }
+        });
 
-        return time;
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(EMAIL)); // sender = loaded email
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+        message.setSubject(subject);
+        message.setText(body);
+
+        Transport.send(message);
     }
 }

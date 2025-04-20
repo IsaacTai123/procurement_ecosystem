@@ -16,6 +16,7 @@ import model.delivery.ShipmentDirectory;
 import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import model.user.UserAccount;
+import util.MailUtil;
 import util.NavigationUtil;
 import util.UIUtil;
 
@@ -176,6 +177,20 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         
         Shipment shipment = (Shipment)tblRequests.getValueAt(row, 0); // the first element store an object
         shipment.setStatus(ShipmentStatus.IN_TRANSIT);
+        
+        
+      
+        // Send email to show in transit and in a separate thread to avoid freezing UI
+        new Thread(() -> {
+            try {
+                MailUtil.sendLogisticsStatusEmail("alvinusamemory@gmail.com", "Logistics Shipped", "Your delivery is on the way!");
+                JOptionPane.showMessageDialog(null, "📧 Email sent successfully!");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "❌ Failed to send email: " + ex.getMessage());
+            }
+        }).start();
+        
         
         
         populateTable();

@@ -3,33 +3,50 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package util;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.io.IOException;
+import java.net.http.*;
+import java.net.URI;
 
 /**
  *
  * @author linweihong
  */
-public class TimeUtil {
+public class DBApiUtil {
     
-    public static String getCurrentDate() {
+    public static void callDB() {
 
-        LocalDateTime now = LocalDateTime.now();
-        String date = now.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+        // call api
+        try {
+            String json = """
+                {
+                    "name": "Alvin",
+                    "password": "alvin"
+                }
+                """;
 
-        System.out.println("date: " + date);
+            HttpClient client = HttpClient.newHttpClient();
 
-        return date;
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8000/Login"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(
+                            json
+                    ))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("✅ Response from server: " + response.body());
+
+        } catch (IOException | InterruptedException e) {
+            System.err.println("❌ Network error: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("❌ Other error: " + e.getMessage());
+            e.printStackTrace();
+        }
+
     }
     
-    public static String getCurrentTime() {
-
-        LocalDateTime now = LocalDateTime.now();
-        String time = now.format(DateTimeFormatter.ofPattern("hh:mma")); // 12-hour with AM/PM
-
-        System.out.println("time: " + time);
-
-        return time;
-    }
+   
 }
