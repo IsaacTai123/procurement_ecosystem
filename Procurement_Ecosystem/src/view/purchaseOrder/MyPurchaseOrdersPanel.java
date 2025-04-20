@@ -7,21 +7,27 @@ package view.purchaseOrder;
 import view.purchaseRequest.*;
 import common.Result;
 import common.Session;
+import controller.DeliveryController;
 import controller.procurement.PurchaseRequestController;
 import directory.PurchaseOrderDirectory;
 import interfaces.IDataRefreshCallback;
 import java.util.ArrayList;
+import java.util.Date;
 import model.procurement.PurchaseRequest;
 import model.user.UserAccount;
 import util.NavigationUtil;
 import util.UIUtil;
 
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.delivery.Shipment;
+import model.delivery.ShipmentDirectory;
+import model.delivery.ShipmentItem;
 import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import model.procurement.PurchaseOrder;
+import model.product.Product;
 
 /**
  *
@@ -34,6 +40,8 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
     private Enterprise enterprise;
     private PurchaseOrderDirectory purchaseOrderDirectory;
     private List<Enterprise> allLogistics;
+    private Enterprise selectedLogistics;
+
    
     
     /**
@@ -68,7 +76,7 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
         lbTitle = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblPO = new javax.swing.JTable();
-        btnCompleted = new javax.swing.JButton();
+        btnIssueDelivery = new javax.swing.JButton();
         btnBack = new javax.swing.JButton();
         btnView = new javax.swing.JButton();
         cmbLogistics = new javax.swing.JComboBox<>();
@@ -127,10 +135,10 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
             tblPO.getColumnModel().getColumn(4).setPreferredWidth(20);
         }
 
-        btnCompleted.setText("Issue Delivery");
-        btnCompleted.addActionListener(new java.awt.event.ActionListener() {
+        btnIssueDelivery.setText("Issue Delivery");
+        btnIssueDelivery.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCompletedActionPerformed(evt);
+                btnIssueDeliveryActionPerformed(evt);
             }
         });
 
@@ -165,7 +173,7 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCompleted, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnIssueDelivery, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnView, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -192,7 +200,7 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnView)
-                    .addComponent(btnCompleted))
+                    .addComponent(btnIssueDelivery))
                 .addContainerGap(155, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -201,9 +209,37 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnViewActionPerformed
 
-    private void btnCompletedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompletedActionPerformed
+    private void btnIssueDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIssueDeliveryActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnCompletedActionPerformed
+        
+        int row = tblPO.getSelectedRow();
+        
+        if(row < 0) {
+            JOptionPane.showMessageDialog(null, "Please select a row from the table first", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Issue a delivery request
+        DeliveryController deliveryController = new DeliveryController();
+        
+        Enterprise selectedLogistics = (Enterprise) cmbLogistics.getSelectedItem();
+        
+        
+        ShipmentDirectory fedEx_shipmentDirectory = new ShipmentDirectory(selectedLogistics);
+//        network.getShipmentDirectories().addShipmentDirectory(fedEx_shipmentDirectory);
+//        ArrayList<ShipmentItem> items = new ArrayList<>();
+//        ShipmentItem itemA = new ShipmentItem(new Product("Asus Laptop"), 1);
+//        ShipmentItem itemB = new ShipmentItem(new Product("Asus adaptor"), 1);
+//        items.add(itemA);
+//        items.add(itemB);
+//        
+//        Date currentDate = new Date();
+//        
+//        deliveryController.requestShipping(items, fedEx, asusSalesManager, googleProcurementManager, currentDate, currentDate, fedEx_shipmentDirectory, "Laptops");
+
+        
+        
+    }//GEN-LAST:event_btnIssueDeliveryActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
@@ -212,9 +248,9 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
-    private javax.swing.JButton btnCompleted;
+    private javax.swing.JButton btnIssueDelivery;
     private javax.swing.JButton btnView;
-    private javax.swing.JComboBox<String> cmbLogistics;
+    private javax.swing.JComboBox<Object> cmbLogistics;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -255,7 +291,7 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
         cmbLogistics.removeAllItems();
 
         for (Enterprise logistics : allLogistics) {
-            cmbLogistics.addItem(logistics.getName());
+            cmbLogistics.addItem(logistics);
         }
 
     }

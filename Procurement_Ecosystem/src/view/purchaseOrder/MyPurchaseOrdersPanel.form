@@ -49,7 +49,7 @@
               <Group type="103" groupAlignment="1" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="32767" attributes="0"/>
-                      <Component id="btnCompleted" min="-2" pref="129" max="-2" attributes="0"/>
+                      <Component id="btnIssueDelivery" min="-2" pref="129" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="btnView" min="-2" pref="129" max="-2" attributes="0"/>
                   </Group>
@@ -83,7 +83,7 @@
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnView" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnCompleted" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnIssueDelivery" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="155" max="32767" attributes="0"/>
           </Group>
@@ -154,12 +154,12 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="btnCompleted">
+    <Component class="javax.swing.JButton" name="btnIssueDelivery">
       <Properties>
         <Property name="text" type="java.lang.String" value="Issue Delivery"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCompletedActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnIssueDeliveryActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnBack">
@@ -190,7 +190,7 @@
         </Property>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Object&gt;"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
