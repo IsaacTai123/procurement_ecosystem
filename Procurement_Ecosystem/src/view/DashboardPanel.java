@@ -4,6 +4,7 @@
  */
 package view;
 
+import common.AppContext;
 import common.Session;
 import interfaces.IDataRefreshCallback;
 import interfaces.IDataRefreshCallbackAware;
@@ -22,7 +23,6 @@ import java.util.function.Supplier;
  */
 public class DashboardPanel extends javax.swing.JPanel implements IDataRefreshCallback {
 
-    private final UserAccount currentUser = Session.getCurrentUser();
     private List<ServiceRegistry.ServiceItem> services;
     /**
      * Creates new form DashboardPanel
@@ -31,12 +31,17 @@ public class DashboardPanel extends javax.swing.JPanel implements IDataRefreshCa
         initComponents();
         // tabs or cards for different role panels
 
-        UIUtil.setEnterpriseTitle(lbTitle, currentUser.getEnterprise().getName());
-        UserAccount user = Session.getCurrentUser();
+
+        UIUtil.clearTable(tblServices);
+        setupUserProfile();
+        showServices();
+    }
+
+    private void setupUserProfile() {
+        UserAccount user = AppContext.getUser();
+        UIUtil.setEnterpriseTitle(lbTitle, user.getEnterprise().getName());
         lbUserId.setText("User Id: " + user.getUserId());
         lbUserName.setText("User Name: " + user.getUsername());
-        UIUtil.clearTable(tblServices);
-        showServices();
     }
 
     /**
@@ -163,9 +168,10 @@ public class DashboardPanel extends javax.swing.JPanel implements IDataRefreshCa
 
     // Generate service that is available to the user
     private void showServices() {
+        UserAccount user = AppContext.getUser();
         services = ServiceRegistry.getServicesFor(
-                currentUser.getUserType(),
-                currentUser.getOrg().getTypeName()
+                user.getUserType(),
+                user.getOrg().getTypeName()
         );
 
         UIUtil.reloadTable(tblServices,

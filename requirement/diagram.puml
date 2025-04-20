@@ -125,7 +125,7 @@ WorkRequest <|-- DeliveryRequest
 class PurchaseRequest {
     - reason : String
     - purchaseItems : List<PurchaseItem>
-    - estimatedBudget : double
+    - rfqId : String
 }
 
 class SubmitQuotation {

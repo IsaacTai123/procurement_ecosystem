@@ -41,8 +41,6 @@ public class MainJFrame extends javax.swing.JFrame {
     private ShipmentDirectories shipmentDirectories;
     private EnterpriseDirectory enterpriseDirectory;
 
-    Network selectedNetwork;
-
     /**
      * Creates new form MainJFrame
      */
@@ -221,6 +219,7 @@ public class MainJFrame extends javax.swing.JFrame {
         Role role = user.getUserType();
         Session.setCurrentNetwork(selectedNetwork);
         Session.setCurrentUser(user);
+        System.out.println("Current login user: " + user.getUserId() + " " + user.getUserType().name());
 
         switch (role) {
             case SYS_ADMIN -> {
@@ -241,12 +240,12 @@ public class MainJFrame extends javax.swing.JFrame {
 
 
             
-            case SPECIALIST -> {
-                // Create dummy PR for test
-                List<RFQ> rfqs = TestRFQGenerator.generateTestRFQs();
-                QuotationPanel panel = new QuotationPanel(rfqs.get(0)); // or loop through with index
-                NavigationUtil.getInstance().showCard(panel, "QuotationPanel");
-            }
+//            case SPECIALIST -> {
+//                // Create dummy PR for test
+//                List<RFQ> rfqs = TestRFQGenerator.generateTestRFQs();
+//                QuotationPanel panel = new QuotationPanel(rfqs.get(0)); // or loop through with index
+//                NavigationUtil.getInstance().showCard(panel, "QuotationPanel");
+//            }
 
             default -> {
                 DashboardPanel dashboard = new DashboardPanel();

@@ -4,6 +4,7 @@ import enums.OrganizationType;
 import enums.Role;
 import view.HRServicePanel;
 import view.ITServicePanel;
+import view.purchaseRequest.ManagePurchaseRequestsPanel;
 import view.purchaseRequest.MyPurchaseRequestsPanel;
 import view.purchaseRequest.PurchaseItemFormPanel;
 import view.shipping.ManageDeliveryReqPanel;
@@ -25,6 +26,7 @@ public class ServiceRegistry {
         Supplier<JPanel> HR = HRServicePanel::new;
         Supplier<JPanel> LOGISTICS = ManageDeliveryReqPanel::new;
         Supplier<JPanel> MYPR = MyPurchaseRequestsPanel::new;
+        Supplier<JPanel> PRMANAGE_SERVICE = ManagePurchaseRequestsPanel::new;
 
 
         JPanel hrService = new HRServicePanel();
@@ -33,13 +35,14 @@ public class ServiceRegistry {
         serviceMap.put(new ServiceKey(Role.MANAGER, OrganizationType.IT), List.of(
                 new ServiceItem("IT Management", IT),
                 new ServiceItem("Manage Employees", HR),
-                new ServiceItem("Manage Purchase Requests", MYPR)
+                new ServiceItem("Personal Purchase Requests", MYPR),
+                new ServiceItem("Manage Purchase Requests", PRMANAGE_SERVICE)
         ));
 
         // IT Engineer
         serviceMap.put(new ServiceKey(Role.ENGINEER, OrganizationType.IT), List.of(
                 new ServiceItem("IT Management", IT),
-                new ServiceItem("Manage Purchase Requests", MYPR)
+                new ServiceItem("Personal Purchase Requests", MYPR)
         ));
 
         // Finance Manager
@@ -48,7 +51,8 @@ public class ServiceRegistry {
 
         // Procurement Specialist
         serviceMap.put(new ServiceKey(Role.SPECIALIST, OrganizationType.PROCUREMENT), List.of(
-                new ServiceItem("Manage Purchase Requests", MYPR)
+                new ServiceItem("Personal Purchase Requests", MYPR),
+                new ServiceItem("Manage Purchase Requests", PRMANAGE_SERVICE)
         ));
 
         // Legal Manager
@@ -58,7 +62,7 @@ public class ServiceRegistry {
         // HR Manager
         serviceMap.put(new ServiceKey(Role.MANAGER, OrganizationType.HR), List.of(
                 new ServiceItem("Manage Employees", HR),
-                new ServiceItem("Manage Purchase Requests", MYPR)
+                new ServiceItem("Personal Purchase Requests", MYPR)
         ));
 
         // Warehouse Manager

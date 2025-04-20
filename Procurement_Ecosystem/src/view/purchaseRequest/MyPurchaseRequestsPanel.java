@@ -4,6 +4,7 @@
  */
 package view.purchaseRequest;
 
+import common.AppContext;
 import common.Result;
 import common.Session;
 import controller.procurement.PurchaseRequestController;
@@ -22,7 +23,6 @@ import java.util.List;
  */
 public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IDataRefreshCallback {
 
-    private UserAccount currentUser;
     private NavigationUtil nu = NavigationUtil.getInstance();
     /**
      * Creates new form MyPurchaseRequestsPanel
@@ -31,8 +31,8 @@ public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IData
         initComponents();
         setupListeners();
 
-        currentUser = Session.getCurrentUser();
         UIUtil.clearTable(tblPR);
+        handleOngoingPR();
     }
 
     private void setupListeners() {
@@ -170,8 +170,8 @@ public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IData
     }
 
     private void handleCompletedPR() {
-        // find the ongoing purchase requests
-        Result<List<PurchaseRequest>> result = PurchaseRequestController.getInstance().handleUserPR(currentUser.getUserId(), RequestStatus.COMPLETED);
+        // find the completed purchase requests
+        Result<List<PurchaseRequest>> result = PurchaseRequestController.getInstance().handleUserPR(AppContext.getUser().getUserId(), RequestStatus.COMPLETED);
         if (!result.isSuccess()) {
             UIUtil.showError(this, result.getMessage());
         }
@@ -181,7 +181,7 @@ public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IData
 
     private void handleOngoingPR() {
         // find the ongoing purchase requests
-        Result<List<PurchaseRequest>> result = PurchaseRequestController.getInstance().handleUserPR(currentUser.getUserId(), RequestStatus.PENDING);
+        Result<List<PurchaseRequest>> result = PurchaseRequestController.getInstance().handleUserPR(AppContext.getUser().getUserId(), RequestStatus.PENDING);
         if (!result.isSuccess()) {
             UIUtil.showError(this, result.getMessage());
         }

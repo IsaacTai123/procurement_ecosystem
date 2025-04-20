@@ -12,6 +12,7 @@ import model.procurement.PurchaseRequest;
 import model.user.UserAccount;
 import model.workqueue.WorkRequest;
 import model.workqueue.WorkflowStep;
+import util.NavigationUtil;
 import util.UIUtil;
 
 import javax.swing.*;
@@ -34,10 +35,18 @@ public class ProcessPurchaseRequestPanel extends javax.swing.JPanel {
         this.pr = pr;
         this.callback = callback;
 
+        setupListeners();
         UIUtil.clearTable(tblPurchaseItems);
         renderPRBasicInfo();
         renderPurchaseItemTable();
         renderProgressTracking();
+    }
+
+    private void setupListeners() {
+        btnBack.addActionListener(e -> {
+            NavigationUtil.getInstance().goBack();
+            callback.refreshData();
+        });
     }
 
     public void renderPRBasicInfo() {
@@ -65,32 +74,29 @@ public class ProcessPurchaseRequestPanel extends javax.swing.JPanel {
         List<WorkflowStep> workflowSteps = pr.getWorkflowSteps();
         UserAccount sender = pr.getSender();
 
-        // Handle requestor
         workflowSteps.stream()
                 .filter(s -> s.getAssignedUser() != null)
-                .filter(s -> s.getAssignedUser().getUserId().equals(sender.getUserId()))
-                .findFirst()
-                .ifPresent(s -> {
-                    lbRequestorName.setText(formatOrgAndUser(s));
-                    lbRequestorStatus.setText(convertStatus(s));
-                });
-
-        // Handle IT and Procurement
-        workflowSteps.stream()
-                .filter(s -> s.getAssignedUser() != null)
-                .filter(s -> s.getAssignedUser().getUserId() != sender.getUserId())
                 .forEach(s -> {
-                    switch (s.getOrganizationType()) {
-                        case IT -> {
-                            lbITName.setText(formatOrgAndUser(s));
-                            lbITStatus.setText(convertStatus(s));
+                    switch (s.getStepType()) {
+                        case REQUESTOR -> {
+                            lbRequestorName.setText(formatOrgAndUser(s));
+                            lbRequestorStatus.setText(convertStatus(s));
                         }
-                        case PROCUREMENT -> {
-                            lbProcurementName.setText(formatOrgAndUser(s));
-                            lbProcurementStatus.setText(convertStatus(s));
-                        }
-                        default -> {
-                            System.out.println("Unknown organization type: " + s.getOrganizationType());
+
+                        case APPROVER -> {
+                            switch (s.getOrganizationType()) {
+                                case IT -> {
+                                    lbITName.setText(formatOrgAndUser(s));
+                                    lbITStatus.setText(convertStatus(s));
+                                }
+                                case PROCUREMENT -> {
+                                    lbProcurementName.setText(formatOrgAndUser(s));
+                                    lbProcurementStatus.setText(convertStatus(s));
+                                }
+                                default -> {
+                                    System.out.println("Unknown organization type: " + s.getOrganizationType());
+                                }
+                            }
                         }
                     }
                 });
@@ -137,6 +143,7 @@ public class ProcessPurchaseRequestPanel extends javax.swing.JPanel {
         lbITStatus = new javax.swing.JLabel();
         lbProcurementStatus = new javax.swing.JLabel();
         lbNote = new javax.swing.JLabel();
+        btnBack = new javax.swing.JButton();
 
         tblPurchaseItems.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -194,29 +201,33 @@ public class ProcessPurchaseRequestPanel extends javax.swing.JPanel {
         lbNote.setForeground(new java.awt.Color(255, 0, 0));
         lbNote.setText("Approve means processing, Wait for Completed");
 
+        btnBack.setText("<<Back");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(lbTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(58, 58, 58)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbPRId)
-                    .addComponent(lbRequestDate)
-                    .addComponent(lbPRStatus)
-                    .addComponent(lbNote, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(52, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lbPRId)
+                            .addComponent(lbRequestDate)
+                            .addComponent(lbPRStatus)
+                            .addComponent(lbNote, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(50, 50, 50))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnBack)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(51, 51, 51))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jSeparator1)
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(lbTrackingTitle)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(81, 81, 81)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -230,29 +241,36 @@ public class ProcessPurchaseRequestPanel extends javax.swing.JPanel {
                         .addComponent(lbProcurementStatus, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lbITStatus, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(126, 126, 126))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lbTrackingTitle)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(27, 27, 27))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(54, 54, 54)
+                        .addGap(10, 10, 10)
+                        .addComponent(btnBack)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lbPRId)
                         .addGap(18, 18, 18)
                         .addComponent(lbRequestDate)
                         .addGap(18, 18, 18)
                         .addComponent(lbPRStatus)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lbNote)))
-                .addGap(1, 1, 1)
+                        .addComponent(lbNote)
+                        .addGap(46, 46, 46)))
                 .addComponent(lbTrackingTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(64, 64, 64)
+                .addGap(38, 38, 38)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbRequestorName)
                     .addComponent(lbRequestorStatus))
@@ -270,6 +288,7 @@ public class ProcessPurchaseRequestPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBack;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lbITName;
