@@ -8,6 +8,7 @@ import model.product.Spec;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import model.ecosystem.Enterprise;
+import model.user.UserAccount;
 import util.IdGenerateUtil;
 import util.TimeUtil;
 
@@ -17,7 +18,8 @@ import util.TimeUtil;
 public class PurchaseOrder {
     private String id;
     private String quotationId;
-    private Enterprise buyer;
+    private UserAccount buyerAccount;    
+    private UserAccount vendorAccount;
     private Enterprise logistics;
     private ArrayList<PurchaseItem> purchaseItems;
     private String shippingAddress;
@@ -29,10 +31,11 @@ public class PurchaseOrder {
     private boolean isDelivered;
 
 
-    public PurchaseOrder(String quotationId, Enterprise buyer, ArrayList<PurchaseItem> purchaseItems, String shippingAddress, double totalAmount, String remarks) {
+    public PurchaseOrder(String quotationId, UserAccount buyerAccount, UserAccount vendorAccount, ArrayList<PurchaseItem> purchaseItems, String shippingAddress, double totalAmount, String remarks) {
         this.id = IdGenerateUtil.generateIdByActionAndTimestamp("ORDER");
         this.quotationId = quotationId;
-        this.buyer = buyer;
+        this.buyerAccount = buyerAccount;
+        this.vendorAccount = vendorAccount;
         this.purchaseItems = purchaseItems;
         this.shippingAddress = shippingAddress;
         this.totalAmount = totalAmount;
@@ -62,13 +65,23 @@ public class PurchaseOrder {
         this.quotationId = quotationId;
     }
 
-    public Enterprise getBuyer() {
-        return buyer;
+    public UserAccount getBuyerAccount() {
+        return buyerAccount;
     }
 
-    public void setBuyer(Enterprise buyer) {
-        this.buyer = buyer;
+    public void setBuyerAccount(UserAccount buyerAccount) {
+        this.buyerAccount = buyerAccount;
     }
+
+    public UserAccount getVendorAccount() {
+        return vendorAccount;
+    }
+
+    public void setVendorAccount(UserAccount vendorAccount) {
+        this.vendorAccount = vendorAccount;
+    }
+
+
 
     public Enterprise getLogistics() {
         return logistics;

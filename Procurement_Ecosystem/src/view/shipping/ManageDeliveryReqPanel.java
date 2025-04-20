@@ -16,6 +16,7 @@ import model.delivery.ShipmentDirectory;
 import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import model.user.UserAccount;
+import util.MailUtil;
 import util.NavigationUtil;
 import util.UIUtil;
 
@@ -88,7 +89,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
                 {null, null, null, null, null}
             },
             new String [] {
-                "TrackingNumber", "Title", "Product", "Request Status", "Shipment Status"
+                "TrackingNumber", "PO ID", "Product", "Request Status", "Shipment Status"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -178,6 +179,20 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         shipment.setStatus(ShipmentStatus.IN_TRANSIT);
         
         
+      
+        // Send email to show in transit and in a separate thread to avoid freezing UI
+        new Thread(() -> {
+            try {
+                MailUtil.sendLogisticsStatusEmail("alvinusamemory@gmail.com", "Logistics Shipped", "Your delivery is on the way!");
+                JOptionPane.showMessageDialog(null, "📧 Email sent successfully!");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "❌ Failed to send email: " + ex.getMessage());
+            }
+        }).start();
+        
+        
+        
         populateTable();
         
     }//GEN-LAST:event_btnTransitActionPerformed
@@ -216,7 +231,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
             
             Object[] row = new Object[5];
             row[0] = shipment;
-            row[1] = shipment.getTitle();
+            row[1] = shipment.getPurchaseOrderID();
             row[2] = shipment.getItems().get(0).getProduct();
             row[3] = shipment.getDeliveryReq().getStatus();
             row[4] = shipment.getStatus();

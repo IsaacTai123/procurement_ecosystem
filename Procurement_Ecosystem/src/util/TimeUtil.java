@@ -32,4 +32,9 @@ public class TimeUtil {
 
         return time;
     }
+    
+    public static String getExpectedDeliveryDate(int daysToAdd) {
+        LocalDateTime future = LocalDateTime.now().plusDays(daysToAdd);
+        return future.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+    }
 }

@@ -24,6 +24,14 @@ public class PurchaseOrderDirectory {
     public ArrayList<PurchaseOrder> getPurchaseOrderList() {
         return purchaseOrderList;
     }
+    
+    public long countUnassignedLogistics() {
+        return purchaseOrderList.stream()
+                .filter(po -> po.getLogistics() == null)
+                .count();
+    }
+
+    
 
 //    public List<PurchaseOrder> getRequestsBySenderId(String userId) {
 //        List<PurchaseOrder> result = new ArrayList<>();

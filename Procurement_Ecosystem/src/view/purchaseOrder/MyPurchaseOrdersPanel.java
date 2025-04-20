@@ -26,8 +26,10 @@ import model.delivery.ShipmentDirectory;
 import model.delivery.ShipmentItem;
 import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
+import model.procurement.PurchaseItem;
 import model.procurement.PurchaseOrder;
 import model.product.Product;
+import util.TimeUtil;
 
 /**
  *
@@ -37,7 +39,7 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
 
     private UserAccount currentUser;
     private Network network;
-    private Enterprise enterprise;
+    private Enterprise vendor;
     private PurchaseOrderDirectory purchaseOrderDirectory;
     private List<Enterprise> allLogistics;
     private Enterprise selectedLogistics;
@@ -52,12 +54,23 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
 
         this.currentUser = Session.getCurrentUser();
         this.network = Session.getCurrentNetwork();
-        this.enterprise = currentUser.getEnterprise(); // e.g. asus/tsmc (vendor)
-        this.purchaseOrderDirectory = enterprise.getPurchaseOrderList();
+        this.vendor = currentUser.getEnterprise(); // e.g. asus/tsmc (vendor)
+        this.purchaseOrderDirectory = vendor.getPurchaseOrderList();
         this.allLogistics = network.getEnterpriseDir().getAllLogisticsEnterprises();
         
         populateTable();
         populateLogisticsCombo();
+        
+        // pop out alert window if there is an unassigned PO (to logistics)
+        long unassignedCount = purchaseOrderDirectory.countUnassignedLogistics();
+
+        if (unassignedCount > 0) {
+            JOptionPane.showMessageDialog(null,
+                    "You have " + unassignedCount + " unassigned Purchase Orders.",
+                    "Info",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+        
     }
 
     
@@ -212,6 +225,9 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
     private void btnIssueDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIssueDeliveryActionPerformed
         // TODO add your handling code here:
         
+        
+        
+        
         int row = tblPO.getSelectedRow();
         
         if(row < 0) {
@@ -219,25 +235,38 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
             return;
         }
         
-        // Issue a delivery request
+        PurchaseOrder po = (PurchaseOrder)tblPO.getValueAt(row, 0);
+        
+        // Issue a delivery request (PO) to a logistics -- start
         DeliveryController deliveryController = new DeliveryController();
         
-        Enterprise selectedLogistics = (Enterprise) cmbLogistics.getSelectedItem();
-        
-        
-        ShipmentDirectory fedEx_shipmentDirectory = new ShipmentDirectory(selectedLogistics);
-//        network.getShipmentDirectories().addShipmentDirectory(fedEx_shipmentDirectory);
-//        ArrayList<ShipmentItem> items = new ArrayList<>();
-//        ShipmentItem itemA = new ShipmentItem(new Product("Asus Laptop"), 1);
-//        ShipmentItem itemB = new ShipmentItem(new Product("Asus adaptor"), 1);
-//        items.add(itemA);
-//        items.add(itemB);
-//        
-//        Date currentDate = new Date();
-//        
-//        deliveryController.requestShipping(items, fedEx, asusSalesManager, googleProcurementManager, currentDate, currentDate, fedEx_shipmentDirectory, "Laptops");
+        selectedLogistics = (Enterprise) cmbLogistics.getSelectedItem();
+   
 
+        // 1. ShipmentDirectories include different logistics's shipment directory
+        // 2. get FedEx's shipment directory
+        ShipmentDirectory shipmentDirectory = network.getShipmentDirectories().getShipmentDirectory(selectedLogistics); 
         
+        ArrayList<ShipmentItem> items = new ArrayList<>();
+        for (PurchaseItem purchaseItem : po.getPurchaseItems()) {
+            
+            ShipmentItem shipmentItem = new ShipmentItem(purchaseItem.getProduct(), purchaseItem.getQuantity());
+
+            items.add(shipmentItem);
+        }
+        
+        // give PO to Logistics
+        po.setLogistics(selectedLogistics); 
+  
+        String shipDate = TimeUtil.getCurrentDate(); // e.g., 2025.04.20
+        String expectedDeliveredDate = TimeUtil.getExpectedDeliveryDate(5); // e.g., 2025.04.25
+     
+        deliveryController.requestShipping(items, selectedLogistics, currentUser, po.getBuyerAccount(), shipDate, expectedDeliveredDate, shipmentDirectory, po.getId());
+        // Issue a delivery request (PO) to a logistics -- end
+        
+        
+        
+        populateTable();
         
     }//GEN-LAST:event_btnIssueDeliveryActionPerformed
 
@@ -274,7 +303,7 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
             
             Object[] row = new Object[5];
             row[0] = purchaseOrder;
-            row[1] = purchaseOrder.getBuyer();
+            row[1] = purchaseOrder.getBuyerAccount();
             row[2] = purchaseOrder.getPurchasedDate();
             row[3] = purchaseOrder.getLogistics();
             row[4] = purchaseOrder.isIsIssued();
