@@ -29,7 +29,10 @@ import java.util.ArrayList;
 import model.procurement.PurchaseItem;
 import directory.PurchaseItemDirectory;
 import enums.EnterpriseType;
+import java.io.IOException;
 import util.TestRFQGenerator;
+import java.net.http.*;
+import java.net.URI;
 
 /**
  *
@@ -65,6 +68,37 @@ public class MainJFrame extends javax.swing.JFrame {
 //        userAccountDirectory = network.getUserAccountDir();
         shipmentDirectories = network.getShipmentDirectories();
         enterpriseDirectory = network.getEnterpriseDir();
+        
+        // call api 
+//        try {
+//            String json = """
+//                {
+//                    "name": "Alvin",
+//                    "password": "alvin"
+//                }
+//                """;
+//
+//            HttpClient client = HttpClient.newHttpClient();
+//
+//            HttpRequest request = HttpRequest.newBuilder()
+//                    .uri(new URI("http://localhost:8000/Login"))
+//                    .header("Content-Type", "application/json")
+//                    .POST(HttpRequest.BodyPublishers.ofString(
+//                            json
+//                    ))
+//                    .build();
+//
+//            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+//
+//            System.out.println("✅ Response from server: " + response.body());
+//
+//        } catch (IOException | InterruptedException e) {
+//            System.err.println("❌ Network error: " + e.getMessage());
+//            e.printStackTrace();
+//        } catch (Exception e) {
+//            System.err.println("❌ Other error: " + e.getMessage());
+//            e.printStackTrace();
+//        }
     }
 
     /**

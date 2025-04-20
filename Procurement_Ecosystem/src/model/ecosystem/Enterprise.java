@@ -5,6 +5,7 @@
 package model.ecosystem;
 
 import directory.OrganizationDirectory;
+import directory.PurchaseOrderDirectory;
 import directory.PurchaseRequestDirectory;
 import enums.EnterpriseType;
 import model.user.UserAccount;
@@ -21,12 +22,15 @@ public class Enterprise {
     private EnterpriseType type; // enum: BUYER, VENDOR, LOGISTICS
     private final OrganizationDirectory organizationList;
     private PurchaseRequestDirectory purchaseRequestList;
+    private PurchaseOrderDirectory purchaseOrderList;
     
-    public Enterprise(String name) {
+    public Enterprise(String name, EnterpriseType type) {
         this.name = name;
-        this.type = type;
+        this.type = type; 
         organizationList = new OrganizationDirectory();
         purchaseRequestList = new PurchaseRequestDirectory();
+        purchaseOrderList = new PurchaseOrderDirectory();
+        
     }
 
     public String getName() {
@@ -58,6 +62,16 @@ public class Enterprise {
     public PurchaseRequestDirectory getPurchaseRequestList() {
         return purchaseRequestList;
     }
+
+    public PurchaseOrderDirectory getPurchaseOrderList() {
+        return purchaseOrderList;
+    }
+
+    public void setPurchaseOrderList(PurchaseOrderDirectory purchaseOrderList) {
+        this.purchaseOrderList = purchaseOrderList;
+    }
+    
+    
     
     @Override
     public String toString() {

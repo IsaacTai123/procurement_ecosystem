@@ -4,6 +4,9 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
 
 /**
  * @author tisaac
@@ -80,4 +83,16 @@ public class IdGenerateUtil {
         }
         return sb.toString();
     }
+    
+    public static String generateIdByActionAndTimestamp(String action) {
+        // Get current timestamp
+        long timestamp = System.currentTimeMillis(); // e.g. 1713638400000
+
+        // Optional: Add random digits to avoid duplicates
+        int randomFourDigit = new Random().nextInt(9000) + 1000; // 4-digit random number
+
+        return action + "-" + timestamp + "-" + randomFourDigit; // e.g. ORDER-1713638400000-1234
+    }
+    
+    
 }
