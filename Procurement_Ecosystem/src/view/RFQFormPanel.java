@@ -36,7 +36,7 @@ public class RFQFormPanel extends javax.swing.JPanel {
         title = new javax.swing.JLabel();
         btnUpdate = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblNetwork = new javax.swing.JTable();
+        tblPurchaseItem = new javax.swing.JTable();
         vendorComboBox = new javax.swing.JComboBox<>();
         lbVendor1 = new javax.swing.JLabel();
         deadlinePicker = new javax.swing.JTextField();
@@ -97,7 +97,7 @@ public class RFQFormPanel extends javax.swing.JPanel {
             }
         });
 
-        tblNetwork.setModel(new javax.swing.table.DefaultTableModel(
+        tblPurchaseItem.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -123,7 +123,7 @@ public class RFQFormPanel extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tblNetwork);
+        jScrollPane1.setViewportView(tblPurchaseItem);
 
         vendorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -367,7 +367,7 @@ public class RFQFormPanel extends javax.swing.JPanel {
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JLabel lbVendor;
     private javax.swing.JLabel lbVendor1;
-    private javax.swing.JTable tblNetwork;
+    private javax.swing.JTable tblPurchaseItem;
     private javax.swing.JLabel title;
     private javax.swing.JComboBox<String> vendorComboBox;
     // End of variables declaration//GEN-END:variables
