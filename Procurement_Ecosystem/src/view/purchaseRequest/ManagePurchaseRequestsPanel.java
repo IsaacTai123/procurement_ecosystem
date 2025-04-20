@@ -19,7 +19,7 @@ import model.procurement.PurchaseRequest;
 import model.user.UserAccount;
 import util.NavigationUtil;
 import util.UIUtil;
-import view.RFQFormPanel;
+import view.rfq.RFQFormPanel;
 
 import java.util.List;
 import java.util.Optional;
