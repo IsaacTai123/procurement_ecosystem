@@ -193,17 +193,17 @@ public class VendorPoPanel extends javax.swing.JPanel {
 
     private void btnRejectRequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRejectRequestActionPerformed
         // TODO add your handling code here:
-        int row = tblRequests.getSelectedRow();
+//        int row = tblRequests.getSelectedRow();
+//
+//        if(row < 0) {
+//            JOptionPane.showMessageDialog(null, "Please select a row from the table first", "Warning", JOptionPane.WARNING_MESSAGE);
+//            return;
+//        }
 
-        if(row < 0) {
-            JOptionPane.showMessageDialog(null, "Please select a row from the table first", "Warning", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+//        Shipment shipment = (Shipment)tblRequests.getValueAt(row, 0); // the first element store an object
+//        shipment.getDeliveryReq().setStatus(RequestStatus.APPROVED);
 
-        Shipment shipment = (Shipment)tblRequests.getValueAt(row, 0); // the first element store an object
-        shipment.getDeliveryReq().setStatus(RequestStatus.APPROVED);
-
-        populateTable();
+//        populateTable();
 
     }//GEN-LAST:event_btnRejectRequestActionPerformed
 
