@@ -8,6 +8,7 @@ import enums.ShipmentStatus;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
+import model.procurement.PurchaseOrder;
 import model.product.Product;
 import model.user.UserAccount;
 import model.workqueue.DeliveryRequest;
@@ -20,15 +21,15 @@ public class Shipment {
 
     private String trackingNumber;
     private ArrayList<ShipmentItem> items;
-    private Date shipDate;
-    private Date expectedArrival;
+    private String shipDate;
+    private String expectedArrival;
     private ShipmentStatus status;
-    private UserAccount sender;
-    private UserAccount receiver;
-    private String title;
+    private UserAccount sender; // asus sales
+    private UserAccount receiver; // google procurement
+    private String purchaseOrderID;
     private DeliveryRequest deliveryReq;
 
-    public Shipment(UserAccount sender, UserAccount receiver, Date shipDate, Date expectedArrival, String title, DeliveryRequest deliveryReq) {
+    public Shipment(UserAccount sender, UserAccount receiver, String shipDate, String expectedArrival, String purchaseOrderID, DeliveryRequest deliveryReq) {
         this.trackingNumber = UUID.randomUUID().toString().substring(0, 10).toUpperCase(); // Example: "B6D4D2A7-6"
         this.deliveryReq = deliveryReq;
         this.items = deliveryReq.getItems();
@@ -37,7 +38,7 @@ public class Shipment {
         this.shipDate = shipDate;
         this.expectedArrival = expectedArrival;
         this.status = ShipmentStatus.PLACED;
-        this.title = title;
+        this.purchaseOrderID = purchaseOrderID;
     }
 
     // Getters and Setters
@@ -53,19 +54,19 @@ public class Shipment {
         this.items.add(new ShipmentItem(product, quantity));
     }
 
-    public Date getShipDate() {
+    public String getShipDate() {
         return shipDate;
     }
 
-    public void setShipDate(Date shipDate) {
+    public void setShipDate(String shipDate) {
         this.shipDate = shipDate;
     }
 
-    public Date getExpectedArrival() {
+    public String getExpectedArrival() {
         return expectedArrival;
     }
 
-    public void setExpectedArrival(Date expectedArrival) {
+    public void setExpectedArrival(String expectedArrival) {
         this.expectedArrival = expectedArrival;
     }
 
@@ -77,13 +78,15 @@ public class Shipment {
         this.status = status;
     }
 
-    public String getTitle() {
-        return title;
+    public String getPurchaseOrderID() {
+        return purchaseOrderID;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setPurchaseOrderID(String purchaseOrderID) {
+        this.purchaseOrderID = purchaseOrderID;
     }
+
+   
 
     public ArrayList<ShipmentItem> getItems() {
         return items;

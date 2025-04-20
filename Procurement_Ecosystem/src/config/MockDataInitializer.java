@@ -83,12 +83,12 @@ public class MockDataInitializer {
                                 Role.SPECIALIST, asusSales, asus);
 
                 // Goolge procurement give a PO to Asus(vendor)
-                new TestShipment().sendPOToVendor(asus);
+                new TestShipment().sendPOToVendor(googleProcurementManager,asusSalesManager);
 
                 // Asus(vendor) give FedEx a new delivery Request
                 DeliveryController deliveryController = new DeliveryController();
 
-                ShipmentDirectory fedEx_shipmentDirectory = new ShipmentDirectory(fedEx);
+                ShipmentDirectory fedEx_shipmentDirectory = new ShipmentDirectory(fedEx); // one logistics will have only one shipment directory
                 network.getShipmentDirectories().addShipmentDirectory(fedEx_shipmentDirectory);
                 ArrayList<ShipmentItem> items = new ArrayList<>();
                 ShipmentItem itemA = new ShipmentItem(new Product("Asus Laptop"), 1);
@@ -96,10 +96,9 @@ public class MockDataInitializer {
                 items.add(itemA);
                 items.add(itemB);
 
-                Date currentDate = new Date();
 
                 deliveryController.requestShipping(items, fedEx, asusSalesManager, googleProcurementManager,
-                                currentDate, currentDate, fedEx_shipmentDirectory, "Laptops");
+                                "2024.05.06", "2024.05.11", fedEx_shipmentDirectory, "Laptops");
 
                 System.out.println("get po first product: " + asus.getPurchaseOrderList());
 

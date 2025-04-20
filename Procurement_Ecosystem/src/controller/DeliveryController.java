@@ -22,14 +22,14 @@ import model.workqueue.DeliveryRequest;
 public class DeliveryController {
     
 
-    public DeliveryRequest requestShipping(ArrayList<ShipmentItem> items, Enterprise logistics, UserAccount sender, UserAccount receiver, Date shipDate, Date expectedArrival, ShipmentDirectory shipments, String title) {
+    public DeliveryRequest requestShipping(ArrayList<ShipmentItem> items, Enterprise logistics, UserAccount sender, UserAccount receiver, String shipDate, String expectedArrival, ShipmentDirectory shipments, String purchaseOrderID) {
 
         // logic to create delivery request and place a shipment
         DeliveryRequest deliveryReq = new DeliveryRequest();
         deliveryReq.setItems(items);
         deliveryReq.setLogisticsPartner(logistics);
         
-        shipments.newShipment(sender, receiver, shipDate, expectedArrival, title, deliveryReq);
+        shipments.newShipment(sender, receiver, shipDate, expectedArrival, purchaseOrderID, deliveryReq);
 
         return deliveryReq;
     }
