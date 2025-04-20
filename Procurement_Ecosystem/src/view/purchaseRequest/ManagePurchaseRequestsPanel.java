@@ -20,7 +20,6 @@ import model.user.UserAccount;
 import util.NavigationUtil;
 import util.UIUtil;
 import view.RFQFormPanel;
-import view.RFQPanel;
 
 import java.util.List;
 import java.util.Optional;
@@ -98,6 +97,11 @@ public class ManagePurchaseRequestsPanel extends javax.swing.JPanel implements I
     private void handleCreateRFQBtn() {
         getSelectedPR()
                 .ifPresent(pr -> {
+                    Result<Void> r = prController.handleCreateRFQ(pr);
+                    if (!r.isSuccess()) {
+                        UIUtil.showError(this, r.getMessage());
+                        return;
+                    }
                     NavigationUtil.getInstance().showCard(new RFQFormPanel(pr, () -> refreshData()), "Create RFQ");
                 });
     }
@@ -112,7 +116,7 @@ public class ManagePurchaseRequestsPanel extends javax.swing.JPanel implements I
                 .getPurchaseRequestList()
                 .getPurchaseRequestList()
                 .stream()
-                .filter(pr -> pr.getStatus() == RequestStatus.COMPLETED) // Filter out PR that are not completed
+                .filter(pr -> pr.getStatus() != RequestStatus.COMPLETED) // Filter out PR that are not completed
                 .collect(Collectors.toList());
 
         UIUtil.reloadTable(tblPR, requests, pr -> {
@@ -153,7 +157,7 @@ public class ManagePurchaseRequestsPanel extends javax.swing.JPanel implements I
 
         lbTitle.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
         lbTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbTitle.setText("Purchase Requiremen Service");
+        lbTitle.setText("Purchase Request Service");
 
         tblPR.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -266,6 +270,7 @@ public class ManagePurchaseRequestsPanel extends javax.swing.JPanel implements I
     private javax.swing.JLabel lbRFQ;
     private javax.swing.JLabel lbTitle;
     private javax.swing.JTable tblPR;
+    // End of variables declaration//GEN-END:variables
 
     @Override
     public void refreshData() {
@@ -276,5 +281,4 @@ public class ManagePurchaseRequestsPanel extends javax.swing.JPanel implements I
     public void setCallback(IDataRefreshCallback callback) {
         this.callback = callback;
     }
-    // End of variables declaration//GEN-END:variables
 }

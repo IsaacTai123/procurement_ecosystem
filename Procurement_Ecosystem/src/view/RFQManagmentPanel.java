@@ -4,17 +4,84 @@
  */
 package view;
 
+import common.AppContext;
+import interfaces.IDataRefreshCallback;
+import interfaces.IDataRefreshCallbackAware;
+import model.quotation.RFQ;
+import util.NavigationUtil;
+import util.UIUtil;
+
 /**
  *
  * @author qiyaochen
  */
-public class RFQManagmentPanel extends javax.swing.JPanel {
+public class RFQManagmentPanel extends javax.swing.JPanel implements IDataRefreshCallbackAware {
 
+    private IDataRefreshCallback callback;
     /**
      * Creates new form RFQManagmentPanel
      */
     public RFQManagmentPanel() {
         initComponents();
+        setupListeners();
+
+        initUI();
+    }
+
+    private void initUI() {
+        UIUtil.setEnterpriseTitle(lbTitle, AppContext.getUserEnterprise().getName());
+        UIUtil.clearTable(tblRFQ);
+        refreshRFQTable();
+    }
+
+    private void setupListeners() {
+        btnBack.addActionListener(e -> handleBackbtn());
+        btnView.addActionListener(e -> handleViewbtn());
+        btnCreateQuotation.addActionListener(e -> handleCreateQuotationbtn());
+    }
+
+    private void handleBackbtn() {
+        NavigationUtil.getInstance().goBack();
+        callback.refreshData();
+    }
+
+    private void handleViewbtn() {
+        UIUtil.getSelectedTableObject(
+                tblRFQ,
+                0,
+                RFQ.class,
+                this,
+                "Please select a RFQ to view"
+        ).ifPresent(rfq -> {
+            NavigationUtil.getInstance().showCard(
+                    new RFQViewDetailPanel(rfq, () -> refreshRFQTable()),
+                    "RFQ Detail"
+            );
+        });
+
+
+    }
+
+    private void handleCreateQuotationbtn() {
+
+    }
+
+    private void refreshRFQTable() {
+        UIUtil.reloadTable(
+                tblRFQ,
+                AppContext.getNetwork().getRfqDirectory().getRFQList(),
+                e -> new Object[] {
+                        e.getVendor(),
+                        e.getDeadline(),
+                        e.getStatus()
+                }
+        );
+    }
+
+
+    @Override
+    public void setCallback(IDataRefreshCallback callback) {
+        this.callback = callback;
     }
 
     /**
@@ -40,17 +107,17 @@ public class RFQManagmentPanel extends javax.swing.JPanel {
 
         tblRFQ.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Vendor", "Receiver", "Deadline", "Status"
+                "Vendor", "Deadline", "Status"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -62,7 +129,6 @@ public class RFQManagmentPanel extends javax.swing.JPanel {
             tblRFQ.getColumnModel().getColumn(0).setResizable(false);
             tblRFQ.getColumnModel().getColumn(1).setResizable(false);
             tblRFQ.getColumnModel().getColumn(2).setResizable(false);
-            tblRFQ.getColumnModel().getColumn(3).setResizable(false);
         }
 
         btnBack.setText("<<Back");

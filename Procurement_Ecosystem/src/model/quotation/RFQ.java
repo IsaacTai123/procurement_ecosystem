@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Comparator;
 import model.procurement.ContractReviewRequest;
 import model.procurement.PurchaseItem;
-import model.procurement.PurchaseRequest;
+import util.IdGenerateUtil;
 
 
 /**
@@ -18,7 +18,7 @@ import model.procurement.PurchaseRequest;
 public class RFQ {
     private String id;
     private String linkedPRId;
-    private List<Enterprise> vendors;
+    private Enterprise vendor;
     private List<Quotation> quotations;
     private List<PurchaseItem>  purchaseItems;
     private LocalDate deadline;
@@ -27,10 +27,10 @@ public class RFQ {
 
     public RFQ(String linkedPRId, List<PurchaseItem> purchaseItems) {
         this.linkedPRId = linkedPRId;
-        this.id = linkedPRId; // Use PR ID as RFQ ID for visibility
-        this.vendors = new ArrayList<>();
+        this.id = IdGenerateUtil.generateWorkRequestId();
         this.quotations = new ArrayList<>();
         this.purchaseItems = purchaseItems;
+        this.status = RFQStatus.DRAFT;
     }
 
     public String getId() { 
@@ -102,8 +102,8 @@ public class RFQ {
         return purchaseItems;
     }
 
-    public void addVendor(Enterprise vendor) {
-        this.vendors.add(vendor);
+    public void setVendor(Enterprise vendor) {
+        this.vendor = vendor;
     }
 
     public void setDeadline(LocalDate deadline) {
@@ -114,8 +114,12 @@ public class RFQ {
         this.remarks = remarks;
     }
 
-    public List<Enterprise> getVendors() {
-        return vendors;
+    public Enterprise getVendor() {
+        return vendor;
+    }
+
+    public LocalDate getDeadline() {
+        return deadline;
     }
 
     @Override

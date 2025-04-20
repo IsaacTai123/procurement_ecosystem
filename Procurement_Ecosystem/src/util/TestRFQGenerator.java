@@ -12,22 +12,22 @@ import java.util.List;
 public class TestRFQGenerator {
     private static List<RFQ> cachedRFQs = null;
 
-//    public static List<RFQ> generateTestRFQs() {
-//        if (cachedRFQs == null) {
+    public static List<RFQ> generateTestRFQs() {
+        if (cachedRFQs == null) {
 //            cachedRFQs = new ArrayList<>();
 //            cachedRFQs.add(createSampleRFQ1());
 //            cachedRFQs.add(createSampleRFQ2());
 //            cachedRFQs.add(createSampleRFQ3());
-//        }
-//        return cachedRFQs;
-//    }
+        }
+        return cachedRFQs;
+    }
 
-//    public static List<RFQ> getCachedRFQs() {
-//        return generateTestRFQs();
-//    }
+    public static List<RFQ> getCachedRFQs() {
+        return generateTestRFQs();
+    }
 
-//    public static RFQ createSampleRFQ1() {
-//        PurchaseRequest pr = new PurchaseRequest("PR-001");
+    public static RFQ createSampleRFQ1() {
+        PurchaseRequest pr = new PurchaseRequest("PR-001");
 //        RFQ rfq = new RFQ(pr.getId());
 //
 //
@@ -35,7 +35,8 @@ public class TestRFQGenerator {
 //        rfq.addQuotation(new Quotation(new Enterprise("Vendor B", EnterpriseType.VENDOR), "Includes accessories", 950.0, "Description A2"));
 //
 //        return rfq;
-//    }
+        return null;
+    }
 //
 //    public static RFQ createSampleRFQ2() {
 //        PurchaseRequest pr = new PurchaseRequest("PR-002");

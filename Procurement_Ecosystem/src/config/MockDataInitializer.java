@@ -14,6 +14,7 @@ package config;
 //import Business.Profiles.StudentProfile;
 
 
+import common.AppContext;
 import controller.DeliveryController;
 import directory.OrganizationDirectory;
 import enums.EnterpriseType;
@@ -23,6 +24,9 @@ import model.ecosystem.Ecosystem;
 import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import model.ecosystem.Organization;
+import model.procurement.PurchaseItem;
+import model.procurement.PurchaseRequest;
+import model.product.Spec;
 import model.user.UserAccount;
 import directory.UserAccountDirectory;
 import java.time.LocalDate;
@@ -95,6 +99,7 @@ public class MockDataInitializer {
         deliveryController.requestShipping(items, fedEx, asusSalesManager, googleProcurementManager, currentDate, currentDate, fedEx_shipmentDirectory, "Laptops");
 
         System.out.println("get po first product: " + asus.getPurchaseOrderList());
+
         
         
         return network;

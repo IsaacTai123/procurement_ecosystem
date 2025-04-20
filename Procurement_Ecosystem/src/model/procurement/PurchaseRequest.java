@@ -8,6 +8,8 @@ import directory.PurchaseItemDirectory;
 import enums.OrganizationType;
 import enums.Role;
 import enums.StepType;
+import model.product.Product;
+import model.product.Spec;
 import model.workqueue.WorkRequest;
 import model.workqueue.WorkflowStep;
 
@@ -57,6 +59,10 @@ public class PurchaseRequest extends WorkRequest {
 
     public List<String> getRfqId() {
         return rfqId;
+    }
+
+    public void addPurchaseItem(Product item, int quantity, double unitPrice, Spec spec) {
+        purchaseItems.newPurchaseItem(item, quantity, unitPrice, spec);
     }
 
     @Override

@@ -53,16 +53,16 @@ public class ProcurementController {
     }
 
     // TODO: Should use DTO to prevent they didn't submit the form
-    public void handleRFQSubmit(RFQ rfq, Enterprise vendor, String deadline, String remark) {
-        rfq.addVendor(vendor);
+    public Result<Void> handleRFQSubmit(RFQ rfq, String vendor, String deadline, String remark) {
         rfq.setRemarks(remark);
 
         try {
             LocalDate localDate = LocalDate.parse(deadline);
             rfq.setDeadline(localDate);
         } catch (DateTimeParseException e) {
-            UIUtil.showError(null, "Invalid date format. Please use yyyy-MM-dd.");
+            return ResultUtil.failure("Invalid date format. Please use yyyy-MM-dd.");
         }
+        return getService().submitRFQ(rfq, vendor);
     }
 
     public void compareQuotations(ArrayList<Quotation> quotations) {

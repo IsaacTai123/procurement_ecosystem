@@ -114,6 +114,13 @@ public class PurchaseRequestController {
         return getService().forwardPR2IT(pr);
     }
 
+    public Result<Void> handleCreateRFQ(PurchaseRequest pr) {
+        // if selected pr stepworkflow still have pending job then denied the request
+        return (pr.isCompleted()) ?
+                ResultUtil.success("RFQ created successfully") :
+                ResultUtil.failure("Cannot create RFQ, purchase request still under approval process.");
+    }
+
     private void updatePurchaseItemFields(PurchaseItemDTO target, PurchaseItemDTO source) {
         target.setName(source.getName());
         target.setQuantity(source.getQuantity());
