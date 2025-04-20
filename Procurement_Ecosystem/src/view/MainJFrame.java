@@ -48,8 +48,6 @@ public class MainJFrame extends javax.swing.JFrame {
     private ShipmentDirectories shipmentDirectories;
     private EnterpriseDirectory enterpriseDirectory;
 
-    Network selectedNetwork;
-
     /**
      * Creates new form MainJFrame
      */
@@ -72,8 +70,8 @@ public class MainJFrame extends javax.swing.JFrame {
 //        userAccountDirectory = network.getUserAccountDir();
         shipmentDirectories = network.getShipmentDirectories();
         enterpriseDirectory = network.getEnterpriseDir();
-        
-        // call api 
+
+        // call api
 //        try {
 //            String json = """
 //                {
@@ -279,19 +277,19 @@ public class MainJFrame extends javax.swing.JFrame {
 
 
             
-            case SPECIALIST -> {
-                Organization org = user.getOrg();
-                if (org.getTypeName() == OrganizationType.FINANCE) {
-                    FinancePanel financePanel = new FinancePanel(); 
-                    NavigationUtil.getInstance().showCard(financePanel, "FinancePanel");
-                } else if (org.getTypeName()== OrganizationType.PROCUREMENT) {
-                    QuotationPanel quotationPanel = new QuotationPanel(null); // or pass actual RFQ
-                    NavigationUtil.getInstance().showCard(quotationPanel, "QuotationPanel");
-                } else {
-                    DashboardPanel dashboard = new DashboardPanel();
-                    NavigationUtil.getInstance().showCard(dashboard, "Dashboard");
-                }
-            }
+//            case SPECIALIST -> {
+//                Organization org = user.getOrg();
+//                if (org.getTypeName() == OrganizationType.FINANCE) {
+//                    FinancePanel financePanel = new FinancePanel();
+//                    NavigationUtil.getInstance().showCard(financePanel, "FinancePanel");
+//                } else if (org.getTypeName()== OrganizationType.PROCUREMENT) {
+//                    QuotationPanel quotationPanel = new QuotationPanel(null); // or pass actual RFQ
+//                    NavigationUtil.getInstance().showCard(quotationPanel, "QuotationPanel");
+//                } else {
+//                    DashboardPanel dashboard = new DashboardPanel();
+//                    NavigationUtil.getInstance().showCard(dashboard, "Dashboard");
+//                }
+//            }
 
             default -> {
                 DashboardPanel dashboard = new DashboardPanel();

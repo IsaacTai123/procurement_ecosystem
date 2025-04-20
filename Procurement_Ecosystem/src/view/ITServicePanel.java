@@ -4,6 +4,7 @@
  */
 package view;
 
+import common.AppContext;
 import common.Session;
 import enums.OrganizationType;
 import interfaces.IDataRefreshCallback;
@@ -20,9 +21,7 @@ import util.UIUtil;
  */
 public class ITServicePanel extends javax.swing.JPanel implements IDataRefreshCallbackAware {
 
-    private UserAccount currentUser;
     private Enterprise enterprise;
-    private Network network;
     private IDataRefreshCallback callback;
 
     /**
@@ -31,14 +30,15 @@ public class ITServicePanel extends javax.swing.JPanel implements IDataRefreshCa
     public ITServicePanel() {
         initComponents();
 
-        this.network = Session.getCurrentNetwork();
-        this.currentUser = Session.getCurrentUser();
-        if (currentUser == null || network == null) {
+        UserAccount user = AppContext.getUser();
+        Network network = AppContext.getNetwork();
+
+        if (user == null || network == null) {
             System.out.println("Current user is null");
             UIUtil.showError(this, "User not logged in");
             return;
         }
-        enterprise = currentUser.getOrg().getEnterprise();
+        enterprise = user.getOrg().getEnterprise();
 
         // Set the title of the panel
         UIUtil.setEnterpriseTitle(lbTitle, enterprise.getName());
@@ -166,7 +166,7 @@ public class ITServicePanel extends javax.swing.JPanel implements IDataRefreshCa
             return;
         }
 
-        network.getOrgService().createOrgFromEnterprise(orgType, enterprise);
+        AppContext.getNetwork().getOrgService().createOrgFromEnterprise(orgType, enterprise);
         reloadOrgTable();
     }//GEN-LAST:event_btnCreateOrgActionPerformed
 

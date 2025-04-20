@@ -18,9 +18,11 @@ import model.workqueue.WorkflowStep;
 public class PurchaseRequest extends WorkRequest {
     private final String reason;
     private PurchaseItemDirectory purchaseItems;
+    private String rfqId;
 
     public PurchaseRequest(String reason) {
         this.reason = reason;
+        this.rfqId = "";
         this.purchaseItems = new PurchaseItemDirectory();
     }
     
@@ -33,8 +35,8 @@ public class PurchaseRequest extends WorkRequest {
     protected void initWorkflowSteps() {
         // Initialize the workflow steps for the purchase request
         // Requestor would be create during the run-time
-        addStep(OrganizationType.IT, Role.MANAGER, StepType.APPROVAL, false); // IT
-        addStep(OrganizationType.PROCUREMENT, Role.SPECIALIST, StepType.APPROVAL, false); // Procurement
+        addStep(OrganizationType.IT, Role.MANAGER, StepType.APPROVER, false); // IT
+        addStep(OrganizationType.PROCUREMENT, Role.SPECIALIST, StepType.APPROVER, false); // Procurement
     }
 
     public String getReason() {
@@ -45,7 +47,7 @@ public class PurchaseRequest extends WorkRequest {
     public double getEstimatedBudget() {
         double estimatedBudget = 0;
         for (PurchaseItem item : purchaseItems.getPurchaseItemList()) {
-            estimatedBudget += item.getPrice();
+            estimatedBudget += item.getTotalPrice();
         }
 
         return estimatedBudget;
@@ -53,6 +55,10 @@ public class PurchaseRequest extends WorkRequest {
 
     public PurchaseItemDirectory getPurchaseItems() {
         return purchaseItems;
+    }
+
+    public String getRfqId() {
+        return rfqId;
     }
 
     @Override

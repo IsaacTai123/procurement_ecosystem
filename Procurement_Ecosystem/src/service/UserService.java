@@ -1,7 +1,9 @@
 package service;
 
+import common.AppContext;
 import common.NetworkManager;
 import common.Result;
+import common.Session;
 import directory.PurchaseRequestDirectory;
 import model.ecosystem.Ecosystem;
 import model.ecosystem.Enterprise;
@@ -51,7 +53,8 @@ public class UserService {
                 .map(user -> {
                     Result<UserAccount> result = checkPassword(user, pwd);
                     if (result.isSuccess()) {
-                        currentNetwork = network;
+                        Session.setSession(user, network); // for UI
+                        AppContext.setContext(user, network); // for services
                     }
                     return result;
                 }) // Optional<Result<UserAccount>>

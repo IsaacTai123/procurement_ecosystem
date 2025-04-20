@@ -5,5 +5,5 @@ package enums;
  */
 public enum StepType {
     REQUESTOR,
-    APPROVAL
+    APPROVER
 }

@@ -4,9 +4,11 @@
  */
 package view.purchaseRequest;
 
+import common.AppContext;
 import common.Result;
 import common.Session;
 import controller.procurement.PurchaseRequestController;
+import enums.RequestStatus;
 import interfaces.IDataRefreshCallback;
 import model.procurement.PurchaseRequest;
 import model.user.UserAccount;
@@ -21,7 +23,7 @@ import java.util.List;
  */
 public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IDataRefreshCallback {
 
-    private UserAccount currentUser;
+    private NavigationUtil nu = NavigationUtil.getInstance();
     /**
      * Creates new form MyPurchaseRequestsPanel
      */
@@ -29,12 +31,16 @@ public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IData
         initComponents();
         setupListeners();
 
-        currentUser = Session.getCurrentUser();
         UIUtil.clearTable(tblPR);
+        handleOngoingPR();
     }
 
     private void setupListeners() {
         btnCreate.addActionListener(e -> handleCreateNewPR());
+        btnOngoing.addActionListener(e -> handleOngoingPR());
+        btnCompleted.addActionListener(e -> handleCompletedPR());
+        btnView.addActionListener(e -> handleViewBtn());
+        btnBack.addActionListener(e -> NavigationUtil.getInstance().goBack());
     }
 
     /**
@@ -93,7 +99,7 @@ public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IData
 
         btnBack.setText("<<Back");
 
-        btnView.setText("View Detail");
+        btnView.setText("View Status");
 
         btnCreate.setText("Create New PR");
 
@@ -157,32 +163,53 @@ public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IData
     private void handleCreateNewPR() {
         CreatePurchaseRequestPanel cpr = new CreatePurchaseRequestPanel();
         cpr.setCallback(() -> refreshData());
-        NavigationUtil.getInstance().showCard(
+        nu.showCard(
                 cpr,
                 "Create Purchase Request"
         );
     }
 
-    private void refreshOngoingPRTable() {
-        // find the ongoing purchase requests
-        Result<List<PurchaseRequest>> result = PurchaseRequestController.getInstance().handleUserPR(currentUser.getUserId());
+    private void handleCompletedPR() {
+        // find the completed purchase requests
+        Result<List<PurchaseRequest>> result = PurchaseRequestController.getInstance().handleUserPR(AppContext.getUser().getUserId(), RequestStatus.COMPLETED);
         if (!result.isSuccess()) {
             UIUtil.showError(this, result.getMessage());
         }
 
-        UIUtil.reloadTable(tblPR,
-                result.getData(),
+        refreshPRTable(result.getData());
+    }
+
+    private void handleOngoingPR() {
+        // find the ongoing purchase requests
+        Result<List<PurchaseRequest>> result = PurchaseRequestController.getInstance().handleUserPR(AppContext.getUser().getUserId(), RequestStatus.PENDING);
+        if (!result.isSuccess()) {
+            UIUtil.showError(this, result.getMessage());
+        }
+
+        refreshPRTable(result.getData());
+    }
+
+    private void handleViewBtn() {
+        PurchaseRequest pr =  UIUtil.getSelectedTableObject(tblPR, 0,
+                PurchaseRequest.class, this, "Please select a Purchase Request")
+                .orElse(null);
+
+        ProcessPurchaseRequestPanel prp = new ProcessPurchaseRequestPanel(pr, () -> refreshData());
+        nu.showCard(prp, "Process Purchase Request");
+    }
+
+    private void refreshPRTable(List<PurchaseRequest> data) {
+        UIUtil.reloadTable(tblPR, data,
                 e -> new Object[] {
                         e,
                         e.getRequestDate(),
                         e.getStatus()
                 }
-
         );
     }
 
     @Override
     public void refreshData() {
-        refreshOngoingPRTable();
+        handleOngoingPR();
     }
 }

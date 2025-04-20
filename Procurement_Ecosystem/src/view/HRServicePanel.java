@@ -4,6 +4,7 @@
  */
 package view;
 
+import common.AppContext;
 import common.Session;
 import enums.Role;
 import interfaces.IDataRefreshCallback;
@@ -21,11 +22,9 @@ import util.UIUtil;
  */
 public class HRServicePanel extends javax.swing.JPanel implements IDataRefreshCallbackAware {
 
-    private UserAccount user;
     private Enterprise enterprise;
     private IDataRefreshCallback callback;
     private Organization selectedOrg;
-    private Network network;
 
     /**
      * Creates new form HRServicePanel
@@ -33,9 +32,10 @@ public class HRServicePanel extends javax.swing.JPanel implements IDataRefreshCa
     public HRServicePanel() {
         initComponents();
 
-        this.user = Session.getCurrentUser();
+        UserAccount user = AppContext.getUser();
+        Network network = AppContext.getNetwork();
+
         this.enterprise = user.getOrg().getEnterprise();
-        this.network = Session.getCurrentNetwork();
         if (user == null || enterprise == null || network == null) {
             System.err.println("Session returned null!");
             UIUtil.showError(this, "User not logged in");
@@ -208,6 +208,8 @@ public class HRServicePanel extends javax.swing.JPanel implements IDataRefreshCa
 
     private void btnCreateUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateUserActionPerformed
         // store user account
+        Network network = AppContext.getNetwork();
+
         String userName = txtUserName.getText();
         String userPwd = new String(pwdUserPwd.getPassword());
         String role = cmbRole.getSelectedItem().toString();

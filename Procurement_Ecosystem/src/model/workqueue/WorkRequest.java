@@ -92,6 +92,10 @@ public abstract class WorkRequest {
         this.status = status;
     }
 
+    public List<WorkflowStep> getWorkflowSteps() {
+        return workflowSteps;
+    }
+
     public WorkflowStep getCurrentActiveStep() {
         return workflowSteps.stream()
                 .filter(s -> s.isActive() && s.getStatus() == ApprovalStatus.PENDING)
@@ -99,12 +103,21 @@ public abstract class WorkRequest {
                 .orElse(null);
     }
 
-    public WorkflowStep getNextPendingStep() {
+    public WorkflowStep getNextPendingStep(OrganizationType orgType) {
         return workflowSteps.stream()
                 .filter(s -> !s.isActive() && s.getStatus() == ApprovalStatus.PENDING)
+                .filter(s -> s.getOrganizationType() == orgType)
                 .findFirst()
                 .orElse(null);
     }
+
+    public WorkflowStep getPendingStep() {
+        return workflowSteps.stream()
+                .filter(s -> s.getStatus() == ApprovalStatus.PENDING)
+                .findFirst()
+                .orElse(null);
+    }
+
 
     public void createRequesterStep(UserAccount requestor) {
         WorkflowStep step = new WorkflowStep(null, null, StepType.REQUESTOR, true);
@@ -116,9 +129,14 @@ public abstract class WorkRequest {
         workflowSteps.add(0, step); // Add to the beginning of the list to maintain approval sequence
     }
 
-    public Result<Void> advanceToNextStep(GlobalUserAccountDirectory allUsersDir, String remarks, ApprovalStatus status) {
+    public Result<Void> advanceToNextStep(UserAccount currentUser, GlobalUserAccountDirectory allUsersDir, String remarks, ApprovalStatus status, OrganizationType nextOrgType) {
         WorkflowStep current = getCurrentActiveStep();
         if (current == null) { return ResultUtil.failure("No active step available or found"); }
+
+        // Check if current user is authorized to operate this step
+        if (current.getAssignedUser() == null || !current.getAssignedUser().getUserId().equals(currentUser.getUserId())) {
+            return ResultUtil.failure("You are not authorized to perform this action");
+        }
 
         // Set the current step to completed
         current.setStatus(status);
@@ -126,13 +144,66 @@ public abstract class WorkRequest {
         current.setActionTime(LocalDateTime.now());
         current.setRemarks(remarks);
 
-        WorkflowStep next = getNextPendingStep();
+        WorkflowStep next = getNextPendingStep(nextOrgType);
         if (next == null) {
-            return ResultUtil.failure("No next step available or found");
+            return ResultUtil.success("All steps completed");
         }
         next.resolveAssignedUser(allUsersDir);
         next.setActive(true);
 
         return ResultUtil.success("Successfully advanced to the next step");
+    }
+
+    /**
+     * Forcefully completes the current active workflow step without verifying user identity
+     * or transitioning to the next step. This method is intended for exceptional cases
+     * where the normal approval flow should be bypassed (e.g., skipping IT approval).
+     *
+     * @param remarks any comments or explanation for forcefully completing the step
+     * @param status  the status to assign to the current step (e.g., APPROVED, REJECTED, OMITTED)
+     * @return a Result indicating success or failure of the operation
+     */
+    public Result<Void> forceCompleteCurrentStep(String remarks, ApprovalStatus status) {
+        WorkflowStep current = getCurrentActiveStep();
+        if (current == null) {
+            return ResultUtil.failure("No active step found");
+        }
+
+        current.setStatus(status);
+        current.setActive(false);
+        current.setRemarks(remarks);
+        current.setActionTime(LocalDateTime.now());
+
+        return ResultUtil.success("Current step completed without user or next step validation");
+    }
+
+    /**
+     * Forwards the active flag from the current workflow step to the next pending step.
+     * This method does not perform any validation or status updates. It is intended for
+     * cases where the flow needs to be manually pushed forward without changing approval state.
+     *
+     * @param nextOrgType the organization type used to determine the next step
+     * @param allUsersDir user directory used to resolve the assigned user for the next step
+     * @return a Result indicating success or failure of the operation
+     */
+    public Result<Void> forwardToNextStep(OrganizationType nextOrgType, GlobalUserAccountDirectory allUsersDir) {
+        WorkflowStep next = getNextPendingStep(nextOrgType);
+        WorkflowStep current = getCurrentActiveStep();
+
+        // Check if there are any pending steps to forward
+        if (next == null) {
+            return ResultUtil.failure("You are the last step, no need to forward");
+        }
+
+        next.resolveAssignedUser(allUsersDir);
+        next.setActive(true);
+
+        // Deactivate the current step
+        if (current == null) {
+            return ResultUtil.failure("No active step found");
+        }
+        current.setActive(false);
+
+        return ResultUtil.success("Workflow forwarded to the next step");
     }
 }

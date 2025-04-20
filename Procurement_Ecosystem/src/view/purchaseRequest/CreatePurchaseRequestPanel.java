@@ -56,9 +56,6 @@ public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements ID
     private void initComponents() {
 
         lbTitle = new javax.swing.JLabel();
-        lbBudget = new javax.swing.JLabel();
-        txtBudget = new javax.swing.JTextField();
-        lbUnit = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblPurchaseItems = new javax.swing.JTable();
         btnAddProduct = new javax.swing.JButton();
@@ -74,10 +71,6 @@ public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements ID
         lbTitle.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
         lbTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbTitle.setText("Create New Purchase Request");
-
-        lbBudget.setText("Estimated Budget");
-
-        lbUnit.setText("USD");
 
         tblPurchaseItems.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -114,6 +107,7 @@ public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements ID
         btnSubmit.setForeground(new java.awt.Color(255, 0, 51));
         btnSubmit.setText("Submit");
 
+        lbBudget1.setFont(new java.awt.Font("Helvetica Neue", 3, 14)); // NOI18N
         lbBudget1.setText("Reason");
 
         txtReason.setColumns(20);
@@ -131,38 +125,30 @@ public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements ID
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnBack)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 812, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(49, 49, 49)
+                .addContainerGap(55, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbPurchaseItems)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(btnRemove)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnUpdate)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(btnAddProduct))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(46, 46, 46)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lbPurchaseItems)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnRemove)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnUpdate)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnAddProduct))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addComponent(lbBudget, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtBudget, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(lbUnit))
-                                .addComponent(btnSubmit, javax.swing.GroupLayout.Alignment.TRAILING))
-                            .addComponent(lbBudget1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(49, 49, 49))))
+                        .addGap(254, 254, 254)
+                        .addComponent(btnSubmit))
+                    .addComponent(lbBudget1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(49, 49, 49))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnBack)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(lbTitle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -170,9 +156,9 @@ public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements ID
                 .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(21, 21, 21)
                         .addComponent(btnBack)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(lbPurchaseItems)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -181,17 +167,12 @@ public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements ID
                             .addComponent(btnAddProduct)
                             .addComponent(btnUpdate)
                             .addComponent(btnRemove))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(37, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(115, 115, 115)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lbBudget)
-                            .addComponent(txtBudget, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbUnit))
-                        .addGap(18, 18, 18)
+                        .addGap(122, 122, 122)
                         .addComponent(lbBudget1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane2)
                         .addGap(35, 35, 35)
                         .addComponent(btnSubmit)
                         .addGap(154, 154, 154))))
@@ -207,13 +188,10 @@ public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements ID
     private javax.swing.JButton btnUpdate;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JLabel lbBudget;
     private javax.swing.JLabel lbBudget1;
     private javax.swing.JLabel lbPurchaseItems;
     private javax.swing.JLabel lbTitle;
-    private javax.swing.JLabel lbUnit;
     private javax.swing.JTable tblPurchaseItems;
-    private javax.swing.JTextField txtBudget;
     private javax.swing.JTextArea txtReason;
     // End of variables declaration//GEN-END:variables
 

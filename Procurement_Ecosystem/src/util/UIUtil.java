@@ -1,5 +1,7 @@
 package util;
 
+import common.Result;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.JTextComponent;
@@ -30,6 +32,14 @@ public class UIUtil {
 
     public static void setTextFields(Map<JTextComponent, String> fieldValueMap) {
         for (Map.Entry<JTextComponent, String> entry : fieldValueMap.entrySet()) {
+            if (entry.getKey() != null) {
+                entry.getKey().setText(entry.getValue());
+            }
+        }
+    }
+
+    public static void setLabelText(Map<JLabel, String> labelMap) {
+        for (var entry : labelMap.entrySet()) {
             if (entry.getKey() != null) {
                 entry.getKey().setText(entry.getValue());
             }
@@ -265,6 +275,28 @@ public class UIUtil {
             showError(parent, "Unexpted type in selected cell. Expected: " + clazz.getSimpleName() + ", but got: " + value.getClass().getSimpleName());
             return Optional.empty();
         }
+    }
+
+    /**
+     * Retrieves the selected object from a JTable and performs a specified action if the selection is valid.
+     * <p>
+     * This method builds upon {@link #getSelectedTableObject(JTable, int, Class, Component, String)} and simplifies
+     * the flow where an operation (represented as a {@link Function}) is performed on the selected object.
+     * If no valid selection is made, a failure {@link Result} is returned and the action is not executed.
+     *
+     * @param table         The JTable containing selectable rows.
+     * @param columnIndex   The column index from which to retrieve the object.
+     * @param clazz         The expected class type of the object.
+     * @param parent        The parent component for displaying dialogs.
+     * @param warningMessage The message to show if no valid selection is made.
+     * @param action        A function that takes the selected object and returns a {@link Result} indicating the outcome.
+     * @param <T>           The type of the object expected from the table.
+     * @return A {@link Result} representing the outcome of the operation, or a failure result if no valid selection is found.
+     */
+    public static <T> Result<Void> withSelectedTableObject(JTable table, int columnIndex, Class<T> clazz, Component parent, String warningMessage, Function<T, Result<Void>> action) {
+        Optional<T> selected = getSelectedTableObject(table, columnIndex, clazz, parent, warningMessage);
+        return selected.map(action)
+                .orElse(ResultUtil.failure("No valid selection"));
     }
 
     /**

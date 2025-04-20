@@ -61,6 +61,11 @@ public class Session {
         return currentNetwork;
     }
 
+    public static void setSession(UserAccount user, Network network) {
+        currentUser = user;
+        currentNetwork = network;
+    }
+
     /**
      * Clears the session (e.g., on logout).
      */

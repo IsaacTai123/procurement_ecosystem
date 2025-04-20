@@ -1,10 +1,15 @@
 package controller.procurement;
 
+import common.AppContext;
 import common.Result;
+import common.Session;
 import common.dto.PurchaseItemDTO;
 import common.dto.PurchaseRequestDTO;
 import common.dto.SpecDTO;
 import directory.PurchaseItemDirectory;
+import enums.OrganizationType;
+import enums.RequestStatus;
+import enums.Role;
 import model.procurement.PurchaseRequest;
 import model.product.Product;
 import model.product.Spec;
@@ -13,18 +18,24 @@ import util.ResultUtil;
 import util.UIUtil;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author tisaac
  */
 public class PurchaseRequestController {
 
-    private final PurchaseRequestService prService = new PurchaseRequestService();
-
     private PurchaseRequestController() {}
 
     private static class PurchaseRequestControllerHolder {
         private static final PurchaseRequestController INSTANCE = new PurchaseRequestController();
+    }
+
+    private PurchaseRequestService getService() {
+        return new PurchaseRequestService(
+                AppContext.getUser(),
+                AppContext.getNetwork()
+        );
     }
 
     public static PurchaseRequestController getInstance() {
@@ -51,12 +62,23 @@ public class PurchaseRequestController {
                     pr.getPurchaseItems().newPurchaseItem(product, itemDTO.getQuantityAsInt(), itemDTO.getUnitPriceAsDouble(), spec);
                 });
 
-        return prService.submitPR(pr);
+        return getService().submitPR(pr);
     }
 
-    public Result<List<PurchaseRequest>> handleUserPR(String userId) {
+    public Result<List<PurchaseRequest>> handleUserPR(String userId, RequestStatus isCompleted) {
+        PurchaseRequestService prService = getService();
         List<PurchaseRequest> pr = prService.getPRbyUserId(userId);
-        return ResultUtil.success("Purchase requests retrieved successfully.", pr);
+        if (pr == null) {
+            return ResultUtil.failure("Purchase requests object did not exist");
+        }
+
+        // filter by status
+        List<PurchaseRequest> filtered = (isCompleted == RequestStatus.COMPLETED)
+                ? pr.stream().filter(p -> p.getStatus() == RequestStatus.COMPLETED).collect(Collectors.toList())
+                : pr.stream().filter(p -> p.getStatus() != RequestStatus.COMPLETED).collect(Collectors.toList());
+
+
+        return ResultUtil.success("Purchase requests retrieved successfully.", filtered);
     }
 
     // Handle purchaseItem
@@ -78,6 +100,18 @@ public class PurchaseRequestController {
 
         updatePurchaseItemFields(editingItemDTO, newItemDTO);
         return ResultUtil.success("Purchase item updated successfully.", prDTO);
+    }
+
+    public Result<Void> handlePRApproveByProcurement(PurchaseRequest pr) {
+        return getService().approveRRByProcurement(pr);
+    }
+
+    public Result<Void> handlePRApproveByIT(PurchaseRequest pr) {
+        return getService().approveRRByIT(pr);
+    }
+
+    public Result<Void> handlePRForwardToIT(PurchaseRequest pr) {
+        return getService().forwardPR2IT(pr);
     }
 
     private void updatePurchaseItemFields(PurchaseItemDTO target, PurchaseItemDTO source) {

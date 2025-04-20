@@ -105,6 +105,10 @@ public class WorkflowStep {
         this.remarks = remarks;
     }
 
+    public StepType getStepType() {
+        return stepType;
+    }
+
     public void resolveAssignedUser(GlobalUserAccountDirectory allUsersDir) {
         allUsersDir.findUserByOrgAndRole(orgType, requiredRole)
                 .ifPresent(this::setAssignedUser);
