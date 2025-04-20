@@ -1,6 +1,7 @@
 package model.quotation;
 import enums.RequestStatus;
 import model.ecosystem.Enterprise;
+import util.IdGenerateUtil;
 
 /**
  *
@@ -15,8 +16,9 @@ public class Quotation {
     private double price;
     private String description;
 
-    public Quotation(String id, Enterprise vendor, String remarks, double price, String description) {
-        this.id = id;
+
+    public Quotation(Enterprise vendor, String remarks, double price, String description) {
+        this.id = IdGenerateUtil.generateIdByActionAndTimestamp("Quotation");
         this.vendor = vendor;
         this.remarks = remarks;
         this.price = price;

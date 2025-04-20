@@ -11,6 +11,7 @@ import view.shipping.ManageDeliveryReqPanel;
 import javax.swing.*;
 import java.util.*;
 import java.util.function.Supplier;
+import view.purchaseOrder.MyPurchaseOrdersPanel;
 
 /**
  * @author tisaac
@@ -25,6 +26,8 @@ public class ServiceRegistry {
         Supplier<JPanel> HR = HRServicePanel::new;
         Supplier<JPanel> LOGISTICS = ManageDeliveryReqPanel::new;
         Supplier<JPanel> MYPR = MyPurchaseRequestsPanel::new;
+        Supplier<JPanel> myPurchaseOrdersPanel = MyPurchaseOrdersPanel::new;
+        
 
 
         JPanel hrService = new HRServicePanel();
@@ -67,6 +70,7 @@ public class ServiceRegistry {
 
         // Sales Manager
         serviceMap.put(new ServiceKey(Role.MANAGER, OrganizationType.SALES), List.of(
+                new ServiceItem("Manage Purchase Orders", myPurchaseOrdersPanel)
         ));
 
         // Logistics
