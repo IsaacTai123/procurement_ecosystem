@@ -57,8 +57,12 @@ public class MockDataInitializer {
         UserAccount googleITManager = userAccountService.createUserFromOrganization("Alvin", "A001", Role.MANAGER, googleIT, google);
 
         Organization googleProcurement = orgService.createOrgFromEnterprise(OrganizationType.PROCUREMENT, google);
-        UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("Isaac", "isaac", Role.SPECIALIST, googleProcurement, google);
 
+        UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac", Role.SPECIALIST, googleProcurement, google);
+        UserAccount googleSpecialist = userAccountService.createUserFromOrganization("A003", "peter", Role.SPECIALIST, googleProcurement, google);
+        
+        Organization googleFinance = orgService.createOrgFromEnterprise(OrganizationType.FINANCE, google);
+        UserAccount googleFinanceSpecialist = userAccountService.createUserFromOrganization("A004", "peter", Role.SPECIALIST, googleFinance, google);
         
         // FedEx (A003/A003)
         Enterprise fedEx = network.getEnterpriseDir().createEnterprise("FedEx", EnterpriseType.LOGISTICS);
@@ -68,9 +72,8 @@ public class MockDataInitializer {
         // Asus (sales: A004/A004) | (specialist: A005/A005)
         Enterprise asus = network.getEnterpriseDir().createEnterprise("ASUS", EnterpriseType.VENDOR);
         Organization asusSales = orgService.createOrgFromEnterprise(OrganizationType.SALES, asus); 
-        UserAccount asusSalesManager = userAccountService.createUserFromOrganization("Asus_SalesManagerA", "A004", Role.MANAGER, asusSales, google);
-        UserAccount asusSpecialist = userAccountService.createUserFromOrganization("Peter", "peter", Role.SPECIALIST, asusSales, google);
-
+        UserAccount asusSalesManager = userAccountService.createUserFromOrganization("Asus_SalesManagerA", "A004", Role.MANAGER, asusSales, asus);
+        UserAccount asusSpecialist = userAccountService.createUserFromOrganization("Test", "peter", Role.SPECIALIST, asusSales, asus);
         
         
         // Goolge procurement give a PO to Asus(vendor)
