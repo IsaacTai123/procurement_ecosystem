@@ -75,6 +75,6 @@ public class Enterprise {
     
     @Override
     public String toString() {
-        return this.name;  
+        return name;  
     }
 }
