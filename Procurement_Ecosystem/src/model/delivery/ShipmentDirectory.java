@@ -26,8 +26,8 @@ public class ShipmentDirectory {
     }
     
 
-    public void newShipment(UserAccount sender, UserAccount receiver, Date shipDate, Date expectedArrival, String title, DeliveryRequest deliveryReq) {
-        Shipment shipment = new Shipment(sender, receiver, shipDate, expectedArrival, title, deliveryReq);
+    public void newShipment(UserAccount sender, UserAccount receiver, String shipDate, String expectedArrival, String purchaseOrderID, DeliveryRequest deliveryReq) {
+        Shipment shipment = new Shipment(sender, receiver, shipDate, expectedArrival, purchaseOrderID, deliveryReq);
 
         shipments.add(shipment);
     }

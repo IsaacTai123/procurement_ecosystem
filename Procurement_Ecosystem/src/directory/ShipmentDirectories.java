@@ -13,12 +13,13 @@ import model.delivery.ShipmentDirectory;
 public class ShipmentDirectories {
 
     private final ArrayList<ShipmentDirectory> shipmentDirectories; // final: immutable list, so there's only one
-                                                                    // shipmentDirectories
+                                                                    // shipmentDirectories in a network
 
     public ShipmentDirectories() {
         this.shipmentDirectories = new ArrayList<>();
     }
 
+    // get an enterprise's shipment directory
     public ShipmentDirectory getShipmentDirectory(Enterprise enterprise) {
 
         for (ShipmentDirectory shipmentDirectory : shipmentDirectories) {

@@ -11,6 +11,7 @@ import model.procurement.PurchaseItem;
 import model.procurement.PurchaseOrder;
 import model.product.Product;
 import model.product.Spec;
+import model.user.UserAccount;
 
 /**
  *
@@ -20,15 +21,16 @@ public class TestShipment {
    
     
     
-    public void sendPOToVendor(Enterprise vendor){
+    public void sendPOToVendor(UserAccount buyerAccount, UserAccount vendorAccount){
         
         
         
-        PurchaseOrder po = new PurchaseOrder("Quotation-001", vendor, createPurchaseItems(), "134 chelsea st", 0, "I have gived you purchase orders.");
+        PurchaseOrder po = new PurchaseOrder("Quotation-001", buyerAccount, vendorAccount, createPurchaseItems(), "134 chelsea st", 0, "I have gived you purchase orders.");
         PurchaseOrderDirectory purchaseOrderList = new PurchaseOrderDirectory();
         purchaseOrderList.addPurchaseOrder(po);
         
-        vendor.setPurchaseOrderList(purchaseOrderList);
+        Enterprise vendorEnterprise = vendorAccount.getEnterprise(); // every shipment coordinator can see his company's all PO
+        vendorEnterprise.setPurchaseOrderList(purchaseOrderList);
     
     
     }

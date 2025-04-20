@@ -89,7 +89,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
                 {null, null, null, null, null}
             },
             new String [] {
-                "TrackingNumber", "Title", "Product", "Request Status", "Shipment Status"
+                "TrackingNumber", "PO ID", "Product", "Request Status", "Shipment Status"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -231,7 +231,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
             
             Object[] row = new Object[5];
             row[0] = shipment;
-            row[1] = shipment.getTitle();
+            row[1] = shipment.getPurchaseOrderID();
             row[2] = shipment.getItems().get(0).getProduct();
             row[3] = shipment.getDeliveryReq().getStatus();
             row[4] = shipment.getStatus();
