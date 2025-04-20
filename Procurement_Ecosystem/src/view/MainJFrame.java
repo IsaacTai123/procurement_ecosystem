@@ -4,6 +4,7 @@
  */
 package view;
 
+import view.sysAdmin.EcosystemWorkAreaPanel;
 import common.NetworkManager;
 import common.Result;
 import common.Session;

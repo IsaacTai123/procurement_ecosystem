@@ -194,6 +194,10 @@ public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IData
                 PurchaseRequest.class, this, "Please select a Purchase Request")
                 .orElse(null);
 
+        if (pr == null) {
+            return;
+        }
+
         ProcessPurchaseRequestPanel prp = new ProcessPurchaseRequestPanel(pr, () -> refreshData());
         nu.showCard(prp, "Process Purchase Request");
     }

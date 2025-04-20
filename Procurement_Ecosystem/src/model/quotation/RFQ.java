@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Comparator;
 import model.procurement.ContractReviewRequest;
-import model.procurement.PurchaseRequest;
+import model.procurement.PurchaseItem;
+import util.IdGenerateUtil;
 
 
 /**
@@ -17,23 +18,25 @@ import model.procurement.PurchaseRequest;
 public class RFQ {
     private String id;
     private String linkedPRId;
-    private List<Enterprise> vendors;
+    private Enterprise vendor;
     private List<Quotation> quotations;
+    private List<PurchaseItem>  purchaseItems;
     private LocalDate deadline;
     private RFQStatus status;
     private String remarks;
 
-    public RFQ(String linkedPRId) {
+    public RFQ(String linkedPRId, List<PurchaseItem> purchaseItems) {
         this.linkedPRId = linkedPRId;
-        this.id = linkedPRId; // Use PR ID as RFQ ID for visibility
-        this.vendors = new ArrayList<>();
+        this.id = IdGenerateUtil.generateWorkRequestId();
         this.quotations = new ArrayList<>();
+        this.purchaseItems = purchaseItems;
+        this.status = RFQStatus.DRAFT;
     }
 
     public String getId() { 
         return id; 
     }
-    
+
     public String getRemarks() {
         if (remarks != null) return remarks;
         StringBuilder sb = new StringBuilder();
@@ -42,10 +45,6 @@ public class RFQ {
             sb.append(q.getVendor().getName());
         }
         return sb.toString();
-    }
-
-    public void inviteVendors(List<Enterprise> vendorList) {
-        this.vendors = new ArrayList<>(vendorList);
     }
 
     public void addQuotation(Quotation quotation) {
@@ -62,7 +61,7 @@ public class RFQ {
                 .orElse(null);
     }
 
-public Quotation getSelectedQuotation() {
+    public Quotation getSelectedQuotation() {
         for (Quotation q : quotations) {
             if (q.isSelected()) {
                 return q;
@@ -82,7 +81,7 @@ public Quotation getSelectedQuotation() {
 
     public void setSelectedQuotation(Quotation selectedQuotation) {
         for (Quotation q : quotations) {
-            q.setSelected(false); // 先全部设为未选中
+            q.setSelected(false); //
         }
         selectedQuotation.setSelected(true); // 选中传入的 quotation
     }
@@ -91,12 +90,36 @@ public Quotation getSelectedQuotation() {
         this.status = status;
     }
 
-public RFQStatus getStatus() {
+    public RFQStatus getStatus() {
         return this.status;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public List<PurchaseItem> getPurchaseItems() {
+        return purchaseItems;
+    }
+
+    public void setVendor(Enterprise vendor) {
+        this.vendor = vendor;
+    }
+
+    public void setDeadline(LocalDate deadline) {
+        this.deadline = deadline;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public Enterprise getVendor() {
+        return vendor;
+    }
+
+    public LocalDate getDeadline() {
+        return deadline;
     }
 
     @Override

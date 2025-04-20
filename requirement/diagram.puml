@@ -173,7 +173,7 @@ class ProcurementClosure {
 class RFQ {
     - id : String
     - linkedPRId : String
-    - vendors : List<Enterprise>
+    - vendors : Enterprise
     - quotations : List<SubmitQuotation>
     - purchaseItems : List<PurchaseItem>
     - deadline : LocalDate

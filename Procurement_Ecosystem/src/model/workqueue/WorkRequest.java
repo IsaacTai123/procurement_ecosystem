@@ -206,4 +206,11 @@ public abstract class WorkRequest {
 
         return ResultUtil.success("Workflow forwarded to the next step");
     }
+
+    public Boolean isCompleted() {
+        return workflowSteps.stream()
+                .noneMatch(step ->
+                        step.getStatus() == ApprovalStatus.PENDING ||
+                        step.getStatus() == ApprovalStatus.REJECTED);
+    }
 }

@@ -1,9 +1,11 @@
 package registry;
 
+import enums.EnterpriseType;
 import enums.OrganizationType;
 import enums.Role;
-import view.HRServicePanel;
-import view.ITServicePanel;
+import view.services.HRServicePanel;
+import view.services.ITServicePanel;
+import view.rfq.RFQManagmentPanel;
 import view.purchaseRequest.ManagePurchaseRequestsPanel;
 import view.purchaseRequest.MyPurchaseRequestsPanel;
 import view.purchaseRequest.PurchaseItemFormPanel;
@@ -15,6 +17,12 @@ import java.util.function.Supplier;
 import view.purchaseOrder.MyPurchaseOrdersPanel;
 
 /**
+ * The ServiceRegistry manages all available services in the system based on a user's
+ * Role, OrganizationType, and EnterpriseType.
+ * <p>
+ * It maps composite keys (ServiceKey) to a list of available services (ServiceItem).
+ * Services are loaded statically during application startup.
+ *
  * @author tisaac
  */
 public class ServiceRegistry {
@@ -29,57 +37,67 @@ public class ServiceRegistry {
         Supplier<JPanel> MYPR = MyPurchaseRequestsPanel::new;
         Supplier<JPanel> myPurchaseOrdersPanel = MyPurchaseOrdersPanel::new;
         Supplier<JPanel> PRMANAGE_SERVICE = ManagePurchaseRequestsPanel::new;
+        Supplier<JPanel> RFQMANAGE_SERVICE = RFQManagmentPanel::new;
 
 
         JPanel hrService = new HRServicePanel();
 
-        // IT Manager
-        serviceMap.put(new ServiceKey(Role.MANAGER, OrganizationType.IT), List.of(
+        // Google IT Manager
+        addService(Role.MANAGER, OrganizationType.IT, EnterpriseType.BUYER,
                 new ServiceItem("IT Management", IT),
                 new ServiceItem("Manage Employees", HR),
                 new ServiceItem("Personal Purchase Requests", MYPR),
                 new ServiceItem("Manage Purchase Requests", PRMANAGE_SERVICE)
-        ));
+        );
 
-        // IT Engineer
-        serviceMap.put(new ServiceKey(Role.ENGINEER, OrganizationType.IT), List.of(
+        // Google IT Engineer
+        addService(Role.ENGINEER, OrganizationType.IT, EnterpriseType.BUYER,
                 new ServiceItem("IT Management", IT),
                 new ServiceItem("Personal Purchase Requests", MYPR)
-        ));
+        );
 
-        // Finance Manager
-        serviceMap.put(new ServiceKey(Role.ANALYST, OrganizationType.FINANCE), List.of(
-        ));
+        // Google Finance Manager
+        addService(Role.ANALYST, OrganizationType.FINANCE, EnterpriseType.BUYER);
 
-        // Procurement Specialist
-        serviceMap.put(new ServiceKey(Role.SPECIALIST, OrganizationType.PROCUREMENT), List.of(
+        // Google Procurement Specialist
+        addService(Role.SPECIALIST, OrganizationType.PROCUREMENT, EnterpriseType.BUYER,
                 new ServiceItem("Personal Purchase Requests", MYPR),
-                new ServiceItem("Manage Purchase Requests", PRMANAGE_SERVICE)
-        ));
+                new ServiceItem("Manage Purchase Requests", PRMANAGE_SERVICE),
+                new ServiceItem("Manage RFQ", RFQMANAGE_SERVICE)
+        );
 
-        // Legal Manager
-        serviceMap.put(new ServiceKey(Role.LEGAL_REVIEWER, OrganizationType.LEGAL), List.of(
-        ));
+        // Google Legal Manager
+        addService(Role.LEGAL_REVIEWER, OrganizationType.LEGAL, EnterpriseType.BUYER);
 
-        // HR Manager
-        serviceMap.put(new ServiceKey(Role.MANAGER, OrganizationType.HR), List.of(
+        // Google HR Manager
+        addService(Role.MANAGER, OrganizationType.HR, EnterpriseType.BUYER,
                 new ServiceItem("Manage Employees", HR),
                 new ServiceItem("Personal Purchase Requests", MYPR)
-        ));
+        );
 
-        // Warehouse Manager
-        serviceMap.put(new ServiceKey(Role.SPECIALIST, OrganizationType.WAREHOUSE), List.of(
-        ));
+        // Google Warehouse Manager
+        addService(Role.SPECIALIST, OrganizationType.WAREHOUSE, EnterpriseType.BUYER);
 
-        // Sales Manager
-        serviceMap.put(new ServiceKey(Role.MANAGER, OrganizationType.SALES), List.of(
-                new ServiceItem("Manage Purchase Orders", myPurchaseOrdersPanel)
-        ));
+        // Vendor Sales Manager
+        addService(Role.MANAGER, OrganizationType.SALES, EnterpriseType.VENDOR,
+                new ServiceItem("Manage RFQ", RFQMANAGE_SERVICE)
+        );
 
         // Logistics
-        serviceMap.put(new ServiceKey(Role.SHIPPING_COORDINATOR, OrganizationType.LOGISTICS), List.of(
+        addService(Role.SHIPPING_COORDINATOR, OrganizationType.LOGISTICS, EnterpriseType.LOGISTICS,
                 new ServiceItem("Manage Delivery Requests", LOGISTICS)
-        ));
+        );
+    }
+
+    /**
+     * Adds a service list mapping to the internal serviceMap with given role/org/enterprise type.
+     */
+    private static void addService(Role role, OrganizationType orgType, EnterpriseType enterpriseType, ServiceItem... services) {
+        ServiceKey key = new ServiceKey(role, orgType, enterpriseType);
+        serviceMap.put(key, Arrays.asList(services));
+        for (ServiceItem service : services) {
+            serviceItemMap.put(service.name, service.panel);
+        }
     }
 
     /**
@@ -97,10 +115,12 @@ public class ServiceRegistry {
     public static class ServiceKey {
         private final Role role;
         private final OrganizationType organizationType;
+        private final EnterpriseType entType;
 
-        public ServiceKey(Role Role, OrganizationType organizationType) {
+        public ServiceKey(Role Role, OrganizationType organizationType, EnterpriseType entType) {
             this.role = Role;
             this.organizationType = organizationType;
+            this.entType = entType;
         }
 
         /**
@@ -115,7 +135,9 @@ public class ServiceRegistry {
             if (this == o) return true;
             if (!(o instanceof ServiceKey)) return false;
             ServiceKey that = (ServiceKey) o;
-            return role == that.role && organizationType == that.organizationType;
+            return role == that.role &&
+                    organizationType == that.organizationType &&
+                    entType == that.entType;
         }
 
         /**
@@ -146,14 +168,15 @@ public class ServiceRegistry {
     }
 
     /**
-     * Returns the list of services available to the given role within a specific organization.
+     * Retrieves the list of available services for the given user context.
      *
-     * @param role     The user's role object (contains the role type like MANAGER, EMPLOYEE, etc.)
-     * @param orgType  The organization type the user belongs to (like IT, FINANCE, SALES, etc.)
-     * @return A list of available ServiceItem instances. Returns an empty list if no match is found.
+     * @param role           The user's role (e.g., MANAGER, ENGINEER)
+     * @param orgType        The organization type (e.g., IT, PROCUREMENT)
+     * @param enterpriseType The enterprise type (e.g., BUYER, VENDOR)
+     * @return List of services available to the user. Empty if none found.
      */
-    public static List<ServiceItem> getServicesFor(Role role, OrganizationType orgType) {
-        return serviceMap.getOrDefault(new ServiceKey(role, orgType), Collections.emptyList());
+    public static List<ServiceItem> getServicesFor(Role role, OrganizationType orgType, EnterpriseType enterpriseType) {
+        return serviceMap.getOrDefault(new ServiceKey(role, orgType, enterpriseType), Collections.emptyList());
     }
 
     public static Supplier<JPanel> getServicePanel(String name) {

@@ -241,7 +241,7 @@ public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements ID
         callback.refreshData();
     }
 
-    public void reloadPurchaseItemTable(List<PurchaseItemDTO> purchaseItems) {
+    private void reloadPurchaseItemTable(List<PurchaseItemDTO> purchaseItems) {
         UIUtil.reloadTable(
                 tblPurchaseItems,
                 purchaseItems,
