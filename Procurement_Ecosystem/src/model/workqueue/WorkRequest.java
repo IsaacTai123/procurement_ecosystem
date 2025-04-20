@@ -192,7 +192,6 @@ public abstract class WorkRequest {
 
         // Check if there are any pending steps to forward
         if (next == null) {
-            System.out.println("No next step found");
             return ResultUtil.failure("You are the last step, no need to forward");
         }
 

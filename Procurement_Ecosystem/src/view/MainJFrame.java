@@ -29,7 +29,14 @@ import java.util.ArrayList;
 import model.procurement.PurchaseItem;
 import directory.PurchaseItemDirectory;
 import enums.EnterpriseType;
+import java.io.IOException;
+import java.net.http.*;
+import java.net.URI;
+import enums.OrganizationType;
+import model.ecosystem.Organization;
 import util.TestRFQGenerator;
+import view.quotation.FinancePanel;
+
 
 /**
  *
@@ -63,6 +70,37 @@ public class MainJFrame extends javax.swing.JFrame {
 //        userAccountDirectory = network.getUserAccountDir();
         shipmentDirectories = network.getShipmentDirectories();
         enterpriseDirectory = network.getEnterpriseDir();
+
+        // call api
+//        try {
+//            String json = """
+//                {
+//                    "name": "Alvin",
+//                    "password": "alvin"
+//                }
+//                """;
+//
+//            HttpClient client = HttpClient.newHttpClient();
+//
+//            HttpRequest request = HttpRequest.newBuilder()
+//                    .uri(new URI("http://localhost:8000/Login"))
+//                    .header("Content-Type", "application/json")
+//                    .POST(HttpRequest.BodyPublishers.ofString(
+//                            json
+//                    ))
+//                    .build();
+//
+//            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+//
+//            System.out.println("✅ Response from server: " + response.body());
+//
+//        } catch (IOException | InterruptedException e) {
+//            System.err.println("❌ Network error: " + e.getMessage());
+//            e.printStackTrace();
+//        } catch (Exception e) {
+//            System.err.println("❌ Other error: " + e.getMessage());
+//            e.printStackTrace();
+//        }
     }
 
     /**
@@ -219,7 +257,6 @@ public class MainJFrame extends javax.swing.JFrame {
         Role role = user.getUserType();
         Session.setCurrentNetwork(selectedNetwork);
         Session.setCurrentUser(user);
-        System.out.println("Current login user: " + user.getUserId() + " " + user.getUserType().name());
 
         switch (role) {
             case SYS_ADMIN -> {
@@ -241,10 +278,17 @@ public class MainJFrame extends javax.swing.JFrame {
 
             
 //            case SPECIALIST -> {
-//                // Create dummy PR for test
-//                List<RFQ> rfqs = TestRFQGenerator.generateTestRFQs();
-//                QuotationPanel panel = new QuotationPanel(rfqs.get(0)); // or loop through with index
-//                NavigationUtil.getInstance().showCard(panel, "QuotationPanel");
+//                Organization org = user.getOrg();
+//                if (org.getTypeName() == OrganizationType.FINANCE) {
+//                    FinancePanel financePanel = new FinancePanel();
+//                    NavigationUtil.getInstance().showCard(financePanel, "FinancePanel");
+//                } else if (org.getTypeName()== OrganizationType.PROCUREMENT) {
+//                    QuotationPanel quotationPanel = new QuotationPanel(null); // or pass actual RFQ
+//                    NavigationUtil.getInstance().showCard(quotationPanel, "QuotationPanel");
+//                } else {
+//                    DashboardPanel dashboard = new DashboardPanel();
+//                    NavigationUtil.getInstance().showCard(dashboard, "Dashboard");
+//                }
 //            }
 
             default -> {

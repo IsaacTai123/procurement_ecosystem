@@ -42,6 +42,7 @@ public class DashboardPanel extends javax.swing.JPanel implements IDataRefreshCa
         UIUtil.setEnterpriseTitle(lbTitle, user.getEnterprise().getName());
         lbUserId.setText("User Id: " + user.getUserId());
         lbUserName.setText("User Name: " + user.getUsername());
+        lbUserRole.setText("User Role: " + user.getUserType());
     }
 
     /**
@@ -60,6 +61,7 @@ public class DashboardPanel extends javax.swing.JPanel implements IDataRefreshCa
         jScrollPane1 = new javax.swing.JScrollPane();
         tblServices = new javax.swing.JTable();
         btnNext = new javax.swing.JButton();
+        lbUserRole = new javax.swing.JLabel();
 
         lbTitle.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
         lbTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -102,6 +104,8 @@ public class DashboardPanel extends javax.swing.JPanel implements IDataRefreshCa
             }
         });
 
+        lbUserRole.setText("User Role: ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -116,7 +120,8 @@ public class DashboardPanel extends javax.swing.JPanel implements IDataRefreshCa
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(lbUserId, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lbUserName, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE))
+                        .addComponent(lbUserName, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
+                        .addComponent(lbUserRole, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE))
                     .addComponent(btnProfile, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(89, 89, 89))
         );
@@ -130,7 +135,9 @@ public class DashboardPanel extends javax.swing.JPanel implements IDataRefreshCa
                         .addComponent(lbUserId)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lbUserName)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lbUserRole)
+                        .addGap(21, 21, 21)
                         .addComponent(btnProfile))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -163,6 +170,7 @@ public class DashboardPanel extends javax.swing.JPanel implements IDataRefreshCa
     private javax.swing.JLabel lbTitle;
     private javax.swing.JLabel lbUserId;
     private javax.swing.JLabel lbUserName;
+    private javax.swing.JLabel lbUserRole;
     private javax.swing.JTable tblServices;
     // End of variables declaration//GEN-END:variables
 

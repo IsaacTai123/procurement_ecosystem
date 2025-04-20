@@ -1,10 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model.quotation;
-import enums.ContractStatus;
+import enums.RequestStatus;
 import model.ecosystem.Enterprise;
+import util.IdGenerateUtil;
 
 /**
  *
@@ -14,18 +11,19 @@ public class Quotation {
     private String id;
     private Enterprise vendor;
     private String remarks;
-    private ContractStatus status;
+    private RequestStatus status;
     private boolean selected;
     private double price;
     private String description;
 
-    public Quotation(String id, Enterprise vendor, String remarks, double price) {
-        this.id = id;
+
+    public Quotation(Enterprise vendor, String remarks, double price, String description) {
+        this.id = IdGenerateUtil.generateIdByActionAndTimestamp("Quotation");
         this.vendor = vendor;
         this.remarks = remarks;
         this.price = price;
         this.description = description;
-        this.status = ContractStatus.DRAFT;
+        this.status = RequestStatus.PENDING;
         this.selected = false;
     }
 
@@ -40,12 +38,16 @@ public class Quotation {
     public String getRemarks() {
         return remarks;
     }
+    
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
 
-    public ContractStatus getStatus() {
+    public RequestStatus getStatus() {
         return status;
     }
 
-    public void setStatus(ContractStatus status) {
+    public void setStatus(RequestStatus status) {
         this.status = status;
     }
 

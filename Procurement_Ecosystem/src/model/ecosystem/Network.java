@@ -61,6 +61,10 @@ public class Network {
     public EnterpriseDirectory getEnterpriseDir() {
         return enterpriseDir;
     }
+    
+//    public EnterpriseDirectory getEnterpriseDir() {
+//        return enterpriseDir;
+//    }
 
     public UserRegistry getUserRegistry() {
         return userRegistry;

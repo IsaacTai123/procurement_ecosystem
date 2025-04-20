@@ -33,6 +33,7 @@ import model.delivery.ShipmentItem;
 import model.product.Product;
 import service.OrganizationService;
 import service.UserAccountService;
+import util.TestShipment;
 
 
 /**
@@ -49,28 +50,36 @@ public class MockDataInitializer {
         OrganizationService orgService = network.getOrgService();
         UserAccountService userAccountService = network.getUserAccountService();
 
-        // GoogleX
+        // GoogleX (IT: A001/A001) | (Procurement: A002/isaac)
         Enterprise google = network.getEnterpriseDir().createEnterprise("Google", EnterpriseType.BUYER);
 
         Organization googleIT = orgService.createOrgFromEnterprise(OrganizationType.IT, google);
-        UserAccount googleITManager = userAccountService.createUserFromOrganization("A001", "alvin", Role.MANAGER, googleIT, google);
+        UserAccount googleITManager = userAccountService.createUserFromOrganization("Alvin", "A001", Role.MANAGER, googleIT, google);
 
         Organization googleProcurement = orgService.createOrgFromEnterprise(OrganizationType.PROCUREMENT, google);
-        UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac", Role.SPECIALIST, googleProcurement, google);
 
-        // FedEx
+        UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac", Role.SPECIALIST, googleProcurement, google);
+        UserAccount googleSpecialist = userAccountService.createUserFromOrganization("A003", "peter", Role.SPECIALIST, googleProcurement, google);
+        
+        Organization googleFinance = orgService.createOrgFromEnterprise(OrganizationType.FINANCE, google);
+        UserAccount googleFinanceSpecialist = userAccountService.createUserFromOrganization("A004", "peter", Role.SPECIALIST, googleFinance, google);
+        
+        // FedEx (A005/A005)
         Enterprise fedEx = network.getEnterpriseDir().createEnterprise("FedEx", EnterpriseType.LOGISTICS);
         Organization fedExShipping = orgService.createOrgFromEnterprise(OrganizationType.LOGISTICS, fedEx);
-        UserAccount fedExShippingCoordinator = userAccountService.createUserFromOrganization("A003", "A003", Role.SHIPPING_COORDINATOR, fedExShipping, google);
+        UserAccount fedExShippingCoordinator = userAccountService.createUserFromOrganization("A005", "A005", Role.SHIPPING_COORDINATOR, fedExShipping, google);
 
-        // Asus
+        // Asus (sales: A006/A006) | (specialist: A007/A007)
         Enterprise asus = network.getEnterpriseDir().createEnterprise("ASUS", EnterpriseType.VENDOR);
         Organization asusSales = orgService.createOrgFromEnterprise(OrganizationType.SALES, asus); 
-        UserAccount asusSalesManager = userAccountService.createUserFromOrganization("SalesManagerA", "SalesManagerA", Role.MANAGER, asusSales, google);
-        UserAccount asusSpecialist = userAccountService.createUserFromOrganization("peter", "peter", Role.SPECIALIST, asusSales, google);
-
-
-        // Add new delivery Request
+        UserAccount asusSalesManager = userAccountService.createUserFromOrganization("Asus_SalesManagerA", "A006", Role.MANAGER, asusSales, asus);
+        UserAccount asusSpecialist = userAccountService.createUserFromOrganization("Test", "peter", Role.SPECIALIST, asusSales, asus);
+        
+        
+        // Goolge procurement give a PO to Asus(vendor)
+        new TestShipment().sendPOToVendor(asus);
+        
+        // Asus(vendor) give FedEx a new delivery Request
         DeliveryController deliveryController = new DeliveryController();
         
         ShipmentDirectory fedEx_shipmentDirectory = new ShipmentDirectory(fedEx);
@@ -83,9 +92,9 @@ public class MockDataInitializer {
         
         Date currentDate = new Date();
         
-
         deliveryController.requestShipping(items, fedEx, asusSalesManager, googleProcurementManager, currentDate, currentDate, fedEx_shipmentDirectory, "Laptops");
 
+        System.out.println("get po first product: " + asus.getPurchaseOrderList());
         
         
         return network;

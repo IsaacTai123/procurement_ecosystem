@@ -28,6 +28,7 @@
                   <Group type="103" alignment="1" groupAlignment="1" max="-2" attributes="0">
                       <Component id="lbUserId" max="32767" attributes="0"/>
                       <Component id="lbUserName" pref="173" max="32767" attributes="0"/>
+                      <Component id="lbUserRole" alignment="1" pref="173" max="32767" attributes="0"/>
                   </Group>
                   <Component id="btnProfile" alignment="1" min="-2" pref="178" max="-2" attributes="0"/>
               </Group>
@@ -45,7 +46,9 @@
                       <Component id="lbUserId" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="lbUserName" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="lbUserRole" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                       <Component id="btnProfile" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
@@ -119,6 +122,11 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnNextActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lbUserRole">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="User Role: "/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

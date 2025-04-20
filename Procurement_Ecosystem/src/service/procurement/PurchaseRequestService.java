@@ -188,7 +188,7 @@ public class PurchaseRequestService {
 
     private Result<Void> isUserAuthorized(OrganizationType org, Role role) {
         // Check if current user match the role
-        System.out.println("Current user: " + currentUser.getUserType().name() + " " + currentUser.getOrg().getTypeName().name());
+//        System.out.println("Current user: " + currentUser.getUserType().name() + " " + currentUser.getOrg().getTypeName().name());
         if (currentUser.getUserType().name().equals(role.name()) && currentUser.getOrg().getTypeName().name().equals(org.name())) {
             return ResultUtil.success("User is authorized");
         } else {

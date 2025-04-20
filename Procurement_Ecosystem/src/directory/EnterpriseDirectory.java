@@ -5,6 +5,7 @@ import model.ecosystem.Enterprise;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author tisaac
@@ -18,7 +19,7 @@ public class EnterpriseDirectory {
     }
 
     public Enterprise createEnterprise(String name, EnterpriseType type) {
-        Enterprise enterprise = new Enterprise(name);
+        Enterprise enterprise = new Enterprise(name, type);
         enterprisesList.add(enterprise);
         return enterprise;
     }
@@ -32,5 +33,11 @@ public class EnterpriseDirectory {
                 .filter(ent -> ent.getName().equals(name))
                 .findFirst()
                 .orElse(null);
+    }
+    
+    public List<Enterprise> getAllLogisticsEnterprises() {
+        return enterprisesList.stream()
+                .filter(ent -> ent.getType() == EnterpriseType.LOGISTICS)
+                .collect(Collectors.toList());
     }
 }
