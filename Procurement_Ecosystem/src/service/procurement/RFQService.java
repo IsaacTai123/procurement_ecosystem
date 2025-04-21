@@ -24,6 +24,12 @@ public class RFQService {
         // Get Enterprise from vendor
         rfq.setVendor(currentUser.getEnterprise());
         rfq.setStatus(RFQStatus.SENT);
+
+        // Link RFQ to Purchase Request
+        currentUser.getEnterprise().getPurchaseRequestList()
+                .findRequestById(rfq.getLinkedPRId())
+                .addLinkedRFQId(rfq.getId());
+
         return ResultUtil.success("RFQ submitted successfully");
     }
 }

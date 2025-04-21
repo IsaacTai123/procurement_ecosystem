@@ -1,30 +1,37 @@
 package model.quotation;
+import enums.OrganizationType;
 import enums.RequestStatus;
+import enums.Role;
+import enums.StepType;
 import model.ecosystem.Enterprise;
+import model.workqueue.WorkRequest;
 import util.IdGenerateUtil;
 
 /**
  *
  * @author qiyaochen
  */
-public class Quotation {
+public class Quotation extends WorkRequest {
     private String id;
     private Enterprise vendor;
     private String remarks;
-    private RequestStatus status;
-    private boolean selected;
     private double price;
-    private String description;
+    private boolean selected;
 
 
-    public Quotation(Enterprise vendor, String remarks, double price, String description) {
+    public Quotation(Enterprise vendor, String remarks, double price) {
         this.id = IdGenerateUtil.generateIdByActionAndTimestamp("Quotation");
         this.vendor = vendor;
         this.remarks = remarks;
         this.price = price;
-        this.description = description;
         this.status = RequestStatus.PENDING;
         this.selected = false;
+    }
+
+    @Override
+    protected void initWorkflowSteps() {
+        addStep(OrganizationType.PROCUREMENT, Role.SPECIALIST, StepType.APPROVER, false);
+        addStep(OrganizationType.FINANCE, Role.ANALYST, StepType.APPROVER, false);
     }
 
     public String getId() {
@@ -61,9 +68,5 @@ public class Quotation {
     
     public double getPrice() {
         return price;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

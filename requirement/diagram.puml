@@ -116,7 +116,6 @@ WorkRequest --> WorkflowStep
 
 WorkRequest <|-- PurchaseRequest
 WorkRequest <|-- SubmitQuotation
-WorkRequest <|-- PurchaseOrder
 WorkRequest <|-- ContractReviewRequest
 WorkRequest <|-- DeliveryRequest
 
@@ -125,13 +124,16 @@ WorkRequest <|-- DeliveryRequest
 class PurchaseRequest {
     - reason : String
     - purchaseItems : List<PurchaseItem>
-    - rfqId : String
+    - linkedRFQIds : List<String>
+    # initWorkflowSteps() : void
+    + addLinkedRFQId(rfqId : String) : void
+    + addPurchaseItem(Product item, int quantity,
+    double unitPrice, Spec spec) : void
 }
 
 class SubmitQuotation {
     - rfqId : String
     - vendor : Enterprise
-    - purchaseItems : List<PurchaseItem>
     - paymentTerms : String
     - remarks : String
     + getTotalAmount() : double
@@ -290,4 +292,64 @@ DeliveryRequest --> Shipment : dispatches
 
 ProcurementClosure --> PurchaseRequest : closes
 ProcurementClosure --> DeliveryReceipt : confirms
+
+' ================= Layer 6: Directories =================
+
+Network --> EnterpriseDirectory : contains
+Network --> GlobalOrganizationDirectory : contains
+Network --> GlobalUserAccountDirectory : contains
+Network --> RFQDirectory : contains
+Network --> ShipmentDirectory : contains
+
+class EnterpriseDirectory {
+    - enterprises : List<Enterprise>
+    + addEnterprise(enterprise : Enterprise) : void
+    + getEnterpriseById(id : String) : Enterprise
+}
+
+class OrganizationDirectory {
+    - organizations : List<Organization>
+    + addOrganization(org : Organization) : void
+    + getOrganizationById(id : String) : Organization
+}
+
+class ShipmentDirectory {
+    - shipments : List<Shipment>
+    + addShipment(shipment : Shipment) : void
+    + getShipmentById(id : String) : Shipment
+}
+
+class GlobalUserAccountDirectory {
+    - userAccounts : List<UserAccount>
+    + addUserAccount(user : UserAccount) : void
+    + getUserAccountById(id : String) : UserAccount
+}
+
+class GlobalOrganizationDirectory {
+    - organizations : List<Organization>
+    + addOrganization(org : Organization) : void
+    + getOrganizationById(id : String) : Organization
+}
+
+class RFQDirectory {
+    - rfqs : List<RFQ>
+    + addRFQ(rfq : RFQ) : void
+    + getRFQById(id : String) : RFQ
+}
+
+class PurchaseOrderDirectory {
+    - purchaseOrders : List<PurchaseOrder>
+    + addPurchaseOrder(po : PurchaseOrder) : void
+    + getPurchaseOrderById(id : String) : PurchaseOrder
+}
+
+class PurchaseRequestDirectory {
+    - purchaseRequests : List<PurchaseRequest>
+    + addPurchaseRequest(pr : PurchaseRequest) : void
+    + getPurchaseRequestById(id : String) : PurchaseRequest
+}
+
+Enterprise --> PurchaseOrderDirectory : contains
+Enterprise --> PurchaseRequestDirectory : contains
+
 @enduml

@@ -1,6 +1,8 @@
 package model.procurement;
 
 import java.util.ArrayList;
+
+import enums.RequestStatus;
 import model.ecosystem.Organization;
 import model.product.Product;
 import model.product.Spec;
@@ -11,6 +13,7 @@ import model.delivery.Shipment;
 import model.ecosystem.Enterprise;
 import model.user.UserAccount;
 import model.workqueue.DeliveryRequest;
+import model.workqueue.WorkRequest;
 import util.IdGenerateUtil;
 import util.TimeUtil;
 
@@ -34,8 +37,8 @@ public class PurchaseOrder {
     private Shipment shipment;
     private DeliveryRequest deliveryRequest;
 
-    
-    
+
+
 
 
     public PurchaseOrder(String quotationId, UserAccount buyerAccount, UserAccount vendorAccount, ArrayList<PurchaseItem> purchaseItems, String shippingAddress, double totalAmount, String remarks) {
@@ -167,6 +170,9 @@ public class PurchaseOrder {
         this.purchasedTime = purchasedTime;
     }
 
+    public Enterprise getVendor() {
+        return vendorAccount.getEnterprise();
+    }
     public Shipment getShipment() {
         return shipment;
     }
@@ -183,10 +189,10 @@ public class PurchaseOrder {
         this.deliveryRequest = deliveryRequest;
     }
 
-    
-   
-    
-    
+
+
+
+
 
     @Override
     public String toString() {

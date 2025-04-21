@@ -30,4 +30,11 @@ public class PurchaseRequestDirectory {
                 .filter(pr -> pr.getSender() != null && pr.getSender().getUserId().equals(userId))
                 .collect(Collectors.toList());
     }
+
+    public PurchaseRequest findRequestById(String id) {
+        return purchaseRequestList.stream()
+                .filter(pr -> pr.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
 }

@@ -2,40 +2,40 @@ package view.quotation;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*; // Added import for layout and color classes
+
+import common.AppContext;
 import model.quotation.Quotation;
 import model.quotation.RFQ;
-import enums.ContractStatus;
 import enums.RFQStatus;
 import enums.RequestStatus;
 
 import java.util.List;
 import util.NavigationUtil;
-import util.TestRFQGenerator;
 
 /**
  *
  * @author qiyaochen
  */
-public class FinancePanel extends javax.swing.JPanel {
+public class QuotationReviewPanel extends javax.swing.JPanel {
 
-    private List<RFQ> rfqs = TestRFQGenerator.getCachedRFQs();
+    private List<RFQ> rfqList;
     private RFQ rfq;
 
     /**
      * Creates new form FinancePanel
      */
-    public FinancePanel() {
+    public QuotationReviewPanel() {
         initComponents();
         populateQuotationTable();
+        rfqList = AppContext.getNetwork().getRfqDirectory().getRFQList();
     }
     
     private void populateQuotationTable() {
         DefaultTableModel model = (DefaultTableModel) quotationTable.getModel();
         model.setRowCount(0);
 
-        for (RFQ rfq : rfqs) {
-            for (Quotation q : rfq.getQuotations()) {
+        for (RFQ rfq : rfqList) {
+            for (Quotation q : rfq.getQuotations().getQuotationList()) {
                 if (q.isSelected() && q.getStatus() == RequestStatus.RECEIVED) {
                     model.addRow(new Object[]{
                         q.getId(),
@@ -48,8 +48,8 @@ public class FinancePanel extends javax.swing.JPanel {
     }
 
     private Quotation findQuotationById(String id) {
-        for (RFQ r : rfqs) {
-            for (Quotation q : r.getQuotations()) {
+        for (RFQ r : rfqList) {
+            for (Quotation q : r.getQuotations().getQuotationList()) {
                 if (q.getId().equals(id)) {
                     return q;
                 }
@@ -76,7 +76,6 @@ public class FinancePanel extends javax.swing.JPanel {
         txtRemark = new javax.swing.JTextArea();
         btnReject = new javax.swing.JButton();
         btnApprove = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
         lbTitle1 = new javax.swing.JLabel();
 
         quotationTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -148,11 +147,6 @@ public class FinancePanel extends javax.swing.JPanel {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Helvetica Neue", 3, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 102, 102));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Next>>");
-
         lbTitle1.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
         lbTitle1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbTitle1.setText("Remark:");
@@ -185,11 +179,6 @@ public class FinancePanel extends javax.swing.JPanel {
                                     .addComponent(viewBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(414, 414, 414)
-                    .addComponent(jLabel1)
-                    .addContainerGap(415, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -211,11 +200,6 @@ public class FinancePanel extends javax.swing.JPanel {
                     .addComponent(btnReject, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnApprove, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(62, 62, 62))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(269, 269, 269)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(278, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -259,8 +243,8 @@ public class FinancePanel extends javax.swing.JPanel {
         }
 
         String selectedId = (String) quotationTable.getValueAt(row, 0);
-        for (RFQ r : rfqs) {
-            for (Quotation q : r.getQuotations()) {
+        for (RFQ r : rfqList) {
+            for (Quotation q : r.getQuotations().getQuotationList()) {
                 if (q.getId().equals(selectedId)) {
                     q.setStatus(RequestStatus.REJECTED);
                     q.setRemarks(remark);
@@ -282,8 +266,8 @@ public class FinancePanel extends javax.swing.JPanel {
         }
 
         String selectedId = (String) quotationTable.getValueAt(row, 0);
-        for (RFQ r : rfqs) {
-            for (Quotation q : r.getQuotations()) {
+        for (RFQ r : rfqList) {
+            for (Quotation q : r.getQuotations().getQuotationList()) {
                 if (q.getId().equals(selectedId)) {
                     q.setStatus(RequestStatus.APPROVED);
                     r.setStatus(RFQStatus.RECEIVED); // 或者 RECEIVED，看你流程
@@ -301,7 +285,6 @@ public class FinancePanel extends javax.swing.JPanel {
     private javax.swing.JButton btnApprove;
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnReject;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lbTitle;

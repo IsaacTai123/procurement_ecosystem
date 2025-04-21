@@ -1,12 +1,11 @@
 package model.quotation;
+import directory.QuotationDirectory;
 import enums.RFQStatus;
 import model.ecosystem.Enterprise;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Comparator;
-import model.procurement.ContractReviewRequest;
+
 import model.procurement.PurchaseItem;
 import util.IdGenerateUtil;
 
@@ -19,7 +18,7 @@ public class RFQ {
     private String id;
     private String linkedPRId;
     private Enterprise vendor;
-    private List<Quotation> quotations;
+    private QuotationDirectory quotations;
     private List<PurchaseItem>  purchaseItems;
     private LocalDate deadline;
     private RFQStatus status;
@@ -27,8 +26,8 @@ public class RFQ {
 
     public RFQ(String linkedPRId, List<PurchaseItem> purchaseItems) {
         this.linkedPRId = linkedPRId;
-        this.id = IdGenerateUtil.generateWorkRequestId();
-        this.quotations = new ArrayList<>();
+        this.id = IdGenerateUtil.generateIdByActionAndTimestamp("RFQ");
+        this.quotations = new QuotationDirectory();
         this.purchaseItems = purchaseItems;
         this.status = RFQStatus.DRAFT;
     }
@@ -40,50 +39,15 @@ public class RFQ {
     public String getRemarks() {
         if (remarks != null) return remarks;
         StringBuilder sb = new StringBuilder();
-        for (Quotation q : quotations) {
+        for (Quotation q : quotations.getQuotationList()) {
             if (sb.length() > 0) sb.append(", ");
             sb.append(q.getVendor().getName());
         }
         return sb.toString();
     }
 
-    public void addQuotation(Quotation quotation) {
-        this.quotations.add(quotation);
-    }
-
-    public List<Quotation> getQuotations() {
-        return this.quotations;
-    }
-
-    public Quotation getBestQuotation() {
-        return quotations.stream()
-                .min(Comparator.comparingDouble(Quotation::getPrice))
-                .orElse(null);
-    }
-
-    public Quotation getSelectedQuotation() {
-        for (Quotation q : quotations) {
-            if (q.isSelected()) {
-                return q;
-            }
-        }
-        return null; // 如果没有被选中的 quotation
-    }
-
-    public ContractReviewRequest toContractReviewRequest(Quotation selected) {
-        selected.setSelected(true);
-        return new ContractReviewRequest(selected);
-    }
-
     public String getLinkedPRId() {
         return linkedPRId;
-    }
-
-    public void setSelectedQuotation(Quotation selectedQuotation) {
-        for (Quotation q : quotations) {
-            q.setSelected(false); //
-        }
-        selectedQuotation.setSelected(true); // 选中传入的 quotation
     }
 
     public void setStatus(RFQStatus status){
@@ -122,8 +86,12 @@ public class RFQ {
         return deadline;
     }
 
+    public QuotationDirectory getQuotations() {
+        return quotations;
+    }
+
     @Override
     public String toString() {
-        return id != null ? id : linkedPRId;
+        return id;
     }
 }
