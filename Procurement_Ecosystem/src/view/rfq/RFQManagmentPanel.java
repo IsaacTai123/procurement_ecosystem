@@ -5,11 +5,14 @@
 package view.rfq;
 
 import common.AppContext;
+import enums.EnterpriseType;
 import interfaces.IDataRefreshCallback;
 import interfaces.IDataRefreshCallbackAware;
+import model.ecosystem.Enterprise;
 import model.quotation.RFQ;
 import util.NavigationUtil;
 import util.UIUtil;
+import view.quotation.SubmitQuotationPanel;
 
 /**
  *
@@ -32,6 +35,7 @@ public class RFQManagmentPanel extends javax.swing.JPanel implements IDataRefres
         UIUtil.setEnterpriseTitle(lbTitle, AppContext.getUserEnterprise().getName());
         UIUtil.clearTable(tblRFQ);
         refreshRFQTable();
+        toggleButtons(AppContext.getUserEnterprise().getType());
     }
 
     private void setupListeners() {
@@ -63,7 +67,18 @@ public class RFQManagmentPanel extends javax.swing.JPanel implements IDataRefres
     }
 
     private void handleCreateQuotationbtn() {
-
+        UIUtil.getSelectedTableObject(
+                tblRFQ,
+                0,
+                RFQ.class,
+                this,
+                "Please select a RFQ to view"
+        ).ifPresent(rfq -> {
+            NavigationUtil.getInstance().showCard(
+                    new SubmitQuotationPanel(rfq, () -> refreshRFQTable()),
+                    "Submit Quotation"
+            );
+        });
     }
 
     private void refreshRFQTable() {
@@ -71,11 +86,21 @@ public class RFQManagmentPanel extends javax.swing.JPanel implements IDataRefres
                 tblRFQ,
                 AppContext.getNetwork().getRfqDirectory().getRFQList(),
                 e -> new Object[] {
+                        e,
                         e.getVendor(),
                         e.getDeadline(),
                         e.getStatus()
                 }
         );
+    }
+
+    private void toggleButtons(EnterpriseType type) {
+        if (type == EnterpriseType.BUYER){
+            UIUtil.hide(
+                    btnCreateQuotation,
+                    btnReject
+            );
+        }
     }
 
 
@@ -107,17 +132,17 @@ public class RFQManagmentPanel extends javax.swing.JPanel implements IDataRefres
 
         tblRFQ.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Vendor", "Deadline", "Status"
+                "Id", "Vendor", "Deadline", "Status"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                true, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -126,9 +151,9 @@ public class RFQManagmentPanel extends javax.swing.JPanel implements IDataRefres
         });
         jScrollPane1.setViewportView(tblRFQ);
         if (tblRFQ.getColumnModel().getColumnCount() > 0) {
-            tblRFQ.getColumnModel().getColumn(0).setResizable(false);
             tblRFQ.getColumnModel().getColumn(1).setResizable(false);
             tblRFQ.getColumnModel().getColumn(2).setResizable(false);
+            tblRFQ.getColumnModel().getColumn(3).setResizable(false);
         }
 
         btnBack.setText("<<Back");

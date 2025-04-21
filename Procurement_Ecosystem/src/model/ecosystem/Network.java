@@ -25,7 +25,6 @@ public class Network {
     private final GlobalOrganizationDirectory globalOrgDir;
     private final RFQDirectory rfqDirectory;
 
-
     // Helper classes
     private final UserRegistry userRegistry;
     private final OrganizationRegistry orgRegistry;

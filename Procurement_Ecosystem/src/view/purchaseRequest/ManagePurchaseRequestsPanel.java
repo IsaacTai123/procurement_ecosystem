@@ -6,17 +6,13 @@ package view.purchaseRequest;
 
 import common.AppContext;
 import common.Result;
-import common.Session;
 import controller.procurement.PurchaseRequestController;
 import enums.ApprovalStatus;
 import enums.OrganizationType;
 import enums.RequestStatus;
-import enums.Role;
 import interfaces.IDataRefreshCallback;
 import interfaces.IDataRefreshCallbackAware;
-import model.ecosystem.Enterprise;
 import model.procurement.PurchaseRequest;
-import model.user.UserAccount;
 import util.NavigationUtil;
 import util.UIUtil;
 import view.rfq.RFQFormPanel;
@@ -130,7 +126,7 @@ public class ManagePurchaseRequestsPanel extends javax.swing.JPanel implements I
                     pr.getRequestDate(),
                     pr.getStatus(),
                     approvalStatus,
-                    pr.getRfqId().size()
+                    pr.getLinkedRFQIds().size()
             };
         });
     }
