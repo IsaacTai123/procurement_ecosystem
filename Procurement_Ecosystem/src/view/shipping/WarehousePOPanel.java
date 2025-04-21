@@ -4,17 +4,53 @@
  */
 package view.shipping;
 
+import common.Session;
+import directory.PurchaseOrderDirectory;
+import enums.ShipmentStatus;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.delivery.Shipment;
+import model.delivery.ShipmentDirectory;
+import model.ecosystem.Enterprise;
+import model.ecosystem.Network;
+import model.procurement.PurchaseOrder;
+import model.user.UserAccount;
+
 /**
  *
- * @author qiyaochen
+ * @author qiyaochen, alvin
  */
 public class WarehousePOPanel extends javax.swing.JPanel {
 
+    
+    ShipmentDirectory shipmentDirectory;
+    PurchaseOrderDirectory purchaseOrderDirectory;
+    private List<Shipment> shipments;
+    private UserAccount currentUser;
+    private Network network;
+    private Enterprise enterprise;
+    
     /**
      * Creates new form PurchaseOrderPanel
      */
     public WarehousePOPanel() {
         initComponents();
+        
+        this.currentUser = Session.getCurrentUser();
+        this.network = Session.getCurrentNetwork();
+        this.enterprise = currentUser.getEnterprise();
+
+        this.purchaseOrderDirectory = enterprise.getPurchaseOrderList();
+        
+     
+        
+      
+      
+        
+        populateTable();
+        
     }
 
     /**
@@ -28,82 +64,16 @@ public class WarehousePOPanel extends javax.swing.JPanel {
 
         lbTitle = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblPoRequest = new javax.swing.JTable();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tblDeliveryRequest = new javax.swing.JTable();
         BtnDelivered = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblRequests = new javax.swing.JTable();
 
         lbTitle.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
         lbTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbTitle.setText("Purchase Order");
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 3, 18)); // NOI18N
-        jLabel1.setText("Delivery Request");
-
-        jLabel2.setFont(new java.awt.Font("Helvetica Neue", 3, 18)); // NOI18N
-        jLabel2.setText("PO Request");
-
-        tblPoRequest.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
-            },
-            new String [] {
-                "ID", "Remarks"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(tblPoRequest);
-        if (tblPoRequest.getColumnModel().getColumnCount() > 0) {
-            tblPoRequest.getColumnModel().getColumn(0).setPreferredWidth(5);
-            tblPoRequest.getColumnModel().getColumn(1).setPreferredWidth(200);
-        }
-
-        tblDeliveryRequest.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null},
-                {null},
-                {null},
-                {null}
-            },
-            new String [] {
-                "Status"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane2.setViewportView(tblDeliveryRequest);
+        jLabel1.setText("PO & Delivery Request");
 
         BtnDelivered.setBackground(new java.awt.Color(255, 153, 0));
         BtnDelivered.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
@@ -114,25 +84,43 @@ public class WarehousePOPanel extends javax.swing.JPanel {
             }
         });
 
+        tblRequests.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "PO ID", "Request Status", "Ship Date", "Arrival", "Delivery Status"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tblRequests);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 703, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(BtnDelivered, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(BtnDelivered, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 703, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -140,14 +128,10 @@ public class WarehousePOPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(42, 42, 42)
+                .addComponent(jLabel1)
+                .addGap(26, 26, 26)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(78, 78, 78)
                 .addComponent(BtnDelivered, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 81, Short.MAX_VALUE))
         );
@@ -155,17 +139,68 @@ public class WarehousePOPanel extends javax.swing.JPanel {
 
     private void BtnDeliveredActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnDeliveredActionPerformed
         // TODO add your handling code here:
+        
+        int row = tblRequests.getSelectedRow();
+        
+        if(row < 0) {
+            JOptionPane.showMessageDialog(null, "Please select a row from the table first", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        
+        PurchaseOrder po = (PurchaseOrder)tblRequests.getValueAt(row, 0); // the first element store an object
+        
+        if(po.getShipment() == null || po.getDeliveryRequest() == null) {
+            JOptionPane.showMessageDialog(null, "PO has not been shipped!", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        po.getShipment().setStatus(ShipmentStatus.DELIVERED);
+        populateTable();
+        
     }//GEN-LAST:event_BtnDeliveredActionPerformed
 
+    
+    private void populateTable() {
+        
+        DefaultTableModel model = (DefaultTableModel) tblRequests.getModel(); // get table schema to control the table
+        model.setRowCount(0); // clean all data in the table
+        
+//         if(row < 0) {
+//            JOptionPane.showMessageDialog(null, "Please select a row from the table first", "Warning", JOptionPane.WARNING_MESSAGE);
+//            return;
+//        }
+        
+        
+        for (PurchaseOrder po: purchaseOrderDirectory.getPurchaseOrderList()){
+
+            Object[] row = new Object[5];
+            row[0] = po;
+           
+            if (po.getShipment() == null || po.getDeliveryRequest() == null) {
+                row[1] = "—";
+                row[2] = "—"; // or null, or "N/A"
+                row[3] = "—";
+                row[4] = "Not Delivered";
+            } else {
+                row[1] = po.getDeliveryRequest().getStatus();
+                row[2] = po.getShipment().getShipDate();
+                row[3] = po.getShipment().getExpectedArrival();
+                row[4] = po.getShipment().getStatus();
+            }
+
+
+        
+            model.addRow(row);
+            
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnDelivered;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lbTitle;
-    private javax.swing.JTable tblDeliveryRequest;
-    private javax.swing.JTable tblPoRequest;
+    private javax.swing.JTable tblRequests;
     // End of variables declaration//GEN-END:variables
 }

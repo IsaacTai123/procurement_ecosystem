@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.util.*;
 import java.util.function.Supplier;
 import view.purchaseOrder.MyPurchaseOrdersPanel;
+import view.shipping.WarehousePOPanel;
 
 /**
  * The ServiceRegistry manages all available services in the system based on a user's
@@ -39,10 +40,13 @@ public class ServiceRegistry {
         Supplier<JPanel> MYPR = MyPurchaseRequestsPanel::new;
         Supplier<JPanel> myPurchaseOrdersPanel = MyPurchaseOrdersPanel::new;
         Supplier<JPanel> PRMANAGE_SERVICE = ManagePurchaseRequestsPanel::new;
+        Supplier<JPanel> warehousePOPanel = WarehousePOPanel::new;
         Supplier<JPanel> RFQMANAGE_SERVICE = RFQManagmentPanel::new;
         Supplier<JPanel> QUOTATION_SERVICE = ManageQuotationPanel::new;
         Supplier<JPanel> QUOTATION_REVIEW = QuotationReviewPanel::new;
 
+
+        
 
         JPanel hrService = new HRServicePanel();
 
@@ -81,8 +85,12 @@ public class ServiceRegistry {
                 new ServiceItem("Personal Purchase Requests", MYPR)
         );
 
+  
         // Google Warehouse Manager
-        addService(Role.SPECIALIST, OrganizationType.WAREHOUSE, EnterpriseType.BUYER);
+        addService(Role.SPECIALIST, OrganizationType.WAREHOUSE, EnterpriseType.BUYER,
+               new ServiceItem("View Purchase Orders", warehousePOPanel)  
+        );
+        
 
         // Vendor Sales Manager
         addService(Role.MANAGER, OrganizationType.SALES, EnterpriseType.VENDOR,

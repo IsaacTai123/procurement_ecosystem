@@ -6,7 +6,9 @@ package model.delivery;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import model.ecosystem.Enterprise;
+import model.procurement.PurchaseOrder;
 import model.user.UserAccount;
 import model.workqueue.DeliveryRequest;
 
@@ -26,10 +28,12 @@ public class ShipmentDirectory {
     }
     
 
-    public void newShipment(UserAccount sender, UserAccount receiver, String shipDate, String expectedArrival, String purchaseOrderID, DeliveryRequest deliveryReq) {
-        Shipment shipment = new Shipment(sender, receiver, shipDate, expectedArrival, purchaseOrderID, deliveryReq);
+    public Shipment newShipment(UserAccount sender, UserAccount receiver, String shipDate, String expectedArrival, PurchaseOrder po, DeliveryRequest deliveryReq) {
+        Shipment shipment = new Shipment(sender, receiver, shipDate, expectedArrival, po, deliveryReq);
 
         shipments.add(shipment);
+        
+        return shipment;
     }
 
     public Enterprise getEnterprise() {
@@ -40,7 +44,11 @@ public class ShipmentDirectory {
         return shipments;
     }
     
-    
+    public List<Shipment> getShipmentsByBuyerEnterprise(Enterprise buyerEnterprise) {
+        return shipments.stream()
+                .filter(shipment -> shipment.getReceiverEnterprise().equals(buyerEnterprise))
+                .toList(); // Use .collect(Collectors.toList()) if not on Java 17+
+    }
     
     
     
