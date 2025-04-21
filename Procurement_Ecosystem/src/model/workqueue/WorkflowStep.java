@@ -2,6 +2,7 @@ package model.workqueue;
 
 import directory.GlobalUserAccountDirectory;
 import enums.*;
+import model.ecosystem.Enterprise;
 import model.user.UserAccount;
 
 import java.time.LocalDateTime;
@@ -113,8 +114,8 @@ public class WorkflowStep {
         return stepType;
     }
 
-    public void resolveAssignedUser(GlobalUserAccountDirectory allUsersDir) {
-        allUsersDir.findUserByOrgAndRole(orgType, requiredRole)
+    public void resolveAssignedUser(GlobalUserAccountDirectory allUsersDir, Enterprise ent) {
+        allUsersDir.findUserByOrgAndRole(orgType, requiredRole, ent)
                 .ifPresent(this::setAssignedUser);
     }
 }

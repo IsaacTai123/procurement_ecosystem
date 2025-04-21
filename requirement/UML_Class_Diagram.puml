@@ -134,6 +134,7 @@ class PurchaseRequest {
 class SubmitQuotation {
     - rfqId : String
     - vendor : Enterprise
+    - price : double
     - paymentTerms : String
     - remarks : String
     + getTotalAmount() : double

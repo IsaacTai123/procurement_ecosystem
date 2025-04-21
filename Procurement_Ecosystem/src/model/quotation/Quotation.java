@@ -69,4 +69,9 @@ public class Quotation extends WorkRequest {
     public double getPrice() {
         return price;
     }
+
+    @Override
+    public String toString() {
+        return id;
+    }
 }

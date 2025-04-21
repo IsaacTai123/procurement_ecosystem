@@ -4,6 +4,7 @@
  */
 package view.purchaseOrder;
 
+import interfaces.IDataRefreshCallbackAware;
 import view.purchaseRequest.*;
 import common.Result;
 import common.Session;
@@ -37,7 +38,7 @@ import util.TimeUtil;
  *
  * @author tisaac
  */
-public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
+public class MyPurchaseOrdersPanel extends javax.swing.JPanel implements IDataRefreshCallbackAware {
 
     private UserAccount currentUser;
     private Network network;
@@ -45,7 +46,7 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
     private PurchaseOrderDirectory purchaseOrderDirectory;
     private List<Enterprise> allLogistics;
     private Enterprise selectedLogistics;
-
+    private IDataRefreshCallback callback;
    
     
     /**
@@ -275,7 +276,8 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnIssueDeliveryActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        NavigationUtil.getInstance().goBack();
+        callback.refreshData();
     }//GEN-LAST:event_btnBackActionPerformed
 
 
@@ -330,4 +332,8 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
     }
 
 
+    @Override
+    public void setCallback(IDataRefreshCallback callback) {
+        this.callback = callback;
+    }
 }

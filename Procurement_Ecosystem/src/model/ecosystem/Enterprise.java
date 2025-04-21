@@ -4,10 +4,13 @@
  */
 package model.ecosystem;
 
+import common.AppContext;
 import directory.OrganizationDirectory;
 import directory.PurchaseOrderDirectory;
 import directory.PurchaseRequestDirectory;
 import enums.EnterpriseType;
+import enums.OrganizationType;
+import enums.Role;
 import model.user.UserAccount;
 
 import java.util.List;
@@ -70,8 +73,12 @@ public class Enterprise {
     public void setPurchaseOrderList(PurchaseOrderDirectory purchaseOrderList) {
         this.purchaseOrderList = purchaseOrderList;
     }
-    
-    
+
+    public UserAccount findUserByOrgRoleAndEnt(OrganizationType org, Role role) {
+        return AppContext.getNetwork().getGlobalUserAccountDir()
+                .findUserByOrgAndRole(org, role, this)
+                .orElseThrow(() -> new IllegalStateException("User not found with given org, role, and enterprise"));
+    }
     
     @Override
     public String toString() {

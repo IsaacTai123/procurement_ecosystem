@@ -33,11 +33,11 @@ public class PurchaseOrderDirectory {
 
     public PurchaseOrder findRequestsById(String id) {
         return purchaseOrderList.stream()
-                .filter(pr -> pr.getId() != null && pr.getId().equals(id))
+                .filter(pr -> pr.getId() != null && pr.getQuotationId().equals(id))
                 .findFirst()
                 .orElse(null);
     }
-    
+
     @Override
     public String toString() {
         return purchaseOrderList.get(0).getPurchaseItems().get(0).getProduct().getName();
