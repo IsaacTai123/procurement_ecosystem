@@ -11,7 +11,6 @@ import enums.StepType;
 import model.product.Product;
 import model.product.Spec;
 import model.workqueue.WorkRequest;
-import model.workqueue.WorkflowStep;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +22,11 @@ import java.util.List;
 public class PurchaseRequest extends WorkRequest {
     private final String reason;
     private PurchaseItemDirectory purchaseItems;
-    private List<String> rfqId;
+    private List<String> linkedRFQIds;
 
     public PurchaseRequest(String reason) {
         this.reason = reason;
-        this.rfqId = new ArrayList<>();
+        this.linkedRFQIds = new ArrayList<>();
         this.purchaseItems = new PurchaseItemDirectory();
     }
 
@@ -57,8 +56,12 @@ public class PurchaseRequest extends WorkRequest {
         return purchaseItems;
     }
 
-    public List<String> getRfqId() {
-        return rfqId;
+    public List<String> getLinkedRFQIds() {
+        return linkedRFQIds;
+    }
+
+    public void addLinkedRFQId(String rfqId) {
+        linkedRFQIds.add(rfqId);
     }
 
     public void addPurchaseItem(Product item, int quantity, double unitPrice, Spec spec) {

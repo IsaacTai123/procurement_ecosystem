@@ -11,7 +11,7 @@ import model.procurement.PurchaseOrder;
  * @author alvin
  */
 public class PurchaseOrderDirectory {
-    private ArrayList<PurchaseOrder> purchaseOrderList;
+    private List<PurchaseOrder> purchaseOrderList;
 
     public PurchaseOrderDirectory() {
         purchaseOrderList = new ArrayList<>();
@@ -21,7 +21,7 @@ public class PurchaseOrderDirectory {
         purchaseOrderList.add(po);
     }
 
-    public ArrayList<PurchaseOrder> getPurchaseOrderList() {
+    public List<PurchaseOrder> getPurchaseOrderList() {
         return purchaseOrderList;
     }
     
@@ -31,20 +31,16 @@ public class PurchaseOrderDirectory {
                 .count();
     }
 
+    public PurchaseOrder findRequestsById(String id) {
+        return purchaseOrderList.stream()
+                .filter(pr -> pr.getId() != null && pr.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
     
-
-//    public List<PurchaseOrder> getRequestsBySenderId(String userId) {
-//        List<PurchaseOrder> result = new ArrayList<>();
-//        return purchaseOrderList.stream()
-//                .filter(pr -> pr.getSender() != null && pr.getSender().getUserId().equals(userId))
-//                .collect(Collectors.toList());
-//    }
-
     @Override
     public String toString() {
         return purchaseOrderList.get(0).getPurchaseItems().get(0).getProduct().getName();
     }
-    
-    
     
 }

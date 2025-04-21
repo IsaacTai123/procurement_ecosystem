@@ -3,6 +3,8 @@ package registry;
 import enums.EnterpriseType;
 import enums.OrganizationType;
 import enums.Role;
+import view.quotation.ManageQuotationPanel;
+import view.quotation.QuotationReviewPanel;
 import view.services.HRServicePanel;
 import view.services.ITServicePanel;
 import view.rfq.RFQManagmentPanel;
@@ -40,6 +42,8 @@ public class ServiceRegistry {
         Supplier<JPanel> PRMANAGE_SERVICE = ManagePurchaseRequestsPanel::new;
         Supplier<JPanel> warehousePOPanel = WarehousePOPanel::new;
         Supplier<JPanel> RFQMANAGE_SERVICE = RFQManagmentPanel::new;
+        Supplier<JPanel> QUOTATION_SERVICE = ManageQuotationPanel::new;
+        Supplier<JPanel> QUOTATION_REVIEW = QuotationReviewPanel::new;
 
 
         
@@ -61,7 +65,9 @@ public class ServiceRegistry {
         );
 
         // Google Finance Manager
-        addService(Role.ANALYST, OrganizationType.FINANCE, EnterpriseType.BUYER);
+        addService(Role.ANALYST, OrganizationType.FINANCE, EnterpriseType.BUYER,
+                new ServiceItem("Quotation Review", QUOTATION_REVIEW)
+        );
 
         // Google Procurement Specialist
         addService(Role.SPECIALIST, OrganizationType.PROCUREMENT, EnterpriseType.BUYER,
@@ -88,7 +94,8 @@ public class ServiceRegistry {
 
         // Vendor Sales Manager
         addService(Role.MANAGER, OrganizationType.SALES, EnterpriseType.VENDOR,
-                new ServiceItem("Manage RFQ", RFQMANAGE_SERVICE)
+                new ServiceItem("Manage RFQ", RFQMANAGE_SERVICE),
+                new ServiceItem("Manage Quotation", QUOTATION_SERVICE)
         );
 
         // Logistics

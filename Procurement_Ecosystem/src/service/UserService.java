@@ -107,19 +107,19 @@ public class UserService {
 
         p.setStatus(RequestStatus.APPROVED);
 
-        // Print out PR details
-        System.out.println("Purchase Request ID: " + p.getId());
-        System.out.println("Sender: " + p.getSender().getUsername());
-        System.out.println("Status: " + p.getStatus());
-        System.out.println("Items:");
-        for (PurchaseItem item : p.getPurchaseItems().getPurchaseItemList()) {
-            System.out.println(" - " + item.getProduct().getName() + ": " + item.getQuantity() + " pcs");
-        }
+//        // Print out PR details
+//        System.out.println("Purchase Request ID: " + p.getId());
+//        System.out.println("Sender: " + p.getSender().getUsername());
+//        System.out.println("Status: " + p.getStatus());
+//        System.out.println("Items:");
+//        for (PurchaseItem item : p.getPurchaseItems().getPurchaseItemList()) {
+//            System.out.println(" - " + item.getProduct().getName() + ": " + item.getQuantity() + " pcs");
+//        }
 
-        // print workflow steps
-        System.out.println("Workflow Steps:");
-        for (WorkflowStep w : p.getWorkflowSteps()) {
-            System.out.println( "status: " + w.getStatus());
-        }
+//        // print workflow steps
+//        System.out.println("Workflow Steps:");
+//        for (WorkflowStep w : p.getWorkflowSteps()) {
+//            System.out.println( "status: " + w.getStatus());
+//        }
     }
 }

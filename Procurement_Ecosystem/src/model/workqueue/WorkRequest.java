@@ -129,6 +129,7 @@ public abstract class WorkRequest {
         workflowSteps.add(0, step); // Add to the beginning of the list to maintain approval sequence
     }
 
+    // need to add enterprise as a condition
     public Result<Void> advanceToNextStep(UserAccount currentUser, GlobalUserAccountDirectory allUsersDir, String remarks, ApprovalStatus status, OrganizationType nextOrgType) {
         WorkflowStep current = getCurrentActiveStep();
         if (current == null) { return ResultUtil.failure("No active step available or found"); }
@@ -151,7 +152,7 @@ public abstract class WorkRequest {
         next.resolveAssignedUser(allUsersDir);
         next.setActive(true);
 
-        return ResultUtil.success("Successfully advanced to the next step");
+        return ResultUtil.success("Successfully submit and advanced to the next step");
     }
 
     /**

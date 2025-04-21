@@ -99,6 +99,34 @@ public class UIUtil {
         lb.setText(safeEnterpriseName + ": " + safeTitle);
     }
 
+    /**
+     * Updates the text of a JLabel with flexible append or prepend options.
+     *
+     * @param label        the JLabel to update
+     * @param newText      the text to add
+     * @param mode         how the new text should be applied (prepend, append, or replace)
+     * @param separator    optional separator (e.g., ": ", " - ") used in append/prepend mode
+     */
+    public static void adjustLabelText(JLabel label, String newText, AppendMode mode, String separator) {
+        if (label == null) return;
+
+        String safeNewText = newText == null ? "" : newText;
+        String currentText = label.getText() == null ? "" : label.getText();
+        String sep = separator == null ? "" : separator;
+
+        switch (mode) {
+            case PREPEND -> label.setText(safeNewText + sep + currentText);
+            case APPEND -> label.setText(currentText + sep + safeNewText);
+            case REPLACE -> label.setText(safeNewText);
+        }
+    }
+
+    public enum AppendMode {
+        PREPEND,
+        APPEND,
+        REPLACE
+    }
+
     public static void toggleComponentsEnabled(JComponent... components) {
         for (JComponent comp : components) {
             if (comp != null) {
