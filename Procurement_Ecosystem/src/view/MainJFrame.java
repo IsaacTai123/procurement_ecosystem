@@ -52,8 +52,8 @@ public class MainJFrame extends javax.swing.JFrame {
          */
         public MainJFrame() {
                 initComponents();
-                setResizable(false);
-                setSize(900, 700);
+                setResizable(true);
+                setSize(1150, 850);
 
                 btnLogout.setEnabled(false);
 

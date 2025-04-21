@@ -13,6 +13,7 @@ import javax.swing.*;
 import java.util.*;
 import java.util.function.Supplier;
 import view.purchaseOrder.MyPurchaseOrdersPanel;
+import view.shipping.WarehousePOPanel;
 
 /**
  * @author tisaac
@@ -29,7 +30,9 @@ public class ServiceRegistry {
         Supplier<JPanel> MYPR = MyPurchaseRequestsPanel::new;
         Supplier<JPanel> myPurchaseOrdersPanel = MyPurchaseOrdersPanel::new;
         Supplier<JPanel> PRMANAGE_SERVICE = ManagePurchaseRequestsPanel::new;
+        Supplier<JPanel> warehousePOPanel = WarehousePOPanel::new;
 
+        
 
         JPanel hrService = new HRServicePanel();
 
@@ -69,6 +72,8 @@ public class ServiceRegistry {
 
         // Warehouse Manager
         serviceMap.put(new ServiceKey(Role.SPECIALIST, OrganizationType.WAREHOUSE), List.of(
+                new ServiceItem("View Purchase Orders", warehousePOPanel)
+
         ));
 
         // Sales Manager

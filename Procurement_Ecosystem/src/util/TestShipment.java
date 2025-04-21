@@ -21,17 +21,28 @@ public class TestShipment {
    
     
     
-    public void sendPOToVendor(UserAccount buyerAccount, UserAccount vendorAccount){
+    public PurchaseOrder sendPOToVendor(UserAccount buyerAccount, UserAccount vendorAccount){
         
-        
+
         
         PurchaseOrder po = new PurchaseOrder("Quotation-001", buyerAccount, vendorAccount, createPurchaseItems(), "134 chelsea st", 0, "I have gived you purchase orders.");
-        PurchaseOrderDirectory purchaseOrderList = new PurchaseOrderDirectory();
+        PurchaseOrderDirectory purchaseOrderList = vendorAccount.getEnterprise().getPurchaseOrderList();
         purchaseOrderList.addPurchaseOrder(po);
+        
+        // Give Buyer and Vendor the same purchaseOrderList
+        Enterprise buyerEnterprise = buyerAccount.getEnterprise(); 
+        buyerEnterprise.setPurchaseOrderList(purchaseOrderList);
+        
+
         
         Enterprise vendorEnterprise = vendorAccount.getEnterprise(); // every shipment coordinator can see his company's all PO
         vendorEnterprise.setPurchaseOrderList(purchaseOrderList);
+        
+        
+        
     
+    
+        return po;
     
     }
     
