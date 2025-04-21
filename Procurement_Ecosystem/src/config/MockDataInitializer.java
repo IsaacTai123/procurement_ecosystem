@@ -6,14 +6,6 @@
 */
 package config;
 
-//import Business.Person.Person;
-
-//import Business.Person.PersonDirectory;
-//import Business.Profiles.EmployeeDirectory;
-//import Business.Profiles.EmployeeProfile;
-//import Business.Profiles.StudentDirectory;
-//import Business.Profiles.StudentProfile;
-
 import controller.DeliveryController;
 import directory.OrganizationDirectory;
 import enums.EnterpriseType;

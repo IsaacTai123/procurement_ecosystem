@@ -179,7 +179,8 @@ public class DashboardPanel extends javax.swing.JPanel implements IDataRefreshCa
         UserAccount user = AppContext.getUser();
         services = ServiceRegistry.getServicesFor(
                 user.getUserType(),
-                user.getOrg().getTypeName()
+                user.getOrg().getTypeName(),
+                user.getEnterprise().getType()
         );
 
         UIUtil.reloadTable(tblServices,

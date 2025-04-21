@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package view;
+package view.sysAdmin;
 
 import common.NetworkManager;
 import enums.EnterpriseType;
@@ -362,15 +362,19 @@ public class EcosystemWorkAreaPanel extends javax.swing.JPanel {
     private void setupListeners() {
         tblNetwork.getSelectionModel().addListSelectionListener(n -> {
             if (!n.getValueIsAdjusting()) {
-                UIUtil.getSelectedTableValue(tblNetwork, 0, this, "Please select a network to continue")
-                        .ifPresent(v -> {
-                            selectedNetwork = NetworkManager.findByName(v).orElse(null);
-                            toogleEnterpriseFields(true);
-                            UIUtil.populateComboBoxFromEnum(cmbEnterpriseType, EnterpriseType.class, "---Select Type ---");
-                            reloadEnterpriseTable();
-                        });
+                handleNetworkSelection();
             }
         });
+    }
+
+    private void handleNetworkSelection() {
+        UIUtil.getSelectedTableValue(tblNetwork, 0, this, "Please select a network to continue")
+                .ifPresent(v -> {
+                    selectedNetwork = NetworkManager.findByName(v).orElse(null);
+                    toogleEnterpriseFields(true);
+                    UIUtil.populateComboBoxFromEnum(cmbEnterpriseType, EnterpriseType.class, "---Select Type ---");
+                    reloadEnterpriseTable();
+                });
     }
 
     private void reloadNetworkTable() {

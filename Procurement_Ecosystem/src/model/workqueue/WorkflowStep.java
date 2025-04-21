@@ -57,6 +57,10 @@ public class WorkflowStep {
         this.orgType = orgType;
     }
 
+    public OrganizationType getOrgType() {
+        return orgType;
+    }
+
     public Role getRequiredRole() {
         return requiredRole;
     }
