@@ -7,10 +7,12 @@ package controller;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import model.delivery.Shipment;
 import model.delivery.ShipmentDirectory;
 import model.delivery.ShipmentItem;
 import model.ecosystem.Enterprise;
+import model.procurement.PurchaseOrder;
 import model.product.Product;
 import model.user.UserAccount;
 import model.workqueue.DeliveryRequest;
@@ -22,16 +24,21 @@ import model.workqueue.DeliveryRequest;
 public class DeliveryController {
     
 
-    public DeliveryRequest requestShipping(ArrayList<ShipmentItem> items, Enterprise logistics, UserAccount sender, UserAccount receiver, String shipDate, String expectedArrival, ShipmentDirectory shipments, String purchaseOrderID) {
+    public Map<String, Object> requestShipping(ArrayList<ShipmentItem> items, Enterprise logistics, UserAccount sender, UserAccount receiver, String shipDate, String expectedArrival, ShipmentDirectory shipments, PurchaseOrder po) {
 
         // logic to create delivery request and place a shipment
         DeliveryRequest deliveryReq = new DeliveryRequest();
         deliveryReq.setItems(items);
         deliveryReq.setLogisticsPartner(logistics);
         
-        shipments.newShipment(sender, receiver, shipDate, expectedArrival, purchaseOrderID, deliveryReq);
+        Shipment shipment = shipments.newShipment(sender, receiver, shipDate, expectedArrival, po, deliveryReq);
 
-        return deliveryReq;
+        Map<String, Object> result = new HashMap<>();
+        result.put("deliveryReq", deliveryReq);
+        result.put("shipment", shipment);
+        return result;
+
+
     }
 
    

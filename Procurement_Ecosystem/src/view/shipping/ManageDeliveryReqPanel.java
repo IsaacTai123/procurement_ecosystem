@@ -18,6 +18,7 @@ import model.ecosystem.Network;
 import model.user.UserAccount;
 import util.MailUtil;
 import util.NavigationUtil;
+import util.TimeUtil;
 import util.UIUtil;
 
 
@@ -69,7 +70,6 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblRequests = new javax.swing.JTable();
         btnTransit = new javax.swing.JButton();
-        btnAcceptRequest = new javax.swing.JButton();
 
         lbTitle.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         lbTitle.setText("Manage Delivery Requests");
@@ -83,17 +83,17 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
 
         tblRequests.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "TrackingNumber", "PO ID", "Product", "Request Status", "Shipment Status"
+                "TrackingNumber", "PO ID", "Product", "Request Status", "Shipment Status", "Sender", "Receiver", "Ship Date", "Arrival"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -101,18 +101,14 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
             }
         });
         jScrollPane1.setViewportView(tblRequests);
+        if (tblRequests.getColumnModel().getColumnCount() > 0) {
+            tblRequests.getColumnModel().getColumn(0).setPreferredWidth(120);
+        }
 
-        btnTransit.setText("Transit");
+        btnTransit.setText("Accept & Transit");
         btnTransit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnTransitActionPerformed(evt);
-            }
-        });
-
-        btnAcceptRequest.setText("Accept Request");
-        btnAcceptRequest.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAcceptRequestActionPerformed(evt);
             }
         });
 
@@ -128,14 +124,12 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 761, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnTransit, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnAcceptRequest)
-                .addGap(30, 30, 30)
-                .addComponent(btnTransit)
-                .addGap(60, 60, 60))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,9 +141,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
                 .addGap(36, 36, 36)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(43, 43, 43)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnTransit)
-                    .addComponent(btnAcceptRequest))
+                .addComponent(btnTransit)
                 .addContainerGap(95, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -168,6 +160,12 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
     private void btnTransitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransitActionPerformed
         // TODO add your handling code here:
         
+        // add ship date and arrival date
+        String shipDate = TimeUtil.getCurrentDate(); // e.g., 2025.04.20
+        String expectedDeliveredDate = TimeUtil.getExpectedDeliveryDate(5); // e.g., 2025.04.25
+        
+        
+        
         int row = tblRequests.getSelectedRow();
         
         if(row < 0) {
@@ -177,6 +175,9 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         
         Shipment shipment = (Shipment)tblRequests.getValueAt(row, 0); // the first element store an object
         shipment.setStatus(ShipmentStatus.IN_TRANSIT);
+        shipment.setShipDate(shipDate);
+        shipment.setExpectedArrival(expectedDeliveredDate);
+        shipment.getDeliveryReq().setStatus(RequestStatus.APPROVED);
         
         
       
@@ -197,24 +198,6 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         
     }//GEN-LAST:event_btnTransitActionPerformed
 
-    private void btnAcceptRequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcceptRequestActionPerformed
-        // TODO add your handling code here:
-        int row = tblRequests.getSelectedRow();
-        
-        if(row < 0) {
-            JOptionPane.showMessageDialog(null, "Please select a row from the table first", "Warning", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        
-        Shipment shipment = (Shipment)tblRequests.getValueAt(row, 0); // the first element store an object
-        shipment.getDeliveryReq().setStatus(RequestStatus.APPROVED);
-        
-        
-        populateTable();
-        
-        
-    }//GEN-LAST:event_btnAcceptRequestActionPerformed
-
     
     // clean all data and add all data in vitalSignsHistory
     private void populateTable() {
@@ -229,12 +212,17 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         for (Shipment shipment: shipmentDirectory.getShipments()){
 
             
-            Object[] row = new Object[5];
+            Object[] row = new Object[9];
             row[0] = shipment;
             row[1] = shipment.getPurchaseOrderID();
             row[2] = shipment.getItems().get(0).getProduct();
             row[3] = shipment.getDeliveryReq().getStatus();
             row[4] = shipment.getStatus();
+            row[5] = shipment.getSender();
+            row[6] = shipment.getReceiver();
+            row[7] = shipment.getShipDate();
+            row[8] = shipment.getExpectedArrival();
+            
             
             
             model.addRow(row);
@@ -245,7 +233,6 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAcceptRequest;
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnTransit;
     private javax.swing.JScrollPane jScrollPane1;

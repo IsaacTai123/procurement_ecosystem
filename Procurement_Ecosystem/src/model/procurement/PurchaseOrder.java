@@ -7,8 +7,10 @@ import model.product.Spec;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import model.delivery.Shipment;
 import model.ecosystem.Enterprise;
 import model.user.UserAccount;
+import model.workqueue.DeliveryRequest;
 import util.IdGenerateUtil;
 import util.TimeUtil;
 
@@ -29,6 +31,11 @@ public class PurchaseOrder {
     private String purchasedTime;
     private boolean isIssued;
     private boolean isDelivered;
+    private Shipment shipment;
+    private DeliveryRequest deliveryRequest;
+
+    
+    
 
 
     public PurchaseOrder(String quotationId, UserAccount buyerAccount, UserAccount vendorAccount, ArrayList<PurchaseItem> purchaseItems, String shippingAddress, double totalAmount, String remarks) {
@@ -45,6 +52,9 @@ public class PurchaseOrder {
         this.isIssued = false;
         this.isDelivered = false;
         this.logistics = null;
+        this.shipment = null;
+        this.deliveryRequest = null;
+
 
         
     }
@@ -157,6 +167,23 @@ public class PurchaseOrder {
         this.purchasedTime = purchasedTime;
     }
 
+    public Shipment getShipment() {
+        return shipment;
+    }
+
+    public void setShipment(Shipment shipment) {
+        this.shipment = shipment;
+    }
+
+    public DeliveryRequest getDeliveryRequest() {
+        return deliveryRequest;
+    }
+
+    public void setDeliveryRequest(DeliveryRequest deliveryRequest) {
+        this.deliveryRequest = deliveryRequest;
+    }
+
+    
    
     
     

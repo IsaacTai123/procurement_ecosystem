@@ -19,6 +19,7 @@ import util.NavigationUtil;
 import util.UIUtil;
 
 import java.util.List;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.delivery.Shipment;
@@ -29,6 +30,7 @@ import model.ecosystem.Network;
 import model.procurement.PurchaseItem;
 import model.procurement.PurchaseOrder;
 import model.product.Product;
+import model.workqueue.DeliveryRequest;
 import util.TimeUtil;
 
 /**
@@ -148,7 +150,7 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
             tblPO.getColumnModel().getColumn(4).setPreferredWidth(20);
         }
 
-        btnIssueDelivery.setText("Issue Delivery");
+        btnIssueDelivery.setText("Issue Delivery Request");
         btnIssueDelivery.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnIssueDeliveryActionPerformed(evt);
@@ -186,7 +188,7 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnIssueDelivery, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnIssueDelivery)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnView, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -225,19 +227,16 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
     private void btnIssueDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIssueDeliveryActionPerformed
         // TODO add your handling code here:
         
-        
-        
-        
+        // Vendor (asus) issue a delivery request (PO) to a logistics -- start
+        // get selected PO
         int row = tblPO.getSelectedRow();
-        
         if(row < 0) {
             JOptionPane.showMessageDialog(null, "Please select a row from the table first", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
         PurchaseOrder po = (PurchaseOrder)tblPO.getValueAt(row, 0);
         
-        // Issue a delivery request (PO) to a logistics -- start
+        
         DeliveryController deliveryController = new DeliveryController();
         
         selectedLogistics = (Enterprise) cmbLogistics.getSelectedItem();
@@ -255,16 +254,21 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
             items.add(shipmentItem);
         }
         
-        // give PO to Logistics
-        po.setLogistics(selectedLogistics); 
-  
-        String shipDate = TimeUtil.getCurrentDate(); // e.g., 2025.04.20
-        String expectedDeliveredDate = TimeUtil.getExpectedDeliveryDate(5); // e.g., 2025.04.25
-     
-        deliveryController.requestShipping(items, selectedLogistics, currentUser, po.getBuyerAccount(), shipDate, expectedDeliveredDate, shipmentDirectory, po.getId());
-        // Issue a delivery request (PO) to a logistics -- end
+        // connect PO to Logistics
+        po.setLogistics(selectedLogistics);
+        po.setIsIssued(true);
+
+        Map<String, Object> result = deliveryController.requestShipping(items, selectedLogistics, currentUser, po.getBuyerAccount(), "", "", shipmentDirectory, po);
+        // connect PO to deliveryRequest
+
+        DeliveryRequest deliveryRequest = (DeliveryRequest) result.get("deliveryReq");
+        Shipment shipment = (Shipment) result.get("shipment");
+        System.out.println("check  shipment" + shipment);
+
+        po.setDeliveryRequest(deliveryRequest);
+        po.setShipment(shipment);
         
-        
+        // Vendor (asus) issue a delivery request (PO) to a logistics -- end
         
         populateTable();
         

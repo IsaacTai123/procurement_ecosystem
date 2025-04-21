@@ -8,6 +8,7 @@ import enums.ShipmentStatus;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
+import model.ecosystem.Enterprise;
 import model.procurement.PurchaseOrder;
 import model.product.Product;
 import model.user.UserAccount;
@@ -26,10 +27,11 @@ public class Shipment {
     private ShipmentStatus status;
     private UserAccount sender; // asus sales
     private UserAccount receiver; // google procurement
+    private PurchaseOrder po;
     private String purchaseOrderID;
     private DeliveryRequest deliveryReq;
 
-    public Shipment(UserAccount sender, UserAccount receiver, String shipDate, String expectedArrival, String purchaseOrderID, DeliveryRequest deliveryReq) {
+    public Shipment(UserAccount sender, UserAccount receiver, String shipDate, String expectedArrival, PurchaseOrder po, DeliveryRequest deliveryReq) {
         this.trackingNumber = UUID.randomUUID().toString().substring(0, 10).toUpperCase(); // Example: "B6D4D2A7-6"
         this.deliveryReq = deliveryReq;
         this.items = deliveryReq.getItems();
@@ -38,7 +40,9 @@ public class Shipment {
         this.shipDate = shipDate;
         this.expectedArrival = expectedArrival;
         this.status = ShipmentStatus.PLACED;
-        this.purchaseOrderID = purchaseOrderID;
+        this.po = po;
+        this.purchaseOrderID = po.getId();
+        
     }
 
     // Getters and Setters
@@ -106,6 +110,10 @@ public class Shipment {
 
     public UserAccount getReceiver() {
         return receiver;
+    }
+    
+    public Enterprise getReceiverEnterprise() {
+        return receiver.getEnterprise();
     }
 
     public void setReceiver(UserAccount receiver) {
