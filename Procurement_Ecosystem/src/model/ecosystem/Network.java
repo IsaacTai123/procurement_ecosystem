@@ -18,7 +18,6 @@ public class Network {
     private final String name;
 
     // Directories
-    private final OrganizationDirectory orgDir;
     private final EnterpriseDirectory enterpriseDir;
     private final ShipmentDirectories shipmentDirectories;
     private final GlobalUserAccountDirectory globalUserAccountDir;
@@ -37,8 +36,6 @@ public class Network {
 
         this.userRegistry = new UserRegistry();
         this.orgRegistry = new OrganizationRegistry();
-
-        this.orgDir = new OrganizationDirectory();
         this.enterpriseDir = new EnterpriseDirectory();
 
         globalUserAccountDir = new GlobalUserAccountDirectory(userRegistry);
@@ -55,17 +52,9 @@ public class Network {
         return name;
     }
 
-    public OrganizationDirectory getOrgDir() {
-        return orgDir;
-    }
-
     public EnterpriseDirectory getEnterpriseDir() {
         return enterpriseDir;
     }
-    
-//    public EnterpriseDirectory getEnterpriseDir() {
-//        return enterpriseDir;
-//    }
 
     public UserRegistry getUserRegistry() {
         return userRegistry;

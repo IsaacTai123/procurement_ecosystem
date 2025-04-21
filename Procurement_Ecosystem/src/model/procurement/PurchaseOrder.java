@@ -1,6 +1,8 @@
 package model.procurement;
 
 import java.util.ArrayList;
+
+import enums.RequestStatus;
 import model.ecosystem.Organization;
 import model.product.Product;
 import model.product.Spec;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import model.ecosystem.Enterprise;
 import model.user.UserAccount;
+import model.workqueue.WorkRequest;
 import util.IdGenerateUtil;
 import util.TimeUtil;
 
@@ -157,8 +160,9 @@ public class PurchaseOrder {
         this.purchasedTime = purchasedTime;
     }
 
-   
-    
+    public Enterprise getVendor() {
+        return vendorAccount.getEnterprise();
+    }
     
 
     @Override

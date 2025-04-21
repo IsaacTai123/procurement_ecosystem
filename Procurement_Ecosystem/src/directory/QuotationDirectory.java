@@ -1,5 +1,6 @@
 package directory;
 
+import enums.RequestStatus;
 import model.quotation.Quotation;
 
 import java.util.ArrayList;
@@ -44,5 +45,14 @@ public class QuotationDirectory {
             q.setSelected(false); //
         }
         selectedQuotation.setSelected(true); // 选中传入的 quotation
+    }
+
+    public String findCompletedQuotationByDir() {
+        return quotations
+                .stream()
+                .filter(q -> q.getStatus() == RequestStatus.COMPLETED)
+                .map(Quotation::getId)
+                .findFirst()
+                .orElse(null);
     }
 }
