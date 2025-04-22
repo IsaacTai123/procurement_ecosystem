@@ -23,7 +23,6 @@ import model.procurement.PurchaseRequest;
 import model.quotation.Quotation;
 import model.quotation.RFQ;
 import util.UIUtil;
-import view.shipping.DeliveryCompanyWorkspacePanel;
 import java.util.List;
 import java.util.ArrayList;
 import model.procurement.PurchaseItem;
