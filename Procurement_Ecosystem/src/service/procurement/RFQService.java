@@ -42,8 +42,10 @@ public class RFQService {
     }
 
     public  Result<Void> submitePO(RFQ rfq, Quotation quotation, double price, String remarks, String address) {
+        // Linked PR to PO
         PurchaseOrder po = new PurchaseOrder(
                 quotation.getId(),
+                rfq.getLinkedPRId(),
                 quotation.getSender(),
                 quotation.getVendor().findUserByOrgRoleAndEnt(OrganizationType.SALES, Role.SPECIALIST),
                 rfq.getPurchaseItems(),

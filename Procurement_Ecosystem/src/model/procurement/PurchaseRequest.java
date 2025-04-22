@@ -6,6 +6,7 @@ package model.procurement;
 
 import directory.PurchaseItemDirectory;
 import enums.OrganizationType;
+import enums.RequestStatus;
 import enums.Role;
 import enums.StepType;
 import model.product.Product;
@@ -36,6 +37,26 @@ public class PurchaseRequest extends WorkRequest {
         // Requestor would be create during the run-time
         addStep(OrganizationType.IT, Role.MANAGER, StepType.APPROVER, false); // IT
         addStep(OrganizationType.PROCUREMENT, Role.SPECIALIST, StepType.APPROVER, false); // Procurement
+    }
+
+    public void markAsCompleted() {
+        // Mark the purchase request as completed
+        setStatus(RequestStatus.COMPLETED);
+    }
+
+    public void markAsRejected() {
+        // Mark the purchase request as rejected
+        setStatus(RequestStatus.REJECTED);
+    }
+
+    public void markAsApproved() {
+        // Mark the purchase request as approved
+        setStatus(RequestStatus.APPROVED);
+    }
+
+    public void markAsReceived() {
+        // Mark the purchase request as received
+        setStatus(RequestStatus.RECEIVED);
     }
 
     public String getReason() {
