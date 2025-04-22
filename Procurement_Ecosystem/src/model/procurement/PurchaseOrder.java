@@ -178,6 +178,10 @@ public class PurchaseOrder {
         return shippingAddress;
     }
 
+    public String getLinkedPRId() {
+        return linkedPRId;
+    }
+
 
 
 

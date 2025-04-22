@@ -52,6 +52,12 @@ public class ServiceRegistry {
 
         JPanel hrService = new HRServicePanel();
 
+        // Google IT Admin
+        addService(Role.IT_ADMIN, OrganizationType.IT, EnterpriseType.BUYER,
+                new ServiceItem("IT Management", IT),
+                new ServiceItem("Manage Employees", HR)
+        );
+
         // Google IT Manager
         addService(Role.MANAGER, OrganizationType.IT, EnterpriseType.BUYER,
                 new ServiceItem("IT Management", IT),
@@ -108,9 +114,21 @@ public class ServiceRegistry {
                 new ServiceItem("Manage Purchase Order", myPurchaseOrdersPanel)
         );
 
+        // Vendor IT Admin
+        addService(Role.IT_ADMIN, OrganizationType.IT, EnterpriseType.VENDOR,
+                new ServiceItem("IT Management", IT),
+                new ServiceItem("Manage Employees", HR)
+        );
+
         // Logistics
         addService(Role.SHIPPING_COORDINATOR, OrganizationType.LOGISTICS, EnterpriseType.LOGISTICS,
                 new ServiceItem("Manage Delivery Requests", LOGISTICS)
+        );
+
+        // Logistics IT Admin
+        addService(Role.IT_ADMIN, OrganizationType.IT, EnterpriseType.VENDOR,
+                new ServiceItem("IT Management", IT),
+                new ServiceItem("Manage Employees", HR)
         );
     }
 
