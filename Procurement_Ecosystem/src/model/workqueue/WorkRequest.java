@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import model.ecosystem.Enterprise;
 import model.user.UserAccount;
 import util.IdGenerateUtil;
 import util.ResultUtil;
@@ -55,6 +56,26 @@ public abstract class WorkRequest {
      * }</pre>
      */
     protected abstract void initWorkflowSteps(); // Subclasses must implement this
+
+    public void markAsCompleted() {
+        // Mark the purchase request as completed
+        setStatus(RequestStatus.COMPLETED);
+    }
+
+    public void markAsRejected() {
+        // Mark the purchase request as rejected
+        setStatus(RequestStatus.REJECTED);
+    }
+
+    public void markAsApproved() {
+        // Mark the purchase request as approved
+        setStatus(RequestStatus.APPROVED);
+    }
+
+    public void markAsReceived() {
+        // Mark the purchase request as received
+        setStatus(RequestStatus.RECEIVED);
+    }
 
     protected void addStep(OrganizationType org, Role role, StepType type, boolean isActive) {
         WorkflowStep step = new WorkflowStep(org, role, type, isActive);
@@ -131,7 +152,8 @@ public abstract class WorkRequest {
     }
 
     // need to add enterprise as a condition
-    public Result<Void> advanceToNextStep(UserAccount currentUser, GlobalUserAccountDirectory allUsersDir, String remarks, ApprovalStatus status, OrganizationType nextOrgType) {
+    public Result<Void> advanceToNextStep(UserAccount currentUser, GlobalUserAccountDirectory allUsersDir,
+                                          String remarks, ApprovalStatus status, OrganizationType nextOrgType, EnterpriseType nextStepEnt) {
         WorkflowStep current = getCurrentActiveStep();
         if (current == null) { return ResultUtil.failure("No active step available or found"); }
 
@@ -150,10 +172,32 @@ public abstract class WorkRequest {
         if (next == null) {
             return ResultUtil.success("All steps completed");
         }
-        next.resolveAssignedUser(allUsersDir, currentUser.getEnterprise());
+        next.resolveAssignedUser(allUsersDir, nextStepEnt);
         next.setActive(true);
 
         return ResultUtil.success("Successfully submit and advanced to the next step");
+    }
+
+    public Result<Void> rejectCurrentStepAndTerminate(UserAccount currentUser, String remarks) {
+        WorkflowStep current = getCurrentActiveStep();
+        if (current == null) {
+            return ResultUtil.failure("No active step found.");
+        }
+
+        // Check if the current user is authorized to perform this step
+        if (current.getAssignedUser() == null || !current.getAssignedUser().getUserId().equals(currentUser.getUserId())) {
+            return ResultUtil.failure("You are not authorized to reject this step.");
+        }
+
+        // Mark the current step as rejected and deactivate it
+        current.markAsRejected();
+        current.setActive(false);
+        current.setRemarks(remarks);
+
+        // Optionally mark the whole request as rejected (if applicable)
+        this.markAsRejected(); // Assuming your WorkRequest has a status field
+
+        return ResultUtil.success("Step rejected. Workflow has been terminated.");
     }
 
     /**
@@ -188,7 +232,8 @@ public abstract class WorkRequest {
      * @param allUsersDir user directory used to resolve the assigned user for the next step
      * @return a Result indicating success or failure of the operation
      */
-    public Result<Void> forwardToNextStep(OrganizationType nextOrgType, GlobalUserAccountDirectory allUsersDir) {
+    public Result<Void> forwardToNextStep(OrganizationType nextOrgType, GlobalUserAccountDirectory allUsersDir,
+                                          EnterpriseType nextStepEnt) {
         WorkflowStep next = getNextPendingStep(nextOrgType);
         WorkflowStep current = getCurrentActiveStep();
 
@@ -197,7 +242,7 @@ public abstract class WorkRequest {
             return ResultUtil.failure("You are the last step, no need to forward");
         }
 
-        next.resolveAssignedUser(allUsersDir,  AppContext.getUser().getEnterprise());
+        next.resolveAssignedUser(allUsersDir, nextStepEnt);
         next.setActive(true);
 
         // Deactivate the current step

@@ -12,6 +12,7 @@ import model.procurement.PurchaseRequest;
 import model.user.UserAccount;
 import model.workqueue.WorkRequest;
 import model.workqueue.WorkflowStep;
+import util.CommonUtil;
 import util.NavigationUtil;
 import util.UIUtil;
 
@@ -79,19 +80,19 @@ public class ProcessPurchaseRequestPanel extends javax.swing.JPanel {
                 .forEach(s -> {
                     switch (s.getStepType()) {
                         case REQUESTOR -> {
-                            lbRequestorName.setText(formatOrgAndUser(s));
-                            lbRequestorStatus.setText(convertStatus(s));
+                            lbRequestorName.setText(CommonUtil.formatOrgAndUser(s));
+                            lbRequestorStatus.setText(s.convertStatus());
                         }
 
                         case APPROVER -> {
                             switch (s.getOrganizationType()) {
                                 case IT -> {
-                                    lbITName.setText(formatOrgAndUser(s));
-                                    lbITStatus.setText(convertStatus(s));
+                                    lbITName.setText(CommonUtil.formatOrgAndUser(s));
+                                    lbITStatus.setText(s.convertStatus());
                                 }
                                 case PROCUREMENT -> {
-                                    lbProcurementName.setText(formatOrgAndUser(s));
-                                    lbProcurementStatus.setText(convertStatus(s));
+                                    lbProcurementName.setText(CommonUtil.formatOrgAndUser(s));
+                                    lbProcurementStatus.setText(s.convertStatus());
                                 }
                                 default -> {
                                     System.out.println("Unknown organization type: " + s.getOrganizationType());
@@ -100,21 +101,6 @@ public class ProcessPurchaseRequestPanel extends javax.swing.JPanel {
                         }
                     }
                 });
-    }
-
-    private String convertStatus(WorkflowStep step) {
-        return switch (step.getStatus()) {
-            case PENDING -> "Pending...";
-            case APPROVED -> "Approved";
-            case REJECTED -> "Rejected";
-            case SKIPPED -> "Skipped";
-            case SUBMITTED -> "Submitted";
-        };
-    }
-
-    private String formatOrgAndUser(WorkflowStep step) {
-        UserAccount u = step.getAssignedUser();
-        return step.getOrganizationType().name() + " / " + u.getUsername() + " / " + u.getUserType().name();
     }
 
 

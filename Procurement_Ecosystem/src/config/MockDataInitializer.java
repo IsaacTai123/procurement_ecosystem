@@ -64,7 +64,7 @@ public class MockDataInitializer {
 
                 Organization googleFinance = orgService.createOrgFromEnterprise(OrganizationType.FINANCE, google);
                 UserAccount googleFinanceSpecialist = userAccountService.createUserFromOrganization("A004", "peter",
-                                Role.SPECIALIST, googleFinance, google);
+                                Role.ANALYST, googleFinance, google);
                 
                 Organization googleWarehouse = orgService.createOrgFromEnterprise(OrganizationType.WAREHOUSE, google);
                 UserAccount googleWarehouseSpecialist = userAccountService.createUserFromOrganization("A005", "A005",

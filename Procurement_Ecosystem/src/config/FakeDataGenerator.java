@@ -14,6 +14,8 @@ import model.quotation.Quotation;
 import model.quotation.RFQ;
 import model.user.UserAccount;
 
+import java.util.stream.IntStream;
+
 /**
  * @author tisaac
  */
@@ -82,34 +84,38 @@ public class FakeDataGenerator {
     }
 
     private Quotation fakeQuotation(RFQ rfq) {
-        Result<Void> r = VendorController.getInstance().handleSubmitQuotation(
-                rfq,
-                rfq.getVendor(),
-                "1000"
-        );
-        if (!r.isSuccess()) {
-            System.out.println("Error: " + r.getMessage());
-            return null;
-        }
+        IntStream.range(0, 3).forEach(i -> {
+                    Result<Void> r = VendorController.getInstance().handleSubmitQuotation(
+                            rfq,
+                            rfq.getVendor(),
+                            "1000",
+                            "fake terms",
+                            "fake remarks"
+                    );
+                    if (!r.isSuccess()) {
+                        System.out.println("Error: " + r.getMessage());
+//                        return null;
+                    }
+                });
 
-        Quotation qt = rfq.getQuotations().getQuotationList()
-                .stream()
-                .peek(q -> {
-                    q.getWorkflowSteps().forEach(step -> {
-                        step.setStatus(ApprovalStatus.APPROVED);
-                        step.setAssignedUser(AppContext.getNetwork().getUserRegistry()
-                            .findByUserId("A001").orElse(null));
-                    });
-                    q.setStatus(RequestStatus.COMPLETED);
-                })
-                .findFirst().orElse(null);
+//        Quotation qt = rfq.getQuotations().getQuotationList()
+//                .stream()
+//                .peek(q -> {
+//                    q.getWorkflowSteps().forEach(step -> {
+//                        step.setStatus(ApprovalStatus.APPROVED);
+//                        step.setAssignedUser(AppContext.getNetwork().getUserRegistry()
+//                            .findByUserId("A001").orElse(null));
+//                    });
+//                    q.setStatus(RequestStatus.COMPLETED);
+//                })
+//                .findFirst().orElse(null);
+//
+//        // print each quotation status inside rfq to see if it is added
+//        rfq.getQuotations().getQuotationList().forEach(q -> {
+//            System.out.println("Quotation ID: " + q.getId() + ", Status: " + q.getStatus());
+//        });
 
-        // print each quotation status inside rfq to see if it is added
-        rfq.getQuotations().getQuotationList().forEach(q -> {
-            System.out.println("Quotation ID: " + q.getId() + ", Status: " + q.getStatus());
-        });
 
-
-        return qt;
+        return null;
     }
 }

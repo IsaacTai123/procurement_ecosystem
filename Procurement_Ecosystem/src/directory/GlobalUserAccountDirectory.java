@@ -1,5 +1,6 @@
 package directory;
 
+import enums.EnterpriseType;
 import enums.OrganizationType;
 import enums.Role;
 import model.ecosystem.Enterprise;
@@ -77,10 +78,10 @@ public class GlobalUserAccountDirectory {
      *     .ifPresent(step::setAssignedUser);
      * }</pre>
      */
-    public Optional<UserAccount> findUserByOrgAndRole(OrganizationType orgType, Role role, Enterprise ent) {
+    public Optional<UserAccount> findUserByOrgAndRole(OrganizationType orgType, Role role, EnterpriseType entType) {
         return allUsers.stream()
                 .filter(user -> user.getOrg().getTypeName() == orgType && user.getUserType() == role)
-                .filter(user -> user.getEnterprise() == ent)
+                .filter(user -> user.getEnterprise().getType() == entType)
                 .findFirst();
     }
 }

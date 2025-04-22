@@ -47,6 +47,14 @@ public class QuotationDirectory {
         selectedQuotation.setSelected(true); // 选中传入的 quotation
     }
 
+    public Quotation findQuotationById(String id) {
+        return quotations
+                .stream()
+                .filter(q -> q.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
     // Find the completed quotation, this will be used to link purchase order with RFQ
     public String findCompletedQuotationId() {
         return quotations
@@ -57,9 +65,9 @@ public class QuotationDirectory {
                 .orElse(null);
     }
 
-    public Boolean isQuotationCompleted() {
+    public Boolean isQuotationApproved() {
         return quotations
                 .stream()
-                .anyMatch(q -> q.getStatus() == RequestStatus.COMPLETED);
+                .anyMatch(q -> q.getStatus() == RequestStatus.APPROVED);
     }
 }

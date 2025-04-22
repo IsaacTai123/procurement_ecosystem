@@ -39,26 +39,6 @@ public class PurchaseRequest extends WorkRequest {
         addStep(OrganizationType.PROCUREMENT, Role.SPECIALIST, StepType.APPROVER, false); // Procurement
     }
 
-    public void markAsCompleted() {
-        // Mark the purchase request as completed
-        setStatus(RequestStatus.COMPLETED);
-    }
-
-    public void markAsRejected() {
-        // Mark the purchase request as rejected
-        setStatus(RequestStatus.REJECTED);
-    }
-
-    public void markAsApproved() {
-        // Mark the purchase request as approved
-        setStatus(RequestStatus.APPROVED);
-    }
-
-    public void markAsReceived() {
-        // Mark the purchase request as received
-        setStatus(RequestStatus.RECEIVED);
-    }
-
     public String getReason() {
         return reason;
     }

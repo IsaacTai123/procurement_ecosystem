@@ -49,7 +49,9 @@ public class SubmitQuotationPanel extends javax.swing.JPanel {
         Result<Void> r = VendorController.getInstance().handleSubmitQuotation(
                 rfq,
                 rfq.getVendor(),
-                price
+                price,
+                terms,
+                remarks
         );
         if (!r.isSuccess()) {
             UIUtil.showError(this, r.getMessage());

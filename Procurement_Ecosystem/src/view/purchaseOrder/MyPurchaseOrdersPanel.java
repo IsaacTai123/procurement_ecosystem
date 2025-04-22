@@ -54,13 +54,12 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel implements IDataRe
      */
     public MyPurchaseOrdersPanel() {
         initComponents();
-        initUI();
-
         this.currentUser = Session.getCurrentUser();
         this.network = Session.getCurrentNetwork();
         this.vendor = currentUser.getEnterprise(); // e.g. asus/tsmc (vendor)
         this.purchaseOrderDirectory = vendor.getPurchaseOrderList();
         this.allLogistics = network.getEnterpriseDir().getAllLogisticsEnterprises();
+        initUI();
         
         populateTable();
         populateLogisticsCombo();
