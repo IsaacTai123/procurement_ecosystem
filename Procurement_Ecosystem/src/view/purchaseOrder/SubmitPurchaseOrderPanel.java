@@ -31,7 +31,6 @@ public class SubmitPurchaseOrderPanel extends javax.swing.JPanel implements IDat
     private IDataRefreshCallback callback;
     private RFQDirectory rfq;
     private boolean isLoadingCombo = false;
-    private boolean isReloadingQuotationTable = false;
     private Optional<String> selectedQuotationId;
     /**
      * Creates new form SubmitPurchaseOrderPanel
@@ -48,20 +47,22 @@ public class SubmitPurchaseOrderPanel extends javax.swing.JPanel implements IDat
         UIUtil.setEnterpriseTitle(lbTitle, AppContext.getUser().getEnterprise().getName());
         UIUtil.clearTable(tblQuotation, tblPO);
         loadRFQComboBox();
+        toggleButtons(false);
     }
 
     private void setupListeners() {
         btnBack.addActionListener(e -> handleBackbtn());
         btnCreatePO.addActionListener(e -> handleCreatePObtn());
+
         cmbRFQ.addActionListener(e -> {
             if (isLoadingCombo) return;
             refreshQuotationTable();
         });
+
         tblQuotation.getSelectionModel().addListSelectionListener(n -> {
-            if (!n.getValueIsAdjusting() && !isReloadingQuotationTable) {
-                refreshPOTable();
-            }
+            toggleButtons(true);
         });
+
         btnReload.addActionListener(e -> refreshPOTable());
     }
 
@@ -128,7 +129,6 @@ public class SubmitPurchaseOrderPanel extends javax.swing.JPanel implements IDat
                 .filter(q -> q.getStatus() == RequestStatus.COMPLETED)
                 .collect(Collectors.toList());
 
-        isReloadingQuotationTable = true;
         UIUtil.reloadTable(tblQuotation,
                 ready4PO,
                 q -> new Object[]{
@@ -138,7 +138,6 @@ public class SubmitPurchaseOrderPanel extends javax.swing.JPanel implements IDat
                         q.getStatus()
                 }
         );
-        isReloadingQuotationTable = false;
     }
 
     // Show PO that has the same quotationId as RFQ and the status is "Completed"
@@ -197,6 +196,10 @@ public class SubmitPurchaseOrderPanel extends javax.swing.JPanel implements IDat
         return poList.stream()
                 .filter(po -> po.getQuotationId().equals(quotationId))
                 .collect(Collectors.toList());
+    }
+
+    private void toggleButtons(boolean enabled) {
+        UIUtil.setEnabled(enabled, txtAddress, txtPrice, txtRemarks);
     }
 
     @Override
@@ -317,29 +320,24 @@ public class SubmitPurchaseOrderPanel extends javax.swing.JPanel implements IDat
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(66, 66, 66)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(66, 66, 66)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(99, 99, 99)
-                                .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addGap(76, 76, 76)
-                                .addComponent(txtRemarks, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addGap(76, 76, 76)
-                                .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnCreatePO, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnReload)))
+                        .addComponent(jLabel5)
+                        .addGap(99, 99, 99)
+                        .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addGap(76, 76, 76)
+                        .addComponent(txtRemarks, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addGap(76, 76, 76)
+                        .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnCreatePO, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(32, 32, 32))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
@@ -357,7 +355,9 @@ public class SubmitPurchaseOrderPanel extends javax.swing.JPanel implements IDat
                         .addComponent(cmbRFQ, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
+                .addGap(32, 32, 32)
+                .addComponent(btnReload)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
@@ -380,11 +380,13 @@ public class SubmitPurchaseOrderPanel extends javax.swing.JPanel implements IDat
                             .addComponent(jLabel4)
                             .addComponent(cmbRFQ, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(btnReload)
+                                .addGap(130, 130, 130))))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnReload)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel3)
