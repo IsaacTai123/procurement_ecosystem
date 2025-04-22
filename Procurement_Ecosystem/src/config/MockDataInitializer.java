@@ -125,7 +125,7 @@ public class MockDataInitializer {
                 items.add(itemB);
 
 
-                Map<String, Object> result = deliveryController.requestShipping(items, fedEx, asusSalesManager, googleProcurementManager,
+                Map<String, Object> result = deliveryController.requestShipping(network, items, fedEx, asusSalesManager, googleProcurementManager,
                                 "2024.05.06", "2024.05.11", fedEx_shipmentDirectory, po3);
 
                 // connect PO to deliveryRequest

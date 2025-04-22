@@ -317,7 +317,7 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel implements IDataRe
         po.setLogistics(selectedLogistics);
         po.setIsIssued(true);
 
-        Map<String, Object> result = deliveryController.requestShipping(items, selectedLogistics, currentUser, po.getBuyerAccount(), "", "", shipmentDirectory, po);
+        Map<String, Object> result = deliveryController.requestShipping(network, items, selectedLogistics, currentUser, po.getBuyerAccount(), "", "", shipmentDirectory, po);
         // connect PO to deliveryRequest
 
         DeliveryRequest deliveryRequest = (DeliveryRequest) result.get("deliveryReq");
