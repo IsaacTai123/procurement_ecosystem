@@ -18,9 +18,9 @@ import org.json.JSONArray;
  */
 public class DBApiUtil {
     
-    public static Map<String, Object> getUserInfo(String json) {
+    public static Map<String, String> getUserInfo() {
 
-        Map<String, Object> result = new HashMap<>();
+        Map<String, String> result = new HashMap<>();
 
         try {
             HttpClient client = HttpClient.newHttpClient();
@@ -40,14 +40,29 @@ public class DBApiUtil {
             if (!jsonArray.isEmpty()) {
                 JSONObject firstUser = jsonArray.getJSONObject(0); // get the first item in array
 
-                String orgName = firstUser.optString("orgName", null);
+                String enterpriseName = firstUser.optString("enterpriseName", null);
+                String enterpriseType = firstUser.optString("enterpriseType", null);
                 String orgType = firstUser.optString("orgType", null);
-
-                result.put("orgName", orgName);
+                String userName = firstUser.optString("userName", null);
+                String userPassword = firstUser.optString("userPassword", null);
+                String userType = firstUser.optString("userType", null);
+                
+                
+                result.put("enterpriseName", enterpriseName);
+                result.put("enterpriseType", enterpriseType);
                 result.put("orgType", orgType);
+                result.put("userName", userName);
+                result.put("userPassword", userPassword);
+                result.put("userType", userType);
+                
 
-                System.out.println("✅ orgName: " + orgName);
                 System.out.println("✅ orgType: " + orgType);
+                System.out.println("✅ enterpriseName: " + enterpriseName);
+                System.out.println("✅ enterpriseType: " + enterpriseType);
+                System.out.println("✅ userName: " + userName);
+                System.out.println("✅ userPassword: " + userPassword);
+                System.out.println("✅ userType: " + userType);
+                
             } else {
                 System.out.println("⚠️ Empty array returned from API.");
             }

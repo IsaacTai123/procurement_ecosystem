@@ -23,7 +23,11 @@ public class MailUtil {
         }
     }
 
-    public static void sendLogisticsStatusEmail(String to, String subject, String body) throws Exception {
+    public static void sendLogisticsStatusEmail(String toAddress1, String toAddress2, String subject, String body) throws Exception {
+        String fromAddress = "neumsis10142008@gmail.com";
+//        String toAddress2 = "neumsis10142008@gmail.com";
+
+        
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -38,10 +42,14 @@ public class MailUtil {
 
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(EMAIL)); // sender = loaded email
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toAddress1 + "," + toAddress2));
         message.setSubject(subject);
         message.setText(body);
 
         Transport.send(message);
+        
+        
+        
+        
     }
 }

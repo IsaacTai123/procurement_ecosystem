@@ -66,7 +66,7 @@
               <Component id="btnReload" min="-2" max="-2" attributes="0"/>
               <EmptySpace pref="30" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane2" min="-2" pref="393" max="-2" attributes="0"/>
+                  <Component id="jScrollPane2" min="-2" pref="514" max="-2" attributes="0"/>
                   <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
@@ -202,7 +202,7 @@
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="3" rowCount="4">
                 <Column editable="false" title="Id" type="java.lang.Object"/>
-                <Column editable="false" title="Vendor" type="java.lang.Object"/>
+                <Column editable="false" title="Vendor (Specialist)" type="java.lang.Object"/>
                 <Column editable="false" title="Total Price" type="java.lang.Object"/>
               </Table>
             </Property>
@@ -252,6 +252,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Create Purchase Order"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCreatePOActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
       <Properties>

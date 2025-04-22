@@ -76,7 +76,7 @@ public class MockDataInitializer {
                 Organization asusSales = orgService.createOrgFromEnterprise(OrganizationType.SALES, asus);
                 UserAccount asusSalesManager = userAccountService.createUserFromOrganization("Asus_SalesManagerA",
                                 "A006", Role.MANAGER, asusSales, asus);
-                UserAccount asusSpecialist = userAccountService.createUserFromOrganization("Test", "peter",
+                UserAccount asusSpecialist = userAccountService.createUserFromOrganization("asusSpecialist", "peter",
                                 Role.SPECIALIST, asusSales, asus);
                 
                 
@@ -84,16 +84,24 @@ public class MockDataInitializer {
                 Enterprise fedEx = network.getEnterpriseDir().createEnterprise("FedEx", EnterpriseType.LOGISTICS);
                 Organization fedExShipping = orgService.createOrgFromEnterprise(OrganizationType.LOGISTICS, fedEx);
                 UserAccount fedExShippingCoordinator = userAccountService.createUserFromOrganization("A008", "A008",
-                                Role.SHIPPING_COORDINATOR, fedExShipping, google);
+                                Role.SHIPPING_COORDINATOR, fedExShipping, fedEx);
                 
                 // test dynamically add a new enterprise > org > user account from db data
-                String json = """
-                {
-                    "name": "Alvin",
-                    "password": "alvin"
-                }
-                """;
-                Map<String, Object> dbResult = DBApiUtil.getUserInfo(json);
+                
+                Map<String, String> dbResult = DBApiUtil.getUserInfo();
+                        
+                String enterpriseName = dbResult.get("enterpriseName");
+                String enterpriseType = dbResult.get("enterpriseType");
+                String orgType = dbResult.get("orgType");
+                String userName = dbResult.get("userName");
+                String userPassword = dbResult.get("userPassword");
+                String userType = dbResult.get("userType");
+                
+                // UPS (A009/A009): from db
+                Enterprise newEnterprise = network.getEnterpriseDir().createEnterprise(enterpriseName, EnterpriseType.valueOf(enterpriseType.toUpperCase()));
+                Organization newOrg = orgService.createOrgFromEnterprise(OrganizationType.valueOf(orgType.toUpperCase()), newEnterprise);
+                UserAccount newUserAccount = userAccountService.createUserFromOrganization(userName, userPassword,
+                                Role.valueOf(userType.toUpperCase()), newOrg, newEnterprise);
                 
                 
                 

@@ -43,20 +43,26 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
 
     public ManageDeliveryReqPanel() {
         initComponents();
+
         this.currentUser = Session.getCurrentUser();
         this.network = Session.getCurrentNetwork();
         this.enterprise = currentUser.getEnterprise();
         this.shipmentDirectory = network.getShipmentDirectories().getShipmentDirectory(enterprise);
-        initUI();
+        
+        if (shipmentDirectory == null) {
+            // if this logistics does not have shipmentDirectory, add a new one for it
+            // one logistics will have only one shipment directory
+            ShipmentDirectory newShipmentDirectory = new ShipmentDirectory(enterprise); 
+            network.getShipmentDirectories().addShipmentDirectory(newShipmentDirectory);
+            shipmentDirectory = network.getShipmentDirectories().getShipmentDirectory(enterprise);
+        }
+        
+        
         populateTable();
 
         // Update the title with the current enterprise name
         UIUtil.setEnterpriseTitle(lbTitle, currentUser.getEnterprise().getName());
 
-    }
-
-    public void initUI() {
-        UIUtil.setEnterpriseTitle(lbTitle, currentUser.getEnterprise().getName());
     }
 
     /**
@@ -75,7 +81,6 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         btnTransit = new javax.swing.JButton();
 
         lbTitle.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
-        lbTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbTitle.setText("Manage Delivery Requests");
 
         btnBack.setText("<< Back");
@@ -120,26 +125,29 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lbTitle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(56, 56, 56)
+                .addComponent(btnBack)
+                .addGap(60, 60, 60)
+                .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 761, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnTransit, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnBack)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(btnTransit, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnBack)
-                .addGap(24, 24, 24)
+                .addGap(49, 49, 49)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbTitle)
+                    .addComponent(btnBack))
+                .addGap(36, 36, 36)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(43, 43, 43)
                 .addComponent(btnTransit)
@@ -185,7 +193,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         // Send email to show in transit and in a separate thread to avoid freezing UI
         new Thread(() -> {
             try {
-                MailUtil.sendLogisticsStatusEmail("alvinusamemory@gmail.com", "Logistics Shipped", "Your delivery is on the way!");
+                MailUtil.sendLogisticsStatusEmail("alvinusamemory@gmail.com", "neumsis10142008@gmail.com", "Logistics Shipped", "Your delivery is on the way!");
                 JOptionPane.showMessageDialog(null, "📧 Email sent successfully!");
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -206,7 +214,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) tblRequests.getModel(); // get table schema to control the table
         model.setRowCount(0); // clean all data in the table
         
-        System.out.println("shipmentDirectory" + shipmentDirectory.getShipments().get(0).getTrackingNumber());
+//        System.out.println("shipmentDirectory" + shipmentDirectory.getShipments().get(0).getTrackingNumber());
 
         
         
