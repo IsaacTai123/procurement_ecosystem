@@ -12,12 +12,10 @@ import util.IdGenerateUtil;
  * @author qiyaochen
  */
 public class Quotation extends WorkRequest {
-    private String id;
     private String linkedRFQId;
     private Enterprise vendor;
     private String remarks;
     private double price;
-    private boolean selected;
     private String terms;
 
 
@@ -27,7 +25,6 @@ public class Quotation extends WorkRequest {
         this.remarks = remarks;
         this.price = price;
         this.status = RequestStatus.PENDING;
-        this.selected = false;
         this.linkedRFQId = linkedRFQId;
     }
 
@@ -35,10 +32,6 @@ public class Quotation extends WorkRequest {
     protected void initWorkflowSteps() {
         addStep(OrganizationType.PROCUREMENT, Role.SPECIALIST, StepType.APPROVER, false);
         addStep(OrganizationType.FINANCE, Role.ANALYST, StepType.APPROVER, false);
-    }
-
-    public String getId() {
-        return id;
     }
 
     public Enterprise getVendor() {
@@ -59,14 +52,6 @@ public class Quotation extends WorkRequest {
 
     public void setStatus(RequestStatus status) {
         this.status = status;
-    }
-
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
     }
 
     public String getLinkedRFQId() {

@@ -4,6 +4,7 @@
  */
 package view.shipping;
 
+import common.AppContext;
 import common.Session;
 import directory.PurchaseOrderDirectory;
 import enums.ShipmentStatus;
@@ -157,6 +158,9 @@ public class WarehousePOPanel extends javax.swing.JPanel {
         }
         
         po.getShipment().setStatus(ShipmentStatus.DELIVERED);
+        // mark PR as completed
+        AppContext.getUserEnterprise().getPurchaseRequestList().findRequestById(po.getLinkedPRId()).markAsCompleted();
+
         populateTable();
         
     }//GEN-LAST:event_BtnDeliveredActionPerformed

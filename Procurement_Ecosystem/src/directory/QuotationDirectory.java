@@ -31,22 +31,6 @@ public class QuotationDirectory {
                 .orElse(null);
     }
 
-    public Quotation getSelectedQuotation() {
-        for (Quotation q : quotations) {
-            if (q.isSelected()) {
-                return q;
-            }
-        }
-        return null; // 如果没有被选中的 quotation
-    }
-
-    public void setSelectedQuotation(Quotation selectedQuotation) {
-        for (Quotation q : getQuotationList()) {
-            q.setSelected(false); //
-        }
-        selectedQuotation.setSelected(true); // 选中传入的 quotation
-    }
-
     public Quotation findQuotationById(String id) {
         return quotations
                 .stream()

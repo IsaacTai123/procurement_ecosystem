@@ -169,6 +169,7 @@ public class MyPurchaseRequestsPanel extends javax.swing.JPanel implements IData
         );
     }
 
+    // TODO: didn't show the completed purchase request
     private void handleCompletedPR() {
         // find the completed purchase requests
         Result<List<PurchaseRequest>> result = PurchaseRequestController.getInstance().handleUserPR(AppContext.getUser().getUserId(), RequestStatus.COMPLETED);

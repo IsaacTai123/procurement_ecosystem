@@ -4,6 +4,7 @@
  */
 package view.purchaseRequest;
 
+import common.Result;
 import common.dto.PurchaseItemDTO;
 import common.dto.PurchaseRequestDTO;
 import controller.procurement.PurchaseRequestController;
@@ -229,10 +230,12 @@ public class CreatePurchaseRequestPanel extends javax.swing.JPanel implements ID
     // TODO: Submit button
     private void handleSubmit() {
         prDTO.setReason(txtReason.getText());
-        PurchaseRequestController.getInstance().handlePRSubmit(prDTO)
-                .onFailure(r -> UIUtil.showError(this, r))
-                .onSuccess(r -> UIUtil.showInfo(this, r));
-
+        Result<Void> r = PurchaseRequestController.getInstance().handlePRSubmit(prDTO);
+        if (!r.isSuccess()) {
+            UIUtil.showError(this, r.getMessage());
+            return;
+        }
+        UIUtil.showInfo(this, r.getMessage());
         clearForm();
     }
 

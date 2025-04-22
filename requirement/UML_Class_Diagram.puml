@@ -5,8 +5,8 @@ skinparam classAttributeIconSize 0
 ' ================= Layer 0: Ecosystem =================
 
 class Ecosystem {
-    - networks : List<Network>
-    - user : Role
+    - networkList : List<Network>
+    - sysAdmin : UserAccount
 }
 
 class Network {
@@ -27,20 +27,18 @@ Ecosystem "1" --> "*" Network : manages
 ' ================= Layer 1: Enterprise & Org =================
 
 class Enterprise {
-    - purchaseRequests : List<PurchaseRequest>
-    - shipments : List<Shipment>
-    - enterpriseId : String
     - name : String
-    - nationality : String
     - type : EnterpriseType
-    - organizations : List<Organization>
-    + addPurchaseRequest(pr : PurchaseRequest) : void
-    + getShipmentsByVendor(vendorId : String) : List<Shipment>
-    + getAllUserAccounts() : List<UserAccount>
+    - organizationList : OrganizationDirectory
+    - purchaseRequestList : PurchaseRequestDirectory
+    - purchaseOrderList : PurchaseOrderDirectory
+
+    + findUserByOrgRoleAndEnt(OrganizationType orgType, Role role)
 }
 
 class Organization {
     - name : String
+    - enterprise : Enterprise
     - userAccounts : List<UserAccount>
 }
 
@@ -51,20 +49,23 @@ Organization "1" --> "*" UserAccount : manages
 ' ================= Layer 2: Users =================
 
 class UserAccount {
+    - userId : String
     - username : String
+    - email : String
+    - userType : Role
     - password : String
-    - role : Role
+    - org : Organization
+    - enterprise : Enterprise
 }
 
 enum Role {
-    ADMIN
+    SYS_ADMIN,
     IT_ADMIN
-    PROCUREMENT_SPECIALIST
-    IT_ENGINEER
-    FINANCE_ANALYST
+    ENGINEER
+    ANALYST
+    SPECIALIST
     LEGAL_REVIEWER
-    WAREHOUSE_SPECIALIST
-    SALES_MANAGER
+    MANAGER
     SHIPPING_COORDINATOR
 }
 
@@ -79,8 +80,21 @@ abstract class WorkRequest {
     # requestDate : Date
     # status : RequestStatus
     # workflowSteps : List<WorkflowStep>
+
     {abstract} # initWorkflowSteps(): void
-    + getCurrentStep() : WorkflowStep
+    + markAsCompleted() : void
+    + markAsRejected() : void
+    + markAsApproved() : void
+    + markAsReceived() : void
+    + getCurrentActiveStep() : WorkflowStep
+    + getNextPendingStep() : WorkflowStep
+    + getPendingStep() : WorkflowStep
+    + createRequesterStep(UserAccount user) : void
+    + advanceToNextStep(...) : Result<Void>
+    + rejectCurrentStepAndTerminate(UserAccount user) : Result<Void>
+    + forceCompleteCurrentStep(ApprovalStatus status) : Result<Void>
+    + forwardToNextStep(...) : Result<Void>
+    + isCompleted() : boolean
 }
 
 enum RequestStatus {
@@ -93,12 +107,21 @@ enum RequestStatus {
 }
 
 class WorkflowStep {
-    - organization : OrganizationType
-    - assignedTo : UserAccount
-    - stepStatus : ApprovalStatus
+    - orgType : OrganizationType
+    - requiredRole : Role
+    - assignedUser : UserAccount
+    - stepType : StepType
+    - status : ApprovalStatus
     - active : boolean
     - actionTime : LocalDate
     - remarks : String
+
+    + markAsApproved() : void
+    + markAsRejected() : void
+    + markAsSkipped() : void
+    + markAsSubmitted() : void
+    + resolveAssignedUser(allUsersDir: GlobalUserAccountDirectory,
+                             entType: EnterpriseType): void
 }
 
 enum ApprovalStatus {
@@ -123,7 +146,7 @@ WorkRequest <|-- DeliveryRequest
 
 class PurchaseRequest {
     - reason : String
-    - purchaseItems : List<PurchaseItem>
+    - purchaseItems : PurchaseItemDirectory
     - linkedRFQIds : List<String>
     # initWorkflowSteps() : void
     + addLinkedRFQId(rfqId : String) : void
@@ -132,22 +155,31 @@ class PurchaseRequest {
 }
 
 class SubmitQuotation {
-    - rfqId : String
+    - linkedRFQId : String
     - vendor : Enterprise
     - price : double
     - paymentTerms : String
     - remarks : String
-    + getTotalAmount() : double
+    + initWorkflowSteps() : void
 }
 
 class PurchaseOrder {
     - id : String
     - quotationId : String
-    - vendor : Enterprise
+    - linkedPRId : String
+    - buyerAccount : UserAccount
+    - vendorAccount : UserAccount
+    - logistics : Enterprise
     - purchaseItems : List<PurchaseItem>
     - shippingAddress : String
     - totalAmount : double
     - remarks : String
+    - purchasedDate : String
+    - purchaseTime : String
+    - isIssued : boolean
+    - isDelivered : boolean
+    - shipment : Shipment
+    - deliveryRequest : DeliveryRequest
 }
 
 class ContractReviewRequest {
@@ -159,7 +191,7 @@ class ContractReviewRequest {
 class DeliveryRequest {
     - products : List<PurchaseItem>
     - logisticsPartner : Enterprise
-    - shipment : Shipment
+'    - shipment : Shipment
 }
 
 class ProcurementClosure {
@@ -177,11 +209,14 @@ class RFQ {
     - id : String
     - linkedPRId : String
     - vendors : Enterprise
-    - quotations : List<SubmitQuotation>
+    - quotations : QuotationDirectory
     - purchaseItems : List<PurchaseItem>
     - deadline : LocalDate
     - status : RFQStatus
     - remarks : String
+    + markAsSent() : void
+    + markAsReceived() : void
+    + markAsClosed() : void
 }
 
 enum RFQStatus {
@@ -218,11 +253,15 @@ Contract --> ContractStatus
 
 class Shipment {
     - trackingNumber : String
-    - products : PurchaseItem
+    - products : List<PurchaseItem>
     - quantity : int
     - shipDate : Date
     - expectedArrival : Date
     - status : ShipmentStatus
+    - purchaseOrderId : String
+    - deliveryReq : DeliveryRequest
+    - sender : UserAccount
+    - receiver : UserAccount
 }
 
 enum ShipmentStatus {
@@ -270,7 +309,7 @@ class PurchaseItem {
     - unitPrice : double
 }
 
-PurchaseRequest --> PurchaseItem
+PurchaseRequest "1" --> "*" PurchaseItem
 PurchaseItem --> Product
 PurchaseItem --> Spec
 
@@ -322,8 +361,12 @@ class ShipmentDirectory {
 
 class GlobalUserAccountDirectory {
     - userAccounts : List<UserAccount>
+    - userRegistry : UserRegistry
+
     + addUserAccount(user : UserAccount) : void
     + getUserAccountById(id : String) : UserAccount
+    + getUserRegistry() : UserRegistry
+    + findUserByOrgAndRole(...) : Optional<UserAccount>
 }
 
 class GlobalOrganizationDirectory {
@@ -333,7 +376,7 @@ class GlobalOrganizationDirectory {
 }
 
 class RFQDirectory {
-    - rfqs : List<RFQ>
+    - rfqList : List<RFQ>
     + addRFQ(rfq : RFQ) : void
     + getRFQById(id : String) : RFQ
 }
@@ -352,5 +395,40 @@ class PurchaseRequestDirectory {
 
 Enterprise --> PurchaseOrderDirectory : contains
 Enterprise --> PurchaseRequestDirectory : contains
+Enterprise --> OrganizationDirectory : contains
+
+class PurchaseItemDirectory {
+    - purchaseItems : List<PurchaseItem>
+    + newPurchaseItem(Product product, int quantity,
+    double unitPrice, Spec spec) : PurchaseItem
+    + findByProductId(id : String) : Optional<PurchaseItem>
+}
+
+PurchaseItemDirectory --> PurchaseRequest
+
+' ================= Layer 7: Services =================
+
+class UserRegistry {
+    - userIndex : Map<String, UserAccount>
+    + register(UserAccount: user) : void
+    + unregister(String: userId) : void
+}
+
+class OrganizationService {
+    - globalOrgDir : GlobalOrganizationDirectory
+    + createOrgFromEnterprise(OrganizationType type, Enterprise ent) : Organization
+    + deleteOrgFromEnterprise(Organization org, Enterprise ent) : void
+}
+
+class UserAccountService {
+    - globalDir : GlobalUserAccountDirectory
+    + createUserFromOrganization(...) : void
+    + deleteUserFromOrganization(UserAccount user, Organization org) : void
+}
+
+GlobalUserAccountDirectory --> UserRegistry : contains
+
+Network --> OrganizationService : contains
+Network --> UserAccountService : contains
 
 @enduml

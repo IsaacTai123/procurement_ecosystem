@@ -90,8 +90,6 @@ public class PurchaseOrder {
         this.logistics = logistics;
     }
 
-    
-
     public List<PurchaseItem> getPurchaseItems() {
         return purchaseItems;
     }
@@ -178,6 +176,10 @@ public class PurchaseOrder {
 
     public String getAddress() {
         return shippingAddress;
+    }
+
+    public String getLinkedPRId() {
+        return linkedPRId;
     }
 
 

@@ -102,9 +102,9 @@ public class MockDataInitializer {
                 
                 
                 // test dynamically add a new enterprise > org > user account from db data
-                
+
                 Map<String, String> dbResult = DBApiUtil.getUserInfo();
-                        
+
                 String enterpriseName = dbResult.get("enterpriseName");
                 String enterpriseType = dbResult.get("enterpriseType");
                 String orgType = dbResult.get("orgType");
@@ -115,7 +115,7 @@ public class MockDataInitializer {
                 
                 
                 
-                
+
                 // UPS (A009/A009): from db
                 Enterprise newEnterprise = network.getEnterpriseDir().createEnterprise(enterpriseName, EnterpriseType.valueOf(enterpriseType.toUpperCase()));
                 Organization newOrg = orgService.createOrgFromEnterprise(OrganizationType.valueOf(orgType.toUpperCase()), newEnterprise);
