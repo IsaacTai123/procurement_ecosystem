@@ -223,6 +223,61 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel implements IDataRe
 
     private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
         // TODO add your handling code here:
+        
+        // get selected PO
+        int row = tblPO.getSelectedRow();
+        if(row < 0) {
+            JOptionPane.showMessageDialog(null, "Please select a row from the table first", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        PurchaseOrder po = (PurchaseOrder)tblPO.getValueAt(row, 0);
+        
+        String msg = String.format(
+                                    """
+                    🧾 Purchase Order Summary
+
+                    🆔 Order ID: %s
+                    📄 Quotation ID: %s
+
+                    👤 Buyer: %s
+                    🏢 Buyer Org: %s
+
+                    🧑 Vendor: %s
+                    🏢 Vendor Org: %s
+
+                    🚚 Logistics: %s
+                    📦 Delivery Status: %s
+                    📨 Delivery Request ID: %s
+
+                    📍 Shipping Address: %s
+                    💬 Remarks: %s
+
+                    💰 Total Amount: $%.2f
+                    📅 Date: %s
+                    🕒 Time: %s
+                                        """,
+                po.getId(),
+                po.getQuotationId(),
+                po.getBuyerAccount().getUsername(),
+                po.getBuyerAccount().getEnterprise().getName(),
+                po.getVendorAccount().getUsername(),
+                po.getVendorAccount().getEnterprise().getName(),
+                po.getLogistics() != null ? po.getLogistics().getName() : "Not assigned",
+                po.isIsDelivered() ? "Delivered" : "Not Delivered",
+                po.getDeliveryRequest() != null ? po.getDeliveryRequest().getId() : "N/A",
+                po.getAddress(),
+                po.getRemarks(),
+                po.getTotalAmount(),
+                po.getPurchasedDate(),
+                po.getPurchasedTime()
+        );
+
+        JOptionPane.showMessageDialog(null, msg, "📋 PO Details", JOptionPane.INFORMATION_MESSAGE);
+
+
+        
+        
     }//GEN-LAST:event_btnViewActionPerformed
 
     private void btnIssueDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIssueDeliveryActionPerformed

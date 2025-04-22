@@ -270,7 +270,7 @@ public class SubmitPurchaseOrderPanel extends javax.swing.JPanel implements IDat
                 {null, null, null}
             },
             new String [] {
-                "Id", "Vendor", "Total Price"
+                "Id", "Vendor (Specialist)", "Total Price"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -295,6 +295,11 @@ public class SubmitPurchaseOrderPanel extends javax.swing.JPanel implements IDat
         jLabel2.setText("PO List");
 
         btnCreatePO.setText("Create Purchase Order");
+        btnCreatePO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreatePOActionPerformed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Helvetica Neue", 2, 13)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(204, 0, 0));
@@ -338,7 +343,7 @@ public class SubmitPurchaseOrderPanel extends javax.swing.JPanel implements IDat
                             .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(btnCreatePO, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap(1000, Short.MAX_VALUE)
                         .addComponent(btnReload)))
                 .addGap(32, 32, 32))
             .addGroup(layout.createSequentialGroup()
@@ -357,9 +362,9 @@ public class SubmitPurchaseOrderPanel extends javax.swing.JPanel implements IDat
                         .addComponent(cmbRFQ, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 514, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addGap(16, 16, 16))
         );
@@ -406,6 +411,13 @@ public class SubmitPurchaseOrderPanel extends javax.swing.JPanel implements IDat
                         .addGap(41, 41, 41))))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnCreatePOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreatePOActionPerformed
+        // TODO add your handling code here:
+        
+        
+        
+    }//GEN-LAST:event_btnCreatePOActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

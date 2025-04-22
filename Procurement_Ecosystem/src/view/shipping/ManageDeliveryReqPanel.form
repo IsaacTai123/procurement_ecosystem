@@ -20,7 +20,7 @@
               <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
               <Component id="btnBack" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
-              <Component id="lbTitle" min="-2" pref="316" max="-2" attributes="0"/>
+              <Component id="lbTitle" min="-2" pref="369" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
           <Group type="102" attributes="0">

@@ -49,6 +49,15 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         this.enterprise = currentUser.getEnterprise();
         this.shipmentDirectory = network.getShipmentDirectories().getShipmentDirectory(enterprise);
         
+        if (shipmentDirectory == null) {
+            // if this logistics does not have shipmentDirectory, add a new one for it
+            // one logistics will have only one shipment directory
+            ShipmentDirectory newShipmentDirectory = new ShipmentDirectory(enterprise); 
+            network.getShipmentDirectories().addShipmentDirectory(newShipmentDirectory);
+            shipmentDirectory = network.getShipmentDirectories().getShipmentDirectory(enterprise);
+        }
+        
+        
         populateTable();
 
         // Update the title with the current enterprise name
@@ -120,7 +129,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
                 .addGap(56, 56, 56)
                 .addComponent(btnBack)
                 .addGap(60, 60, 60)
-                .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
@@ -184,7 +193,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         // Send email to show in transit and in a separate thread to avoid freezing UI
         new Thread(() -> {
             try {
-                MailUtil.sendLogisticsStatusEmail("alvinusamemory@gmail.com", "Logistics Shipped", "Your delivery is on the way!");
+                MailUtil.sendLogisticsStatusEmail("alvinusamemory@gmail.com", "neumsis10142008@gmail.com", "Logistics Shipped", "Your delivery is on the way!");
                 JOptionPane.showMessageDialog(null, "📧 Email sent successfully!");
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -205,7 +214,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) tblRequests.getModel(); // get table schema to control the table
         model.setRowCount(0); // clean all data in the table
         
-        System.out.println("shipmentDirectory" + shipmentDirectory.getShipments().get(0).getTrackingNumber());
+//        System.out.println("shipmentDirectory" + shipmentDirectory.getShipments().get(0).getTrackingNumber());
 
         
         

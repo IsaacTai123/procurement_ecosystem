@@ -77,7 +77,7 @@ public class WarehousePOPanel extends javax.swing.JPanel {
 
         BtnDelivered.setBackground(new java.awt.Color(255, 153, 0));
         BtnDelivered.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        BtnDelivered.setText("Delivered");
+        BtnDelivered.setText("Check Delivered");
         BtnDelivered.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnDeliveredActionPerformed(evt);
