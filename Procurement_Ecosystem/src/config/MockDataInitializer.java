@@ -103,26 +103,25 @@ public class MockDataInitializer {
                 
                 // test dynamically add a new enterprise > org > user account from db data
 
-                // TODO: comment out for testing
-//                Map<String, String> dbResult = DBApiUtil.getUserInfo();
-//
-//                String enterpriseName = dbResult.get("enterpriseName");
-//                String enterpriseType = dbResult.get("enterpriseType");
-//                String orgType = dbResult.get("orgType");
-//                String userName = dbResult.get("userName");
-//                String userPassword = dbResult.get("userPassword");
-//                String userType = dbResult.get("userType");
-//                String userEmail = dbResult.get("userEmail");
+                Map<String, String> dbResult = DBApiUtil.getUserInfo();
+
+                String enterpriseName = dbResult.get("enterpriseName");
+                String enterpriseType = dbResult.get("enterpriseType");
+                String orgType = dbResult.get("orgType");
+                String userName = dbResult.get("userName");
+                String userPassword = dbResult.get("userPassword");
+                String userType = dbResult.get("userType");
+                String userEmail = dbResult.get("userEmail");
                 
                 
                 
-//
-//                // UPS (A009/A009): from db
-//                Enterprise newEnterprise = network.getEnterpriseDir().createEnterprise(enterpriseName, EnterpriseType.valueOf(enterpriseType.toUpperCase()));
-//                Organization newOrg = orgService.createOrgFromEnterprise(OrganizationType.valueOf(orgType.toUpperCase()), newEnterprise);
-//                UserAccount newUserAccount = userAccountService.createUserFromOrganization(userName, userPassword,
-//                                Role.valueOf(userType.toUpperCase()), newOrg, newEnterprise);
-//                newUserAccount.setEmail(userEmail);
+
+                // UPS (A009/A009): from db
+                Enterprise newEnterprise = network.getEnterpriseDir().createEnterprise(enterpriseName, EnterpriseType.valueOf(enterpriseType.toUpperCase()));
+                Organization newOrg = orgService.createOrgFromEnterprise(OrganizationType.valueOf(orgType.toUpperCase()), newEnterprise);
+                UserAccount newUserAccount = userAccountService.createUserFromOrganization(userName, userPassword,
+                                Role.valueOf(userType.toUpperCase()), newOrg, newEnterprise);
+                newUserAccount.setEmail(userEmail);
                 
                 
                 // Goolge procurement give two PO to Asus(vendor)
