@@ -24,6 +24,7 @@ public class VendorService {
     }
 
     public Result<Void> submitQuotation(RFQ rfq, double price, Enterprise vendor) {
+        rfq.setStatus(RFQStatus.RECEIVED);
         // Get Enterprise from vendor
         Quotation q = new Quotation(vendor, rfq.getRemarks(), price);
 
@@ -41,7 +42,7 @@ public class VendorService {
 
         // Store quotation in the directory
         rfq.getQuotations().addQuotation(q);
-        rfq.setStatus(RFQStatus.RECEIVED);
+        rfq.setStatus(RFQStatus.CLOSED);
         return result;
     }
 }

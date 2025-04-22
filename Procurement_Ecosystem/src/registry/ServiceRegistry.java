@@ -3,6 +3,7 @@ package registry;
 import enums.EnterpriseType;
 import enums.OrganizationType;
 import enums.Role;
+import view.purchaseOrder.SubmitPurchaseOrderPanel;
 import view.quotation.ManageQuotationPanel;
 import view.quotation.QuotationReviewPanel;
 import view.services.HRServicePanel;
@@ -44,6 +45,7 @@ public class ServiceRegistry {
         Supplier<JPanel> RFQMANAGE_SERVICE = RFQManagmentPanel::new;
         Supplier<JPanel> QUOTATION_SERVICE = ManageQuotationPanel::new;
         Supplier<JPanel> QUOTATION_REVIEW = QuotationReviewPanel::new;
+        Supplier<JPanel> SUBMIT_PO = SubmitPurchaseOrderPanel::new;
 
 
         
@@ -73,7 +75,8 @@ public class ServiceRegistry {
         addService(Role.SPECIALIST, OrganizationType.PROCUREMENT, EnterpriseType.BUYER,
                 new ServiceItem("Personal Purchase Requests", MYPR),
                 new ServiceItem("Manage Purchase Requests", PRMANAGE_SERVICE),
-                new ServiceItem("Manage RFQ", RFQMANAGE_SERVICE)
+                new ServiceItem("Manage RFQ", RFQMANAGE_SERVICE),
+                new ServiceItem("Submit Purchase Order", SUBMIT_PO)
         );
 
         // Google Legal Manager
@@ -96,6 +99,10 @@ public class ServiceRegistry {
         addService(Role.MANAGER, OrganizationType.SALES, EnterpriseType.VENDOR,
                 new ServiceItem("Manage RFQ", RFQMANAGE_SERVICE),
                 new ServiceItem("Manage Quotation", QUOTATION_SERVICE)
+        );
+
+        addService(Role.SPECIALIST, OrganizationType.SALES, EnterpriseType.VENDOR,
+                new ServiceItem("Manage Purchase Order", myPurchaseOrdersPanel)
         );
 
         // Logistics

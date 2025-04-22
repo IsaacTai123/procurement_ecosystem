@@ -47,12 +47,19 @@ public class QuotationDirectory {
         selectedQuotation.setSelected(true); // 选中传入的 quotation
     }
 
-    public String findCompletedQuotationByDir() {
+    // Find the completed quotation, this will be used to link purchase order with RFQ
+    public String findCompletedQuotationId() {
         return quotations
                 .stream()
                 .filter(q -> q.getStatus() == RequestStatus.COMPLETED)
                 .map(Quotation::getId)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public Boolean isQuotationCompleted() {
+        return quotations
+                .stream()
+                .anyMatch(q -> q.getStatus() == RequestStatus.COMPLETED);
     }
 }

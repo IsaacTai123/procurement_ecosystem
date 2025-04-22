@@ -2,6 +2,7 @@ package directory;
 
 import enums.OrganizationType;
 import enums.Role;
+import model.ecosystem.Enterprise;
 import model.user.UserAccount;
 import registry.UserRegistry;
 
@@ -67,6 +68,7 @@ public class GlobalUserAccountDirectory {
      *
      * @param orgType The type of organization to search for.
      * @param role    The role of the user to search for.
+     * @param ent     The enterprise to which the user belongs.
      * @return An Optional containing the UserAccount if found, or empty if not found.
      *
      * <h3>Example usage:</h3>
@@ -75,9 +77,10 @@ public class GlobalUserAccountDirectory {
      *     .ifPresent(step::setAssignedUser);
      * }</pre>
      */
-    public Optional<UserAccount> findUserByOrgAndRole(OrganizationType orgType, Role role) {
+    public Optional<UserAccount> findUserByOrgAndRole(OrganizationType orgType, Role role, Enterprise ent) {
         return allUsers.stream()
                 .filter(user -> user.getOrg().getTypeName() == orgType && user.getUserType() == role)
+                .filter(user -> user.getEnterprise() == ent)
                 .findFirst();
     }
 }

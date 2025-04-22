@@ -34,7 +34,7 @@ public class ManageQuotationPanel extends javax.swing.JPanel {
         initComponents();
         this.rfqDir = AppContext.getNetwork().getRfqDirectory();
 
-        refreshRFQTable();
+        refreshQuotationTable();
         populateRFQListTable();
         forwardBtn.setEnabled(false);
         
@@ -49,7 +49,7 @@ public class ManageQuotationPanel extends javax.swing.JPanel {
         });
     }
     
-    private void refreshRFQTable() {
+    private void refreshQuotationTable() {
         DefaultTableModel model = (DefaultTableModel) quotationTable.getModel();
         model.setRowCount(0); // clear existing
         rfq = UIUtil.getSelectedTableObject(
@@ -93,7 +93,7 @@ public class ManageQuotationPanel extends javax.swing.JPanel {
             currentIndex++;
             if (currentIndex < rfqDir.getRFQList().size()) {
                 rfq = rfqDir.getRFQList().get(currentIndex);
-                refreshRFQTable();
+                refreshQuotationTable();
                 forwardBtn.setEnabled(false);
                 populateRFQListTable();
             } else {
@@ -128,7 +128,7 @@ public class ManageQuotationPanel extends javax.swing.JPanel {
                 }
 
                 model.addRow(new Object[]{
-                    prId,       // ID column
+                    rfq,       // ID column
                     vendors     // Enterprise/Vendor names column
                 });
             }
@@ -357,7 +357,7 @@ public class ManageQuotationPanel extends javax.swing.JPanel {
 
         JOptionPane.showMessageDialog(this, "Quotation has been rejected.");
 
-        refreshRFQTable();
+        refreshQuotationTable();
     
     }//GEN-LAST:event_rejectBtnActionPerformed
 
@@ -396,7 +396,7 @@ public class ManageQuotationPanel extends javax.swing.JPanel {
 
         JOptionPane.showMessageDialog(this, "Quotation forwarded to finance.");
 
-        refreshRFQTable();
+        refreshQuotationTable();
         populateRFQListTable();
         forwardBtn.setEnabled(false);
         // Don’t load next RFQ automatically if user wants to stay on the page
@@ -412,7 +412,7 @@ public class ManageQuotationPanel extends javax.swing.JPanel {
         }
         rfq = rfqDir.getRFQList().get(selected);   // load from selected row
         currentIndex = selected;           // sync index
-        refreshRFQTable();                   // reload right table
+        refreshQuotationTable();                   // reload right table
         forwardBtn.setEnabled(false);      // reset button state
 
     }//GEN-LAST:event_loadBtnActionPerformed

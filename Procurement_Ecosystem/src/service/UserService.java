@@ -4,9 +4,13 @@ import common.AppContext;
 import common.NetworkManager;
 import common.Result;
 import common.Session;
+import config.FakeDataGenerator;
+import controller.VendorController;
+import controller.procurement.ProcurementController;
 import directory.PurchaseRequestDirectory;
 import enums.ApprovalStatus;
 import enums.OrganizationType;
+import enums.RFQStatus;
 import enums.RequestStatus;
 import model.ecosystem.Ecosystem;
 import model.ecosystem.Enterprise;
@@ -15,6 +19,8 @@ import model.procurement.PurchaseItem;
 import model.procurement.PurchaseRequest;
 import model.product.Product;
 import model.product.Spec;
+import model.quotation.Quotation;
+import model.quotation.RFQ;
 import model.user.UserAccount;
 import model.workqueue.WorkflowStep;
 import registry.UserRegistry;
@@ -62,7 +68,7 @@ public class UserService {
                     if (result.isSuccess()) {
                         Session.setSession(user, network); // for UI
                         AppContext.setContext(user, network); // for services
-                        generateFakeDataForTest(); // for testing
+                        FakeDataGenerator.generateFakeDataForTest(); // for testing
                     }
                     return result;
                 }) // Optional<Result<UserAccount>>
@@ -76,50 +82,5 @@ public class UserService {
         } else {
             return ResultUtil.failure("Invalid username or password");
         }
-    }
-
-    private void generateFakeDataForTest() {
-        // A fake PR
-        PurchaseRequest p = new PurchaseRequest("PR-001");
-        p.setSender(currentUsr);
-        AppContext.getUserEnterprise().getPurchaseRequestList().addPurchaseRequest(p);
-        p.addPurchaseItem(
-                new Product("Asus Laptop"),
-                1, 3.33,
-                new Spec("Intel i7", "16GB RAM", "512GB SSD", "Black", "Laptop", "Asus Laptop")
-        );
-
-        p.createRequesterStep(currentUsr);
-
-        p.getWorkflowSteps().forEach(step -> {
-            OrganizationType type = step.getOrgType();
-
-            if (type == OrganizationType.IT) {
-                step.setStatus(ApprovalStatus.APPROVED);
-                step.setAssignedUser(AppContext.getNetwork().getUserRegistry().findByUserId("A001").orElse(null));
-            } else if (type == OrganizationType.PROCUREMENT) {
-                step.setStatus(ApprovalStatus.APPROVED); // 範例
-                step.setAssignedUser(AppContext.getNetwork().getUserRegistry().findByUserId("A002").orElse(null));
-            } else {
-                step.setStatus(ApprovalStatus.SUBMITTED);
-            }
-        });
-
-        p.setStatus(RequestStatus.APPROVED);
-
-//        // Print out PR details
-//        System.out.println("Purchase Request ID: " + p.getId());
-//        System.out.println("Sender: " + p.getSender().getUsername());
-//        System.out.println("Status: " + p.getStatus());
-//        System.out.println("Items:");
-//        for (PurchaseItem item : p.getPurchaseItems().getPurchaseItemList()) {
-//            System.out.println(" - " + item.getProduct().getName() + ": " + item.getQuantity() + " pcs");
-//        }
-
-//        // print workflow steps
-//        System.out.println("Workflow Steps:");
-//        for (WorkflowStep w : p.getWorkflowSteps()) {
-//            System.out.println( "status: " + w.getStatus());
-//        }
     }
 }

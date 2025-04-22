@@ -58,6 +58,24 @@ public class ProcurementController {
         return getService().submitRFQ(rfq, vendor);
     }
 
+    public Result<Void> handlePOSubmit(RFQ rfq, Quotation quotation, String price, String remarks, String address) {
+        // Validate price
+        double parsedPrice;
+        try {
+            parsedPrice = Double.parseDouble(price);
+        } catch (NumberFormatException e) {
+            return ResultUtil.failure("Invalid price format. Please enter a valid number.");
+        }
+
+        // Validate remarks
+        if (remarks == null || remarks.isEmpty()) {
+            return ResultUtil.failure("Remarks cannot be empty.");
+        }
+
+        // Submit PO
+        return getService().submitePO(rfq, quotation, parsedPrice, remarks, address);
+    }
+
     public void compareQuotations(ArrayList<Quotation> quotations) {
         // logic to select quotation
     }

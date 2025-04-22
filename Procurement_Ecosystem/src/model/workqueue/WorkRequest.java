@@ -4,6 +4,7 @@
  */
 package model.workqueue;
 
+import common.AppContext;
 import common.Result;
 import directory.GlobalUserAccountDirectory;
 import enums.*;
@@ -149,7 +150,7 @@ public abstract class WorkRequest {
         if (next == null) {
             return ResultUtil.success("All steps completed");
         }
-        next.resolveAssignedUser(allUsersDir);
+        next.resolveAssignedUser(allUsersDir, currentUser.getEnterprise());
         next.setActive(true);
 
         return ResultUtil.success("Successfully submit and advanced to the next step");
@@ -196,7 +197,7 @@ public abstract class WorkRequest {
             return ResultUtil.failure("You are the last step, no need to forward");
         }
 
-        next.resolveAssignedUser(allUsersDir);
+        next.resolveAssignedUser(allUsersDir,  AppContext.getUser().getEnterprise());
         next.setActive(true);
 
         // Deactivate the current step
