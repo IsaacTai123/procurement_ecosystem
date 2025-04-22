@@ -29,6 +29,7 @@ import model.product.Product;
 import model.workqueue.DeliveryRequest;
 import service.OrganizationService;
 import service.UserAccountService;
+import util.DBApiUtil;
 import util.TestShipment;
 
 /**
@@ -85,7 +86,17 @@ public class MockDataInitializer {
                 UserAccount fedExShippingCoordinator = userAccountService.createUserFromOrganization("A008", "A008",
                                 Role.SHIPPING_COORDINATOR, fedExShipping, google);
                 
-
+                // test dynamically add a new enterprise > org > user account from db data
+                String json = """
+                {
+                    "name": "Alvin",
+                    "password": "alvin"
+                }
+                """;
+                Map<String, Object> dbResult = DBApiUtil.getUserInfo(json);
+                
+                
+                
                 // Goolge procurement give two PO to Asus(vendor)
                 TestShipment testShipment = new TestShipment();
                 PurchaseOrder po1 = testShipment.sendPOToVendor(googleProcurementManager,asusSalesManager);
