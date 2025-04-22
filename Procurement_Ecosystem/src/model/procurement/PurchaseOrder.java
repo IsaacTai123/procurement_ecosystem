@@ -90,8 +90,6 @@ public class PurchaseOrder {
         this.logistics = logistics;
     }
 
-    
-
     public List<PurchaseItem> getPurchaseItems() {
         return purchaseItems;
     }
