@@ -38,7 +38,6 @@ public class WarehousePOPanel extends javax.swing.JPanel {
      */
     public WarehousePOPanel() {
         initComponents();
-        initUI();
         
         this.currentUser = Session.getCurrentUser();
         this.network = Session.getCurrentNetwork();
@@ -46,11 +45,7 @@ public class WarehousePOPanel extends javax.swing.JPanel {
 
         this.purchaseOrderDirectory = enterprise.getPurchaseOrderList();
         
-     
-        
-      
-      
-        
+        initUI();
         populateTable();
         
     }

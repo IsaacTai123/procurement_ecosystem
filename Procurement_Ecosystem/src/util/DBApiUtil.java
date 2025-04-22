@@ -46,6 +46,8 @@ public class DBApiUtil {
                 String userName = firstUser.optString("userName", null);
                 String userPassword = firstUser.optString("userPassword", null);
                 String userType = firstUser.optString("userType", null);
+                String userEmail = firstUser.optString("userEmail", null);
+
                 
                 
                 result.put("enterpriseName", enterpriseName);
@@ -54,6 +56,7 @@ public class DBApiUtil {
                 result.put("userName", userName);
                 result.put("userPassword", userPassword);
                 result.put("userType", userType);
+                result.put("userEmail", userEmail);
                 
 
                 System.out.println("✅ orgType: " + orgType);
@@ -62,6 +65,8 @@ public class DBApiUtil {
                 System.out.println("✅ userName: " + userName);
                 System.out.println("✅ userPassword: " + userPassword);
                 System.out.println("✅ userType: " + userType);
+                System.out.println("✅ userEmail: " + userEmail);
+                
                 
             } else {
                 System.out.println("⚠️ Empty array returned from API.");

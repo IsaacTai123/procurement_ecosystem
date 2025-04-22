@@ -187,13 +187,16 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         shipment.setShipDate(shipDate);
         shipment.setExpectedArrival(expectedDeliveredDate);
         shipment.getDeliveryReq().setStatus(RequestStatus.APPROVED);
-        
+        String buyerEmail = shipment.getSender().getEmail();
+        String receiverEmail = shipment.getReceiver().getEmail();
+                
         
       
         // Send email to show in transit and in a separate thread to avoid freezing UI
         new Thread(() -> {
             try {
-                MailUtil.sendLogisticsStatusEmail("alvinusamemory@gmail.com", "neumsis10142008@gmail.com", "Logistics Shipped", "Your delivery is on the way!");
+                MailUtil.sendLogisticsStatusEmail(buyerEmail, receiverEmail, "Logistics Shipped", "Your delivery is on the way!");
+//                MailUtil.sendLogisticsStatusEmail("", "", "Logistics Shipped", "Your delivery is on the way!");
                 JOptionPane.showMessageDialog(null, "📧 Email sent successfully!");
             } catch (Exception ex) {
                 ex.printStackTrace();

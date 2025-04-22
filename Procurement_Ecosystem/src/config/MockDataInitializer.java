@@ -53,22 +53,32 @@ public class MockDataInitializer {
                 Organization googleIT = orgService.createOrgFromEnterprise(OrganizationType.IT, google);
                 UserAccount googleITManager = userAccountService.createUserFromOrganization("Alvin", "A001",
                                 Role.MANAGER, googleIT, google);
+                googleITManager.setEmail("anonymoust438@gmail.com");
 
                 Organization googleProcurement = orgService.createOrgFromEnterprise(OrganizationType.PROCUREMENT,
                                 google);
+                
 
                 UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac",
                                 Role.SPECIALIST, googleProcurement, google);
                 UserAccount googleSpecialist = userAccountService.createUserFromOrganization("A003", "peter",
                                 Role.SPECIALIST, googleProcurement, google);
+                googleProcurementManager.setEmail("anonymoust438@gmail.com");
+                googleSpecialist.setEmail("anonymoust438@gmail.com");
+                
+                
 
                 Organization googleFinance = orgService.createOrgFromEnterprise(OrganizationType.FINANCE, google);
                 UserAccount googleFinanceSpecialist = userAccountService.createUserFromOrganization("A004", "peter",
                                 Role.ANALYST, googleFinance, google);
+                googleFinanceSpecialist.setEmail("anonymoust438@gmail.com");
+                
                 
                 Organization googleWarehouse = orgService.createOrgFromEnterprise(OrganizationType.WAREHOUSE, google);
                 UserAccount googleWarehouseSpecialist = userAccountService.createUserFromOrganization("A005", "A005",
                                 Role.SPECIALIST, googleWarehouse, google);
+                googleWarehouseSpecialist.setEmail("anonymoust438@gmail.com");
+                
 
 
                 // Asus (sales: A006/A006) | (specialist: A007/peter)
@@ -78,6 +88,8 @@ public class MockDataInitializer {
                                 "A006", Role.MANAGER, asusSales, asus);
                 UserAccount asusSpecialist = userAccountService.createUserFromOrganization("asusSpecialist", "peter",
                                 Role.SPECIALIST, asusSales, asus);
+                asusSalesManager.setEmail("chenqiyao01@gmail.com");
+                asusSpecialist.setEmail("chenqiyao01@gmail.com");
                 
                 
                 // FedEx (A008/A008)
@@ -85,6 +97,9 @@ public class MockDataInitializer {
                 Organization fedExShipping = orgService.createOrgFromEnterprise(OrganizationType.LOGISTICS, fedEx);
                 UserAccount fedExShippingCoordinator = userAccountService.createUserFromOrganization("A008", "A008",
                                 Role.SHIPPING_COORDINATOR, fedExShipping, fedEx);
+                fedExShippingCoordinator.setEmail("neumsis10142008@gmail.com");
+                
+                
                 
                 // test dynamically add a new enterprise > org > user account from db data
                 
@@ -96,13 +111,17 @@ public class MockDataInitializer {
                 String userName = dbResult.get("userName");
                 String userPassword = dbResult.get("userPassword");
                 String userType = dbResult.get("userType");
+                String userEmail = dbResult.get("userEmail");
+                
+                
+                
                 
                 // UPS (A009/A009): from db
                 Enterprise newEnterprise = network.getEnterpriseDir().createEnterprise(enterpriseName, EnterpriseType.valueOf(enterpriseType.toUpperCase()));
                 Organization newOrg = orgService.createOrgFromEnterprise(OrganizationType.valueOf(orgType.toUpperCase()), newEnterprise);
                 UserAccount newUserAccount = userAccountService.createUserFromOrganization(userName, userPassword,
                                 Role.valueOf(userType.toUpperCase()), newOrg, newEnterprise);
-                
+                newUserAccount.setEmail(userEmail);
                 
                 
                 // Goolge procurement give two PO to Asus(vendor)
