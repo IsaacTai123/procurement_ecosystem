@@ -3,6 +3,7 @@ package util;
 import enums.OrganizationType;
 import enums.Role;
 import interfaces.Identifiable;
+import jakarta.mail.internet.InternetAddress;
 import model.user.UserAccount;
 
 import java.util.List;
@@ -28,5 +29,15 @@ public class CommonUtil {
             }
         }
         return Optional.empty();
+    }
+
+    public static boolean isValidEmail(String email) {
+        try {
+            InternetAddress address = new InternetAddress(email);
+            address.validate();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

@@ -43,17 +43,20 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
 
     public ManageDeliveryReqPanel() {
         initComponents();
-
         this.currentUser = Session.getCurrentUser();
         this.network = Session.getCurrentNetwork();
         this.enterprise = currentUser.getEnterprise();
         this.shipmentDirectory = network.getShipmentDirectories().getShipmentDirectory(enterprise);
-        
+        initUI();
         populateTable();
 
         // Update the title with the current enterprise name
         UIUtil.setEnterpriseTitle(lbTitle, currentUser.getEnterprise().getName());
 
+    }
+
+    public void initUI() {
+        UIUtil.setEnterpriseTitle(lbTitle, currentUser.getEnterprise().getName());
     }
 
     /**
@@ -72,6 +75,7 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         btnTransit = new javax.swing.JButton();
 
         lbTitle.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        lbTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbTitle.setText("Manage Delivery Requests");
 
         btnBack.setText("<< Back");
@@ -116,29 +120,26 @@ public class ManageDeliveryReqPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(56, 56, 56)
-                .addComponent(btnBack)
-                .addGap(60, 60, 60)
-                .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(lbTitle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 761, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnTransit, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnTransit, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnBack)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(49, 49, 49)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbTitle)
-                    .addComponent(btnBack))
-                .addGap(36, 36, 36)
+                .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnBack)
+                .addGap(24, 24, 24)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(43, 43, 43)
                 .addComponent(btnTransit)

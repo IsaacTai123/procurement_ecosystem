@@ -17,6 +17,7 @@ import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import model.procurement.PurchaseOrder;
 import model.user.UserAccount;
+import util.UIUtil;
 
 /**
  *
@@ -37,6 +38,7 @@ public class WarehousePOPanel extends javax.swing.JPanel {
      */
     public WarehousePOPanel() {
         initComponents();
+        initUI();
         
         this.currentUser = Session.getCurrentUser();
         this.network = Session.getCurrentNetwork();
@@ -51,6 +53,10 @@ public class WarehousePOPanel extends javax.swing.JPanel {
         
         populateTable();
         
+    }
+
+    public void initUI() {
+        UIUtil.setEnterpriseTitle(lbTitle, currentUser.getEnterprise().getName());
     }
 
     /**

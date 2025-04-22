@@ -54,6 +54,7 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel implements IDataRe
      */
     public MyPurchaseOrdersPanel() {
         initComponents();
+        initUI();
 
         this.currentUser = Session.getCurrentUser();
         this.network = Session.getCurrentNetwork();
@@ -76,6 +77,9 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel implements IDataRe
         
     }
 
+    public void initUI() {
+        UIUtil.setEnterpriseTitle(lbTitle, currentUser.getEnterprise().getName());
+    }
     
 
     /**

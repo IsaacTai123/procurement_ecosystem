@@ -261,7 +261,9 @@ public class SubmitPurchaseOrderPanel extends javax.swing.JPanel implements IDat
         });
         jScrollPane1.setViewportView(tblQuotation);
         if (tblQuotation.getColumnModel().getColumnCount() > 0) {
+            tblQuotation.getColumnModel().getColumn(0).setMinWidth(100);
             tblQuotation.getColumnModel().getColumn(1).setResizable(false);
+            tblQuotation.getColumnModel().getColumn(2).setResizable(false);
             tblQuotation.getColumnModel().getColumn(3).setResizable(false);
         }
 
@@ -286,7 +288,7 @@ public class SubmitPurchaseOrderPanel extends javax.swing.JPanel implements IDat
         });
         jScrollPane2.setViewportView(tblPO);
         if (tblPO.getColumnModel().getColumnCount() > 0) {
-            tblPO.getColumnModel().getColumn(0).setResizable(false);
+            tblPO.getColumnModel().getColumn(0).setMinWidth(120);
             tblPO.getColumnModel().getColumn(1).setResizable(false);
             tblPO.getColumnModel().getColumn(2).setResizable(false);
         }
