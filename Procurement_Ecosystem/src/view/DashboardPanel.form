@@ -33,6 +33,7 @@
                                   <Component id="lbUserId" max="32767" attributes="0"/>
                                   <Component id="lbUserName" alignment="0" pref="197" max="32767" attributes="0"/>
                                   <Component id="lbUserRole" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="lbUserOrg" alignment="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
@@ -72,10 +73,12 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="lbUserName" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
+                      <Component id="lbUserOrg" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="lbUserRole" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                       <Component id="btnProfile" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="txtUserName" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="lbName" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -190,6 +193,11 @@
     <Component class="javax.swing.JButton" name="btnCancel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Cancel"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lbUserOrg">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="User Org: "/>
       </Properties>
     </Component>
   </SubComponents>

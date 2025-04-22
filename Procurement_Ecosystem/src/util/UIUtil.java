@@ -80,6 +80,8 @@ public class UIUtil {
         for (JComponent comp : components) {
             if (comp != null) {
                 comp.setVisible(visible);
+                comp.revalidate();
+                comp.repaint();
             }
         }
     }

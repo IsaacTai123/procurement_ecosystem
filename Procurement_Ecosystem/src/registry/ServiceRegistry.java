@@ -66,8 +66,9 @@ public class ServiceRegistry {
                 new ServiceItem("Personal Purchase Requests", MYPR)
         );
 
-        // Google Finance Manager
+        // Google Finance Analyst
         addService(Role.ANALYST, OrganizationType.FINANCE, EnterpriseType.BUYER,
+                new ServiceItem("Personal Purchase Requests", MYPR),
                 new ServiceItem("Quotation Review", QUOTATION_REVIEW)
         );
 
@@ -76,7 +77,8 @@ public class ServiceRegistry {
                 new ServiceItem("Personal Purchase Requests", MYPR),
                 new ServiceItem("Manage Purchase Requests", PRMANAGE_SERVICE),
                 new ServiceItem("Manage RFQ", RFQMANAGE_SERVICE),
-                new ServiceItem("Submit Purchase Order", SUBMIT_PO)
+                new ServiceItem("Submit Purchase Order", SUBMIT_PO),
+                new ServiceItem("Manage Quotation", QUOTATION_SERVICE)
         );
 
         // Google Legal Manager
@@ -91,6 +93,7 @@ public class ServiceRegistry {
   
         // Google Warehouse Manager
         addService(Role.SPECIALIST, OrganizationType.WAREHOUSE, EnterpriseType.BUYER,
+                new ServiceItem("Personal Purchase Requests", MYPR),
                new ServiceItem("View Purchase Orders", warehousePOPanel)  
         );
         

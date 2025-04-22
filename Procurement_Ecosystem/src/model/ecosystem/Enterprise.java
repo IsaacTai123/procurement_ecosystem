@@ -76,7 +76,7 @@ public class Enterprise {
 
     public UserAccount findUserByOrgRoleAndEnt(OrganizationType org, Role role) {
         return AppContext.getNetwork().getGlobalUserAccountDir()
-                .findUserByOrgAndRole(org, role, this)
+                .findUserByOrgAndRole(org, role, this.getType())
                 .orElseThrow(() -> new IllegalStateException("User not found with given org, role, and enterprise"));
     }
     

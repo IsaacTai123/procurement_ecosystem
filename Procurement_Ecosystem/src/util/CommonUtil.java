@@ -5,6 +5,7 @@ import enums.Role;
 import interfaces.Identifiable;
 import jakarta.mail.internet.InternetAddress;
 import model.user.UserAccount;
+import model.workqueue.WorkflowStep;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,5 +40,10 @@ public class CommonUtil {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public static String formatOrgAndUser(WorkflowStep step) {
+        UserAccount u = step.getAssignedUser();
+        return u.getEnterprise().getName() + " / " + step.getOrganizationType().name() + " / " + u.getUsername() + " / " + u.getUserType().name();
     }
 }

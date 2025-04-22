@@ -4,136 +4,234 @@
  */
 package view.quotation;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-
 import common.AppContext;
+import common.Result;
+import controller.procurement.ProcurementController;
 import directory.RFQDirectory;
-import enums.RequestStatus;
+import enums.EnterpriseType;
+import enums.RFQStatus;
+import interfaces.IDataRefreshCallback;
+import interfaces.IDataRefreshCallbackAware;
 import model.quotation.Quotation;
 import model.quotation.RFQ;
 import util.NavigationUtil;
 import util.UIUtil;
 
+import javax.swing.*;
+import javax.swing.event.ListSelectionListener;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 /**
  *
- * @author qiyaochen
+ * @author tisaac
  */
-public class ManageQuotationPanel extends javax.swing.JPanel {
-    
+public class ManageQuotationPanel extends javax.swing.JPanel implements IDataRefreshCallbackAware {
+
     // TEMP: For testing multiple rfqDir and refresh behavior
     private RFQDirectory rfqDir;
     private int currentIndex = 0;
-    private RFQ rfq;
+    private RFQ selectedRFQ;
+    private IDataRefreshCallback callback;
+    private boolean isProgrammaticSelection = false;
+    private final ListSelectionListener rfqSelectionListener = e -> {
+        if (!e.getValueIsAdjusting() && !isProgrammaticSelection) {
+            enableQuotationFeature(true);
+            refreshQuotationTable();
+        }
+    };
 
     /**
      * Creates new form QuotationPanel
      */
     public ManageQuotationPanel() {
         initComponents();
+        setupListener();
         this.rfqDir = AppContext.getNetwork().getRfqDirectory();
-
-        refreshQuotationTable();
-        populateRFQListTable();
-        forwardBtn.setEnabled(false);
-        
-        quotationTable.getSelectionModel().addListSelectionListener(e -> {
-            int row = quotationTable.getSelectedRow();
-            if (row >= 0) {
-                String status = (String) quotationTable.getModel().getValueAt(row, 3);
-                forwardBtn.setEnabled(!"REJECTED".equalsIgnoreCase(status));
-            } else {
-                forwardBtn.setEnabled(false);
-            }
-        });
+        initUI();
     }
-    
+
+    private void initUI() {
+        UIUtil.setEnterpriseTitle(lbTitle, AppContext.getUserEnterprise().getName());
+        refreshOngoingRFQTable();
+        enableQuotationFeature(false);
+    }
+
+    private void enableQuotationFeature(boolean enable) {
+        if (enable && AppContext.getUserEnterprise().getType() == EnterpriseType.BUYER) {
+            UIUtil.show(
+                    btnReject,
+                    btnForward,
+                    txtRemark,
+                    lbReject
+            );
+        } else {
+            UIUtil.hide(
+                    btnReject,
+                    btnForward,
+                    txtRemark,
+                    lbReject
+            );
+        }
+    }
+
+    private void setupListener() {
+        btnView.addActionListener(e -> handleView());
+        btnReject.addActionListener(e -> handleReject());
+        btnForward.addActionListener(e -> handleForward());
+        btnOngoing.addActionListener(e -> handleOngoingRFQ());
+        btnCompleted.addActionListener(e -> handleCompletedRFQ());
+        btnBack.addActionListener(e -> handleBack());
+        tblRFQ.getSelectionModel().addListSelectionListener(rfqSelectionListener);
+    }
+
+    private void handleOngoingRFQ() {
+        UIUtil.clearTable(tblQuotation);
+        refreshOngoingRFQTable();
+        enableQuotationFeature(false);
+    }
+
+    private void handleCompletedRFQ() {
+        UIUtil.clearTable(tblQuotation);
+        refreshCompletedRFQTable();
+    }
+
+    private void handleForward() {
+        Quotation selectedQ = getSelectedQuotation();
+        if (selectedQ == null) {
+            return;
+        }
+
+        Result<Void> r = ProcurementController.getInstance().handleQuotationForward(
+                selectedQ,
+                selectedRFQ
+        );
+
+        if (!r.isSuccess()) {
+            UIUtil.showError(this, r.getMessage());
+            return;
+        }
+        UIUtil.showInfo(this, r.getMessage());
+        refreshQuotationTable();
+    }
+
+    // Show finished RFQ
+    private void refreshCompletedRFQTable() {
+        isProgrammaticSelection = true;
+
+        // Get unfinished RFQ list
+        List<RFQ> rfq = AppContext.getNetwork().getRfqDirectory().getRFQList().stream()
+                .filter(r -> r.getStatus() == RFQStatus.CLOSED)
+                .collect(Collectors.toList());
+
+        UIUtil.reloadTable(
+                tblRFQ,
+                rfq,
+                e -> new Object[] {
+                        e,
+                        e.getVendor(),
+                        e.getStatus()
+                }
+        );
+        isProgrammaticSelection = false;
+    }
+
+
+    // Show unfinished RFQ
+    private void refreshOngoingRFQTable() {
+        isProgrammaticSelection = true;
+        // Get unfinished RFQ list
+        List<RFQ> rfq = AppContext.getNetwork().getRfqDirectory().getRFQList().stream()
+                        .filter(r -> r.getStatus() == RFQStatus.RECEIVED)
+                        .collect(Collectors.toList());
+
+        UIUtil.reloadTable(
+                tblRFQ,
+                rfq,
+                e -> new Object[] {
+                        e,
+                        e.getVendor(),
+                        e.getStatus()
+                }
+        );
+        isProgrammaticSelection = false;
+    }
+
     private void refreshQuotationTable() {
-        DefaultTableModel model = (DefaultTableModel) quotationTable.getModel();
-        model.setRowCount(0); // clear existing
-        rfq = UIUtil.getSelectedTableObject(
-                RFQListTable,
+        selectedRFQ = UIUtil.getSelectedTableObject(
+                tblRFQ,
                 0,
                 RFQ.class,
                 this,
                 "Please select a RFQ"
         ).orElse(null);
 
-        if (rfq == null) {
+        if (selectedRFQ == null) {
             return;
         }
 
-        for (Quotation q : rfq.getQuotations().getQuotationList()) {
-            model.addRow(new Object[]{
-                q.getId(),
-                q.getVendor().getName(),
-                q.getRemarks(),
-                q.getStatus().toString()
-            });
-        }
-
-        quotationTable.setDefaultRenderer(Object.class, new javax.swing.table.DefaultTableCellRenderer() {
-            @Override
-            public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
-                    boolean isSelected, boolean hasFocus, int row, int column) {
-                java.awt.Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                String status = (String) table.getModel().getValueAt(row, 3); // status column
-                if ("REJECTED".equals(status) || "FORWARDED".equals(status)) {
-                    c.setForeground(java.awt.Color.GRAY);
-                } else {
-                    c.setForeground(java.awt.Color.BLACK);
+        UIUtil.reloadTable(tblQuotation,
+                selectedRFQ.getQuotations().getQuotationList(),
+                q -> new Object[]{
+                        q,
+                        q.getVendor(),
+                        q.getPrice(),
+                        q.getStatus()
                 }
-                return c;
-            }
-        });
+        );
     }
-        
-        private void loadNextRFQ() {
-            currentIndex++;
-            if (currentIndex < rfqDir.getRFQList().size()) {
-                rfq = rfqDir.getRFQList().get(currentIndex);
-                refreshQuotationTable();
-                forwardBtn.setEnabled(false);
-                populateRFQListTable();
-            } else {
-                JOptionPane.showMessageDialog(this, "No more rfqDir available.");
-                ((DefaultTableModel) quotationTable.getModel()).setRowCount(0);
-            }
-        }
-        
-        private void populateRFQListTable() {
-            DefaultTableModel model = (DefaultTableModel) RFQListTable.getModel();
-            model.setRowCount(0); // Clear old data
-        
-            for (RFQ r : rfqDir.getRFQList()) {
-                // Join vendor names from all quotations
-                StringBuilder vendorNames = new StringBuilder();
-                for (Quotation q : r.getQuotations().getQuotationList()) {
-                    if (vendorNames.length() > 0) vendorNames.append(", ");
-                    vendorNames.append(q.getVendor().getName());
-                }
 
-                String prId = (r.getId() != null && !r.getId().isEmpty()) ? r.getId() : "(No ID)";
-                System.out.println("Loading RFQ ID into table: " + prId);
-                String vendors = vendorNames.length() > 0 ? vendorNames.toString() : "(No vendors)";
-                boolean isForwarded = r.getQuotations().getSelectedQuotation() != null && r.getQuotations().getSelectedQuotation().getStatus() == RequestStatus.PENDING;
-                if (isForwarded) {
-                    vendors += " (Forwarded)";
-                }
-                boolean allHandled = r.getQuotations().getQuotationList().stream().allMatch(q -> q.getStatus() != RequestStatus.RECEIVED);
-                if (allHandled) {
-                    vendors = "<html><font color='gray'>" + vendors + "</font></html>";
-                    prId = "<html><font color='gray'>" + prId + "</font></html>";
-                }
+    private Quotation getSelectedQuotation() {
+        return UIUtil.getSelectedTableObject(
+                tblQuotation,
+                0,
+                Quotation.class,
+                this,
+                "Please select a quotation"
+        ).orElse(null);
+    }
 
-                model.addRow(new Object[]{
-                    rfq,       // ID column
-                    vendors     // Enterprise/Vendor names column
-                });
-            }
+    private void handleReject() {
+        Quotation selectedQ = getSelectedQuotation();
+        if (selectedQ == null) {
+            return;
         }
 
+        Result<Void> r = ProcurementController.getInstance().handleQuotationReject(
+                selectedQ,
+                txtRemark.getText()
+        );
+
+        if (!r.isSuccess()) {
+            UIUtil.showError(this, r.getMessage());
+            return;
+        }
+        UIUtil.showInfo(this, r.getMessage());
+        refreshQuotationTable();
+    }
+
+    private void handleView() {
+        Quotation selectedQ = getSelectedQuotation();
+        if (selectedQ == null) {
+            return;
+        }
+
+        NavigationUtil.getInstance().showCard(
+                new QuotationViewDetailPanel(selectedQ),
+                "Quotation View Detail"
+        );
+    }
+
+    private void handleBack() {
+        NavigationUtil.getInstance().goBack();
+        callback.refreshData();
+    }
+
+    @Override
+    public void setCallback(IDataRefreshCallback callback) {
+        this.callback = callback;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -145,19 +243,23 @@ public class ManageQuotationPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        quotationTable = new javax.swing.JTable();
+        tblQuotation = new javax.swing.JTable();
         lbTitle = new javax.swing.JLabel();
         btnBack = new javax.swing.JButton();
-        rejectBtn = new javax.swing.JButton();
-        viewBtn = new javax.swing.JButton();
-        forwardBtn = new javax.swing.JButton();
+        btnReject = new javax.swing.JButton();
+        btnView = new javax.swing.JButton();
+        btnForward = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        RFQListTable = new javax.swing.JTable();
-        loadBtn = new javax.swing.JButton();
+        tblRFQ = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        lbReject = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        txtRemark = new javax.swing.JTextArea();
+        btnOngoing = new javax.swing.JButton();
+        btnCompleted = new javax.swing.JButton();
 
-        quotationTable.setModel(new javax.swing.table.DefaultTableModel(
+        tblQuotation.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -180,7 +282,13 @@ public class ManageQuotationPanel extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(quotationTable);
+        jScrollPane1.setViewportView(tblQuotation);
+        if (tblQuotation.getColumnModel().getColumnCount() > 0) {
+            tblQuotation.getColumnModel().getColumn(0).setMinWidth(140);
+            tblQuotation.getColumnModel().getColumn(1).setResizable(false);
+            tblQuotation.getColumnModel().getColumn(2).setResizable(false);
+            tblQuotation.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         lbTitle.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
         lbTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -193,45 +301,45 @@ public class ManageQuotationPanel extends javax.swing.JPanel {
             }
         });
 
-        rejectBtn.setBackground(new java.awt.Color(255, 0, 0));
-        rejectBtn.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
-        rejectBtn.setText("Reject");
-        rejectBtn.addActionListener(new java.awt.event.ActionListener() {
+        btnReject.setBackground(new java.awt.Color(255, 0, 0));
+        btnReject.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
+        btnReject.setText("Reject");
+        btnReject.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rejectBtnActionPerformed(evt);
+                btnRejectActionPerformed(evt);
             }
         });
 
-        viewBtn.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        viewBtn.setText("View Details");
-        viewBtn.addActionListener(new java.awt.event.ActionListener() {
+        btnView.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnView.setText("View Details");
+        btnView.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewBtnActionPerformed(evt);
+                btnViewActionPerformed(evt);
             }
         });
 
-        forwardBtn.setBackground(new java.awt.Color(204, 204, 204));
-        forwardBtn.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
-        forwardBtn.setText("Forward to Finance ");
-        forwardBtn.addActionListener(new java.awt.event.ActionListener() {
+        btnForward.setBackground(new java.awt.Color(102, 204, 0));
+        btnForward.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
+        btnForward.setText("Forward to Finance ");
+        btnForward.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                forwardBtnActionPerformed(evt);
+                btnForwardActionPerformed(evt);
             }
         });
 
-        RFQListTable.setModel(new javax.swing.table.DefaultTableModel(
+        tblRFQ.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "Enterprise"
+                "ID", "Enterprise", "Status"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -242,55 +350,73 @@ public class ManageQuotationPanel extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(RFQListTable);
-        if (RFQListTable.getColumnModel().getColumnCount() > 0) {
-            RFQListTable.getColumnModel().getColumn(1).setPreferredWidth(175);
+        jScrollPane2.setViewportView(tblRFQ);
+        if (tblRFQ.getColumnModel().getColumnCount() > 0) {
+            tblRFQ.getColumnModel().getColumn(0).setResizable(false);
+            tblRFQ.getColumnModel().getColumn(0).setPreferredWidth(160);
+            tblRFQ.getColumnModel().getColumn(1).setResizable(false);
+            tblRFQ.getColumnModel().getColumn(1).setPreferredWidth(70);
+            tblRFQ.getColumnModel().getColumn(2).setResizable(false);
+            tblRFQ.getColumnModel().getColumn(2).setPreferredWidth(100);
         }
 
-        loadBtn.setBackground(new java.awt.Color(204, 204, 204));
-        loadBtn.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
-        loadBtn.setText("Select");
-        loadBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadBtnActionPerformed(evt);
-            }
-        });
-
+        jLabel1.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
         jLabel1.setText("RFQ List");
 
+        jLabel2.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
         jLabel2.setText("Quotation List");
+
+        lbReject.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
+        lbReject.setText("Left a remark before reject:");
+
+        txtRemark.setColumns(20);
+        txtRemark.setRows(5);
+        jScrollPane3.setViewportView(txtRemark);
+
+        btnOngoing.setText("On Going");
+
+        btnCompleted.setText("Completed");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(lbTitle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(btnBack))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(57, 57, 57)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(forwardBtn)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(viewBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(rejectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(249, 249, 249)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lbReject)
+                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGap(38, 38, 38)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(loadBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jLabel1))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnOngoing, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnCompleted, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(37, 37, 37)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnReject, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(158, 158, 158)
+                                .addComponent(btnForward))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                     .addComponent(jLabel2)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addGap(60, 60, 60))
+                                    .addGap(369, 369, 369)))
+                            .addComponent(btnView, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -298,138 +424,65 @@ public class ManageQuotationPanel extends javax.swing.JPanel {
                 .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnBack)
+                .addGap(26, 26, 26)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel2))
+                                .addGap(28, 28, 28))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(btnOngoing)
+                                    .addComponent(btnCompleted))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnView, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbReject))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(146, 146, 146)
-                        .addComponent(loadBtn)))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(viewBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rejectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(forwardBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(104, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnForward, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnReject, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(26, 26, 26))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        NavigationUtil.getInstance().goBack();
     }//GEN-LAST:event_btnBackActionPerformed
 
-    private void viewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBtnActionPerformed
-        // TODO add your handling code here:
-        int selectedRow = quotationTable.getSelectedRow();
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(this, "Please select a quotation to view.");
-            return;
-        }
+    private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
+    }//GEN-LAST:event_btnViewActionPerformed
 
-        Quotation q = rfq.getQuotations().getQuotationList().get(selectedRow);
-        StringBuilder sb = new StringBuilder();
-        sb.append("Vendor: ").append(q.getVendor()).append("\n");
-        sb.append("Price: $").append(q.getPrice()).append("\n");
-        sb.append("Selected: ").append(q.isSelected() ? "Yes" : "No");
+    private void btnRejectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRejectActionPerformed
+    }//GEN-LAST:event_btnRejectActionPerformed
 
-        JOptionPane.showMessageDialog(this, sb.toString(), "Quotation Details", JOptionPane.INFORMATION_MESSAGE);
-    
-    }//GEN-LAST:event_viewBtnActionPerformed
-
-    private void rejectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rejectBtnActionPerformed
-        // TODO add your handling code here:
-        int selectedRow = quotationTable.getSelectedRow();
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(this, "Select a quotation to reject.");
-            return;
-        }
-
-        Quotation selected = rfq.getQuotations().getQuotationList().get(selectedRow);
-        selected.setStatus(RequestStatus.REJECTED);
-        selected.setSelected(false);
-
-        JOptionPane.showMessageDialog(this, "Quotation has been rejected.");
-
-        refreshQuotationTable();
-    
-    }//GEN-LAST:event_rejectBtnActionPerformed
-
-    private void forwardBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_forwardBtnActionPerformed
-        // TODO add your handling code here:
-        int selectedRow = quotationTable.getSelectedRow();
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(this, "Please select a quotation to forward.");
-            return;
-        }
-        
-        boolean alreadyForwarded = rfq.getQuotations().getQuotationList().stream()
-            .anyMatch(q -> q.getStatus() == RequestStatus.RECEIVED);
-        
-        Quotation selected = rfq.getQuotations().getQuotationList().get(selectedRow);
- 
-        if (selected.getStatus() == RequestStatus.REJECTED) {
-            JOptionPane.showMessageDialog(this, "Rejected quotation cannot be forwarded.");
-            return;
-        }
-
-        if (alreadyForwarded) {
-            JOptionPane.showMessageDialog(this, "Only one quotation can be forwarded per RFQ.");
-            return;
-        }
-        
-        // Check if already forwarded to prevent duplicates
-        if (selected.getStatus() == RequestStatus.RECEIVED) {
-            JOptionPane.showMessageDialog(this, "This quotation is already forwarded.");
-            return;
-        }
-
-        selected.setStatus(RequestStatus.RECEIVED);
-        rfq.getQuotations().setSelectedQuotation(selected);
-        selected.setSelected(true); // 👈 让 FinancePanel 能识别这条报价是“被选中并转发”的
-
-        JOptionPane.showMessageDialog(this, "Quotation forwarded to finance.");
-
-        refreshQuotationTable();
-        populateRFQListTable();
-        forwardBtn.setEnabled(false);
-        // Don’t load next RFQ automatically if user wants to stay on the page
-        // loadNextRFQ();
-    }//GEN-LAST:event_forwardBtnActionPerformed
-
-    private void loadBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadBtnActionPerformed
-        // TODO add your handling code here:
-        int selected = RFQListTable.getSelectedRow();
-        if (selected < 0) {
-            JOptionPane.showMessageDialog(this, "Select a PR to view rfqDir.");
-            return;
-        }
-        rfq = rfqDir.getRFQList().get(selected);   // load from selected row
-        currentIndex = selected;           // sync index
-        refreshQuotationTable();                   // reload right table
-        forwardBtn.setEnabled(false);      // reset button state
-
-    }//GEN-LAST:event_loadBtnActionPerformed
+    private void btnForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnForwardActionPerformed
+    }//GEN-LAST:event_btnForwardActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable RFQListTable;
     private javax.swing.JButton btnBack;
-    private javax.swing.JButton forwardBtn;
+    private javax.swing.JButton btnCompleted;
+    private javax.swing.JButton btnForward;
+    private javax.swing.JButton btnOngoing;
+    private javax.swing.JButton btnReject;
+    private javax.swing.JButton btnView;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel lbReject;
     private javax.swing.JLabel lbTitle;
-    private javax.swing.JButton loadBtn;
-    private javax.swing.JTable quotationTable;
-    private javax.swing.JButton rejectBtn;
-    private javax.swing.JButton viewBtn;
+    private javax.swing.JTable tblQuotation;
+    private javax.swing.JTable tblRFQ;
+    private javax.swing.JTextArea txtRemark;
     // End of variables declaration//GEN-END:variables
 }

@@ -32,6 +32,18 @@ public class RFQ {
         this.status = RFQStatus.DRAFT;
     }
 
+    public void markAsSent() {
+        this.status = RFQStatus.SENT;
+    }
+
+    public void markAsReceived() {
+        this.status = RFQStatus.RECEIVED;
+    }
+
+    public void markAsClosed() {
+        this.status = RFQStatus.CLOSED;
+    }
+
     public String getId() { 
         return id; 
     }
@@ -88,6 +100,10 @@ public class RFQ {
 
     public QuotationDirectory getQuotations() {
         return quotations;
+    }
+
+    public int getQuotationCount() {
+        return quotations.getQuotationList().size();
     }
 
     @Override

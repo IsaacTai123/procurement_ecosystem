@@ -20,6 +20,8 @@ import model.procurement.PurchaseRequest;
 import service.procurement.RFQService;
 import util.ResultUtil;
 
+import javax.swing.*;
+
 /**
  *
  * @author tisaac
@@ -56,6 +58,27 @@ public class ProcurementController {
             return ResultUtil.failure("Invalid date format. Please use yyyy-MM-dd.");
         }
         return getService().submitRFQ(rfq, vendor);
+    }
+
+    public Result<Void> handleQuotationReject(Quotation q, String remark) {
+        if (remark == null || remark.isEmpty()) {
+            return ResultUtil.failure("Remarks cannot be empty.");
+        }
+        return getService().rejectQuotation(q, remark);
+    }
+
+    public Result<Void> handleQuotationForward(Quotation q, RFQ rfq) {
+        return getService().fowardQuotation(q, rfq);
+    }
+
+    public Result<Void> handleQuotationAccept(Quotation q, String remark) {
+        String tmp = remark.trim();
+        if (remark.isEmpty()) {
+            return ResultUtil.failure("Remarks cannot be empty.");
+        }
+        q.setRemarks(tmp);
+
+        return getService().acceptQuotation(q);
     }
 
     public Result<Void> handlePOSubmit(RFQ rfq, Quotation quotation, String price, String remarks, String address) {
