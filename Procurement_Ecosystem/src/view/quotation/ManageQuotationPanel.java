@@ -17,7 +17,6 @@ import model.quotation.RFQ;
 import util.NavigationUtil;
 import util.UIUtil;
 
-import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,7 +80,7 @@ public class ManageQuotationPanel extends javax.swing.JPanel implements IDataRef
         btnReject.addActionListener(e -> handleReject());
         btnForward.addActionListener(e -> handleForward());
         btnOngoing.addActionListener(e -> handleOngoingRFQ());
-        btnCompleted.addActionListener(e -> handleCompletedRFQ());
+        btnClosed.addActionListener(e -> handleClosedRFQ());
         btnBack.addActionListener(e -> handleBack());
         tblRFQ.getSelectionModel().addListSelectionListener(rfqSelectionListener);
     }
@@ -92,9 +91,9 @@ public class ManageQuotationPanel extends javax.swing.JPanel implements IDataRef
         enableQuotationFeature(false);
     }
 
-    private void handleCompletedRFQ() {
+    private void handleClosedRFQ() {
         UIUtil.clearTable(tblQuotation);
-        refreshCompletedRFQTable();
+        refreshClosedRFQTable();
     }
 
     private void handleForward() {
@@ -117,7 +116,7 @@ public class ManageQuotationPanel extends javax.swing.JPanel implements IDataRef
     }
 
     // Show finished RFQ
-    private void refreshCompletedRFQTable() {
+    private void refreshClosedRFQTable() {
         isProgrammaticSelection = true;
 
         // Get unfinished RFQ list
@@ -208,6 +207,7 @@ public class ManageQuotationPanel extends javax.swing.JPanel implements IDataRef
             return;
         }
         UIUtil.showInfo(this, r.getMessage());
+        UIUtil.clearTextComponents(txtRemark);
         refreshQuotationTable();
     }
 
@@ -257,7 +257,7 @@ public class ManageQuotationPanel extends javax.swing.JPanel implements IDataRef
         jScrollPane3 = new javax.swing.JScrollPane();
         txtRemark = new javax.swing.JTextArea();
         btnOngoing = new javax.swing.JButton();
-        btnCompleted = new javax.swing.JButton();
+        btnClosed = new javax.swing.JButton();
 
         tblQuotation.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -375,7 +375,7 @@ public class ManageQuotationPanel extends javax.swing.JPanel implements IDataRef
 
         btnOngoing.setText("On Going");
 
-        btnCompleted.setText("Completed");
+        btnClosed.setText("Closed");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -397,13 +397,13 @@ public class ManageQuotationPanel extends javax.swing.JPanel implements IDataRef
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(38, 38, 38)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel1)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(btnOngoing, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(btnCompleted, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(btnOngoing, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(25, 25, 25)
+                                        .addComponent(btnClosed, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(37, 37, 37)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -436,7 +436,7 @@ public class ManageQuotationPanel extends javax.swing.JPanel implements IDataRef
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(btnOngoing)
-                                    .addComponent(btnCompleted))
+                                    .addComponent(btnClosed))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -469,7 +469,7 @@ public class ManageQuotationPanel extends javax.swing.JPanel implements IDataRef
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
-    private javax.swing.JButton btnCompleted;
+    private javax.swing.JButton btnClosed;
     private javax.swing.JButton btnForward;
     private javax.swing.JButton btnOngoing;
     private javax.swing.JButton btnReject;

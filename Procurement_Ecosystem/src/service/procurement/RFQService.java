@@ -44,7 +44,10 @@ public class RFQService {
         if (!r.isSuccess()) {
             return r;
         }
+
         q.markAsRejected();
+        // get linked RFQ and mark as closed
+        AppContext.getNetwork().getRfqDirectory().getRFQById(q.getLinkedRFQId()).markAsClosed();
         return ResultUtil.success("Quotation rejected successfully");
     }
 
