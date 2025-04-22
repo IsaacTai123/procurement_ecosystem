@@ -17,6 +17,7 @@ import util.TimeUtil;
 public class PurchaseOrder {
     private String id;
     private String quotationId;
+    private String linkedPRId;
     private UserAccount buyerAccount;    
     private UserAccount vendorAccount;
     private Enterprise logistics;
@@ -35,9 +36,10 @@ public class PurchaseOrder {
 
 
 
-    public PurchaseOrder(String quotationId, UserAccount buyerAccount, UserAccount vendorAccount, List<PurchaseItem> purchaseItems, String shippingAddress, double totalAmount, String remarks) {
+    public PurchaseOrder(String quotationId, String linkedPRId, UserAccount buyerAccount, UserAccount vendorAccount, List<PurchaseItem> purchaseItems, String shippingAddress, double totalAmount, String remarks) {
         this.id = IdGenerateUtil.generateIdByActionAndTimestamp("ORDER");
         this.quotationId = quotationId;
+        this.linkedPRId = linkedPRId;
         this.buyerAccount = buyerAccount;
         this.vendorAccount = vendorAccount;
         this.purchaseItems = purchaseItems;

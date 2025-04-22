@@ -23,7 +23,6 @@ import model.procurement.PurchaseRequest;
 import model.quotation.Quotation;
 import model.quotation.RFQ;
 import util.UIUtil;
-import view.shipping.DeliveryCompanyWorkspacePanel;
 import java.util.List;
 import java.util.ArrayList;
 import model.procurement.PurchaseItem;
@@ -314,6 +313,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 UIUtil.clearTextComponents(txtUserId);
                 NavigationUtil.getInstance().reset();
                 NavigationUtil.getInstance().showCard(new WelcomePanel(), "Welcome");
+                generateNetworkList();
 
         }// GEN-LAST:event_btnLogoutActionPerformed
 
