@@ -314,6 +314,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 UIUtil.clearTextComponents(txtUserId);
                 NavigationUtil.getInstance().reset();
                 NavigationUtil.getInstance().showCard(new WelcomePanel(), "Welcome");
+                generateNetworkList();
 
         }// GEN-LAST:event_btnLogoutActionPerformed
 

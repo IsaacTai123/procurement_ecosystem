@@ -214,6 +214,12 @@ public class HRServicePanel extends javax.swing.JPanel implements IDataRefreshCa
         String userPwd = new String(pwdUserPwd.getPassword());
         String role = cmbRole.getSelectedItem().toString();
 
+        // validate input
+        if (userName.isEmpty() || userPwd.isEmpty() || role.equals("--Select Role--")) {
+            UIUtil.showError(this, "Please fill all fields");
+            return;
+        }
+
         network.getUserAccountService().createUserFromOrganization(
                 userName,
                 userPwd,
