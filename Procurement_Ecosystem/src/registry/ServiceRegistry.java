@@ -3,6 +3,7 @@ package registry;
 import enums.EnterpriseType;
 import enums.OrganizationType;
 import enums.Role;
+import view.purchaseOrder.SubmitPurchaseOrderPanel;
 import view.quotation.ManageQuotationPanel;
 import view.quotation.QuotationReviewPanel;
 import view.services.HRServicePanel;
@@ -44,11 +45,18 @@ public class ServiceRegistry {
         Supplier<JPanel> RFQMANAGE_SERVICE = RFQManagmentPanel::new;
         Supplier<JPanel> QUOTATION_SERVICE = ManageQuotationPanel::new;
         Supplier<JPanel> QUOTATION_REVIEW = QuotationReviewPanel::new;
+        Supplier<JPanel> SUBMIT_PO = SubmitPurchaseOrderPanel::new;
 
 
         
 
         JPanel hrService = new HRServicePanel();
+
+        // Google IT Admin
+        addService(Role.IT_ADMIN, OrganizationType.IT, EnterpriseType.BUYER,
+                new ServiceItem("IT Management", IT),
+                new ServiceItem("Manage Employees", HR)
+        );
 
         // Google IT Manager
         addService(Role.MANAGER, OrganizationType.IT, EnterpriseType.BUYER,
@@ -64,8 +72,9 @@ public class ServiceRegistry {
                 new ServiceItem("Personal Purchase Requests", MYPR)
         );
 
-        // Google Finance Manager
+        // Google Finance Analyst
         addService(Role.ANALYST, OrganizationType.FINANCE, EnterpriseType.BUYER,
+                new ServiceItem("Personal Purchase Requests", MYPR),
                 new ServiceItem("Quotation Review", QUOTATION_REVIEW)
         );
 
@@ -73,7 +82,9 @@ public class ServiceRegistry {
         addService(Role.SPECIALIST, OrganizationType.PROCUREMENT, EnterpriseType.BUYER,
                 new ServiceItem("Personal Purchase Requests", MYPR),
                 new ServiceItem("Manage Purchase Requests", PRMANAGE_SERVICE),
-                new ServiceItem("Manage RFQ", RFQMANAGE_SERVICE)
+                new ServiceItem("Manage RFQ", RFQMANAGE_SERVICE),
+                new ServiceItem("Submit Purchase Order", SUBMIT_PO),
+                new ServiceItem("Manage Quotation", QUOTATION_SERVICE)
         );
 
         // Google Legal Manager
@@ -88,6 +99,7 @@ public class ServiceRegistry {
   
         // Google Warehouse Manager
         addService(Role.SPECIALIST, OrganizationType.WAREHOUSE, EnterpriseType.BUYER,
+                new ServiceItem("Personal Purchase Requests", MYPR),
                new ServiceItem("View Purchase Orders", warehousePOPanel)  
         );
         
@@ -98,9 +110,25 @@ public class ServiceRegistry {
                 new ServiceItem("Manage Quotation", QUOTATION_SERVICE)
         );
 
+        addService(Role.SPECIALIST, OrganizationType.SALES, EnterpriseType.VENDOR,
+                new ServiceItem("Manage Purchase Order", myPurchaseOrdersPanel)
+        );
+
+        // Vendor IT Admin
+        addService(Role.IT_ADMIN, OrganizationType.IT, EnterpriseType.VENDOR,
+                new ServiceItem("IT Management", IT),
+                new ServiceItem("Manage Employees", HR)
+        );
+
         // Logistics
         addService(Role.SHIPPING_COORDINATOR, OrganizationType.LOGISTICS, EnterpriseType.LOGISTICS,
                 new ServiceItem("Manage Delivery Requests", LOGISTICS)
+        );
+
+        // Logistics IT Admin
+        addService(Role.IT_ADMIN, OrganizationType.IT, EnterpriseType.VENDOR,
+                new ServiceItem("IT Management", IT),
+                new ServiceItem("Manage Employees", HR)
         );
     }
 

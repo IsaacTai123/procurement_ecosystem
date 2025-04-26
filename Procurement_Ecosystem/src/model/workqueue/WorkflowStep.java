@@ -2,6 +2,7 @@ package model.workqueue;
 
 import directory.GlobalUserAccountDirectory;
 import enums.*;
+import model.ecosystem.Enterprise;
 import model.user.UserAccount;
 
 import java.time.LocalDateTime;
@@ -47,6 +48,30 @@ public class WorkflowStep {
         this.actionTime = LocalDateTime.now(); // Initialize with the current time
         this.status = ApprovalStatus.PENDING; // Default status
         this.active = isActive; // Set the active status
+    }
+
+    public void markAsApproved() {
+        this.status = ApprovalStatus.APPROVED;
+        this.setActive(false); // Deactivate this step
+        this.actionTime = LocalDateTime.now(); // Update action time
+    }
+
+    public void markAsRejected() {
+        this.status = ApprovalStatus.REJECTED;
+        this.setActive(false);
+        this.actionTime = LocalDateTime.now(); // Update action time
+    }
+
+    public void markAsSkipped() {
+        this.status = ApprovalStatus.SKIPPED;
+        this.setActive(false);
+        this.actionTime = LocalDateTime.now(); // Update action time
+    }
+
+    public void markAsSubmitted() {
+        this.status = ApprovalStatus.SUBMITTED;
+        this.setActive(false);
+        this.actionTime = LocalDateTime.now(); // Update action time
     }
 
     public OrganizationType getOrganizationType() {
@@ -113,8 +138,18 @@ public class WorkflowStep {
         return stepType;
     }
 
-    public void resolveAssignedUser(GlobalUserAccountDirectory allUsersDir) {
-        allUsersDir.findUserByOrgAndRole(orgType, requiredRole)
+    public String convertStatus() {
+        return switch (status) {
+            case PENDING -> "Pending...";
+            case APPROVED -> "Approved";
+            case REJECTED -> "Rejected";
+            case SKIPPED -> "Skipped";
+            case SUBMITTED -> "Submitted";
+        };
+    }
+
+    public void resolveAssignedUser(GlobalUserAccountDirectory allUsersDir, EnterpriseType entType) {
+        allUsersDir.findUserByOrgAndRole(orgType, requiredRole, entType)
                 .ifPresent(this::setAssignedUser);
     }
 }

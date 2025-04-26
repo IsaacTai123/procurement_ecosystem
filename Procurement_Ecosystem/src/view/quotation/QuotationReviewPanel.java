@@ -4,58 +4,138 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import common.AppContext;
+import common.Result;
+import controller.procurement.ProcurementController;
+import interfaces.IDataRefreshCallback;
+import interfaces.IDataRefreshCallbackAware;
 import model.quotation.Quotation;
 import model.quotation.RFQ;
 import enums.RFQStatus;
 import enums.RequestStatus;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 import util.NavigationUtil;
+import util.UIUtil;
 
 /**
  *
- * @author qiyaochen
+ * @author tisaac
  */
-public class QuotationReviewPanel extends javax.swing.JPanel {
+public class QuotationReviewPanel extends javax.swing.JPanel implements IDataRefreshCallbackAware, IDataRefreshCallback {
 
     private List<RFQ> rfqList;
-    private RFQ rfq;
+    private IDataRefreshCallback callback;
 
     /**
      * Creates new form FinancePanel
      */
     public QuotationReviewPanel() {
         initComponents();
-        populateQuotationTable();
-        rfqList = AppContext.getNetwork().getRfqDirectory().getRFQList();
-    }
-    
-    private void populateQuotationTable() {
-        DefaultTableModel model = (DefaultTableModel) quotationTable.getModel();
-        model.setRowCount(0);
+        this.rfqList = AppContext.getNetwork().getRfqDirectory().getRFQList();
+        setupListener();
+        initUI();
 
-        for (RFQ rfq : rfqList) {
-            for (Quotation q : rfq.getQuotations().getQuotationList()) {
-                if (q.isSelected() && q.getStatus() == RequestStatus.RECEIVED) {
-                    model.addRow(new Object[]{
-                        q.getId(),
-                        q.getVendor().getName(),
-                        q.getPrice()
-                    });
-                }
-            }
-        }
     }
 
-    private Quotation findQuotationById(String id) {
-        for (RFQ r : rfqList) {
-            for (Quotation q : r.getQuotations().getQuotationList()) {
-                if (q.getId().equals(id)) {
-                    return q;
-                }
-            }
+    private void initUI() {
+        UIUtil.setEnterpriseTitle(lbTitle, AppContext.getUserEnterprise().getName());
+        refreshQuotationTable();
+        UIUtil.clearTextComponents(txtRemark);
+    }
+
+    private void setupListener() {
+        btnBack.addActionListener(e -> handleBack());
+        btnView.addActionListener(e -> handleView());
+        btnApprove.addActionListener(e -> handleApprove());
+        btnReject.addActionListener(e -> handleReject());
+    }
+
+    private void handleApprove() {
+        Quotation selectedQ = getSelectedQuotation();
+        if (selectedQ == null) {
+            return;
         }
-        return null;
+
+        Result<Void> r = ProcurementController.getInstance().handleQuotationAccept(selectedQ, txtRemark.getText());
+        if (!r.isSuccess()) {
+            UIUtil.showError(this, r.getMessage());
+            return;
+        }
+        UIUtil.showInfo(this, r.getMessage());
+        refreshQuotationTable();
+        UIUtil.clearTextComponents(txtRemark);
+    }
+
+    private void handleReject() {
+        Quotation selectedQ = getSelectedQuotation();
+        if (selectedQ == null) {
+            return;
+        }
+
+        Result<Void> r = ProcurementController.getInstance().handleQuotationReject(selectedQ, txtRemark.getText());
+        if (!r.isSuccess()) {
+            UIUtil.showError(this, r.getMessage());
+            return;
+        }
+        UIUtil.showInfo(this, r.getMessage());
+        refreshQuotationTable();
+        UIUtil.clearTextComponents(txtRemark);
+    }
+
+    private void handleBack() {
+        NavigationUtil.getInstance().goBack();
+        callback.refreshData();
+    }
+
+    private void handleView() {
+        Quotation selectedQ = getSelectedQuotation();
+        if (selectedQ == null) {
+            return;
+        }
+
+        NavigationUtil.getInstance().showCard(
+                new QuotationViewDetailPanel(selectedQ),
+                "Quotation View Detail"
+        );
+    }
+
+    private Quotation getSelectedQuotation() {
+        return UIUtil.getSelectedTableObject(
+                tblQuotation,
+                0,
+                Quotation.class,
+                this,
+                "Please select a quotation"
+        ).orElse(null);
+    }
+
+    // Only show quotation with status RECEIVED
+    private void refreshQuotationTable() {
+        List<Quotation> quotations = rfqList.stream()
+                .flatMap(rfq -> rfq.getQuotations().getQuotationList().stream())
+                .filter(q -> q.getStatus() == RequestStatus.RECEIVED)
+                .collect(Collectors.toList());
+
+        UIUtil.reloadTable(tblQuotation,
+                quotations,
+                e -> new Object[]{
+                        e,
+                        e.getVendor(),
+                        e.getPrice()
+                }
+        );
+    }
+
+    @Override
+    public void setCallback(IDataRefreshCallback callback) {
+        this.callback = callback;
+    }
+
+    @Override
+    public void refreshData() {
+        refreshQuotationTable();
     }
 
     /**
@@ -68,17 +148,17 @@ public class QuotationReviewPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        quotationTable = new javax.swing.JTable();
+        tblQuotation = new javax.swing.JTable();
         lbTitle = new javax.swing.JLabel();
         btnBack = new javax.swing.JButton();
-        viewBtn = new javax.swing.JButton();
+        btnView = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtRemark = new javax.swing.JTextArea();
         btnReject = new javax.swing.JButton();
         btnApprove = new javax.swing.JButton();
         lbTitle1 = new javax.swing.JLabel();
 
-        quotationTable.setModel(new javax.swing.table.DefaultTableModel(
+        tblQuotation.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -104,7 +184,7 @@ public class QuotationReviewPanel extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(quotationTable);
+        jScrollPane1.setViewportView(tblQuotation);
 
         lbTitle.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
         lbTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -117,11 +197,11 @@ public class QuotationReviewPanel extends javax.swing.JPanel {
             }
         });
 
-        viewBtn.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        viewBtn.setText("View Details");
-        viewBtn.addActionListener(new java.awt.event.ActionListener() {
+        btnView.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        btnView.setText("View Details");
+        btnView.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewBtnActionPerformed(evt);
+                btnViewActionPerformed(evt);
             }
         });
 
@@ -176,7 +256,7 @@ public class QuotationReviewPanel extends javax.swing.JPanel {
                                     .addComponent(btnApprove, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 682, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(viewBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(btnView, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -190,7 +270,7 @@ public class QuotationReviewPanel extends javax.swing.JPanel {
                     .addComponent(btnBack)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, Short.MAX_VALUE)
-                .addComponent(viewBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnView, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -204,80 +284,15 @@ public class QuotationReviewPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        NavigationUtil.getInstance().goBack();
     }//GEN-LAST:event_btnBackActionPerformed
 
-    private void viewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBtnActionPerformed
-        // TODO add your handling code here:
-        int selectedRow = quotationTable.getSelectedRow();
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(this, "Please select a quotation to view.");
-            return;
-        }
-
-        String selectedId = (String) quotationTable.getValueAt(selectedRow, 0);
-        Quotation q = findQuotationById(selectedId);
-        if (q != null) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Vendor: ").append(q.getVendor().getName()).append("\n");
-            sb.append("Price: $").append(q.getPrice()).append("\n");
-            sb.append("Remarks: ").append(q.getRemarks());
-            JOptionPane.showMessageDialog(this, sb.toString(), "Quotation Details", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, "Quotation not found.");
-        }
-    }//GEN-LAST:event_viewBtnActionPerformed
+    private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
+    }//GEN-LAST:event_btnViewActionPerformed
 
     private void btnRejectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRejectActionPerformed
-        // TODO add your handling code here:
-        int row = quotationTable.getSelectedRow();
-        if (row < 0) {
-            JOptionPane.showMessageDialog(this, "Please select a quotation to reject.");
-            return;
-        }
-
-        String remark = txtRemark.getText().trim();
-        if (remark.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter a remark before rejecting.");
-            return;
-        }
-
-        String selectedId = (String) quotationTable.getValueAt(row, 0);
-        for (RFQ r : rfqList) {
-            for (Quotation q : r.getQuotations().getQuotationList()) {
-                if (q.getId().equals(selectedId)) {
-                    q.setStatus(RequestStatus.REJECTED);
-                    q.setRemarks(remark);
-                    JOptionPane.showMessageDialog(this, "Quotation rejected.");
-                    populateQuotationTable();
-                    txtRemark.setText(""); // clear text
-                    return;
-                }
-            }
-        }
     }//GEN-LAST:event_btnRejectActionPerformed
 
     private void btnApproveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApproveActionPerformed
-        // TODO add your handling code here:
-        int row = quotationTable.getSelectedRow();
-        if (row < 0) {
-            JOptionPane.showMessageDialog(this, "Please select a quotation to approve.");
-            return;
-        }
-
-        String selectedId = (String) quotationTable.getValueAt(row, 0);
-        for (RFQ r : rfqList) {
-            for (Quotation q : r.getQuotations().getQuotationList()) {
-                if (q.getId().equals(selectedId)) {
-                    q.setStatus(RequestStatus.APPROVED);
-                    r.setStatus(RFQStatus.RECEIVED); // 或者 RECEIVED，看你流程
-                    JOptionPane.showMessageDialog(this, "Quotation approved.");
-                    populateQuotationTable();
-                    txtRemark.setText(""); // clear text
-                    return;
-                }
-            }
-        }
     }//GEN-LAST:event_btnApproveActionPerformed
 
 
@@ -285,12 +300,12 @@ public class QuotationReviewPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnApprove;
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnReject;
+    private javax.swing.JButton btnView;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lbTitle;
     private javax.swing.JLabel lbTitle1;
-    private javax.swing.JTable quotationTable;
+    private javax.swing.JTable tblQuotation;
     private javax.swing.JTextArea txtRemark;
-    private javax.swing.JButton viewBtn;
     // End of variables declaration//GEN-END:variables
 }

@@ -4,6 +4,7 @@
  */
 package view.shipping;
 
+import common.AppContext;
 import common.Session;
 import directory.PurchaseOrderDirectory;
 import enums.ShipmentStatus;
@@ -17,6 +18,7 @@ import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import model.procurement.PurchaseOrder;
 import model.user.UserAccount;
+import util.UIUtil;
 
 /**
  *
@@ -44,13 +46,13 @@ public class WarehousePOPanel extends javax.swing.JPanel {
 
         this.purchaseOrderDirectory = enterprise.getPurchaseOrderList();
         
-     
-        
-      
-      
-        
+        initUI();
         populateTable();
         
+    }
+
+    public void initUI() {
+        UIUtil.setEnterpriseTitle(lbTitle, currentUser.getEnterprise().getName());
     }
 
     /**
@@ -77,7 +79,7 @@ public class WarehousePOPanel extends javax.swing.JPanel {
 
         BtnDelivered.setBackground(new java.awt.Color(255, 153, 0));
         BtnDelivered.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        BtnDelivered.setText("Delivered");
+        BtnDelivered.setText("Check Delivered");
         BtnDelivered.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnDeliveredActionPerformed(evt);
@@ -156,6 +158,9 @@ public class WarehousePOPanel extends javax.swing.JPanel {
         }
         
         po.getShipment().setStatus(ShipmentStatus.DELIVERED);
+        // mark PR as completed
+        AppContext.getUserEnterprise().getPurchaseRequestList().findRequestById(po.getLinkedPRId()).markAsCompleted();
+
         populateTable();
         
     }//GEN-LAST:event_BtnDeliveredActionPerformed

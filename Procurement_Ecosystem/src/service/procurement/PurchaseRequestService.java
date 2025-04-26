@@ -4,10 +4,7 @@ import common.Result;
 import common.Session;
 import directory.GlobalUserAccountDirectory;
 import directory.PurchaseRequestDirectory;
-import enums.ApprovalStatus;
-import enums.OrganizationType;
-import enums.RequestStatus;
-import enums.Role;
+import enums.*;
 import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import model.procurement.PurchaseItem;
@@ -51,7 +48,18 @@ public class PurchaseRequestService {
         GlobalUserAccountDirectory allUserDir = currentNetwork.getGlobalUserAccountDir();
 
         // Change the workflowStep to submitted (Point the next step to procurement)
-        Result<Void> result = pr.advanceToNextStep(currentUser, allUserDir, pr.getReason(), ApprovalStatus.SUBMITTED, OrganizationType.PROCUREMENT);
+        Result<Void> result = pr.advanceToNextStep(
+                currentUser,
+                allUserDir,
+                pr.getReason(),
+                ApprovalStatus.SUBMITTED,
+                OrganizationType.PROCUREMENT,
+                EnterpriseType.BUYER
+        );
+
+        if (!result.isSuccess()) {
+            return result;
+        }
 
         // Store purchase request in the purchase request list
         purchaseRequestList = currentUser.getEnterprise().getPurchaseRequestList();
@@ -79,13 +87,14 @@ public class PurchaseRequestService {
                 currentNetwork.getGlobalUserAccountDir(),
                 "no comment",
                 ApprovalStatus.APPROVED,
-                OrganizationType.IT
+                OrganizationType.IT,
+                EnterpriseType.BUYER
         );
         if (!result.isSuccess()) {
             return result;
         }
 
-        pr.setStatus(RequestStatus.APPROVED);
+        pr.markAsApproved();
 
         // if there is still a pending step in IT, we need to skip it
         WorkflowStep itStep = pr.getPendingStep();
@@ -123,7 +132,8 @@ public class PurchaseRequestService {
                 currentNetwork.getGlobalUserAccountDir(),
                 "no comment",
                 ApprovalStatus.APPROVED,
-                OrganizationType.PROCUREMENT
+                OrganizationType.PROCUREMENT,
+                EnterpriseType.BUYER
         );
         if (!result.isSuccess()) {
             return result;
@@ -139,7 +149,10 @@ public class PurchaseRequestService {
             return result;
         }
 
-        result = pr.forwardToNextStep(OrganizationType.IT, currentNetwork.getGlobalUserAccountDir());
+        result = pr.forwardToNextStep(OrganizationType.IT,
+                currentNetwork.getGlobalUserAccountDir(),
+                EnterpriseType.BUYER
+        );
         if (!result.isSuccess()) {
             return result;
         }

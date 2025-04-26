@@ -29,6 +29,7 @@ import model.product.Product;
 import model.workqueue.DeliveryRequest;
 import service.OrganizationService;
 import service.UserAccountService;
+import util.DBApiUtil;
 import util.TestShipment;
 
 /**
@@ -39,7 +40,7 @@ public class MockDataInitializer {
 
         public static Network initialize() {
                 Ecosystem eco = Ecosystem.getInstance();
-                eco.init(new UserAccount("admin", Role.SYS_ADMIN, "admin"));
+                eco.init(new UserAccount("admin", Role.SYS_ADMIN, "admin", "tai.hs@northeastern.edu"));
                 Network network = eco.AddNetwork("Tech");
 
                 OrganizationService orgService = network.getOrgService();
@@ -52,22 +53,32 @@ public class MockDataInitializer {
                 Organization googleIT = orgService.createOrgFromEnterprise(OrganizationType.IT, google);
                 UserAccount googleITManager = userAccountService.createUserFromOrganization("Alvin", "A001",
                                 Role.MANAGER, googleIT, google);
+                googleITManager.setEmail("anonymoust438@gmail.com");
 
                 Organization googleProcurement = orgService.createOrgFromEnterprise(OrganizationType.PROCUREMENT,
                                 google);
+                
 
                 UserAccount googleProcurementManager = userAccountService.createUserFromOrganization("isaac", "isaac",
                                 Role.SPECIALIST, googleProcurement, google);
                 UserAccount googleSpecialist = userAccountService.createUserFromOrganization("A003", "peter",
                                 Role.SPECIALIST, googleProcurement, google);
+                googleProcurementManager.setEmail("anonymoust438@gmail.com");
+                googleSpecialist.setEmail("anonymoust438@gmail.com");
+                
+                
 
                 Organization googleFinance = orgService.createOrgFromEnterprise(OrganizationType.FINANCE, google);
                 UserAccount googleFinanceSpecialist = userAccountService.createUserFromOrganization("A004", "peter",
-                                Role.SPECIALIST, googleFinance, google);
+                                Role.ANALYST, googleFinance, google);
+                googleFinanceSpecialist.setEmail("anonymoust438@gmail.com");
+                
                 
                 Organization googleWarehouse = orgService.createOrgFromEnterprise(OrganizationType.WAREHOUSE, google);
                 UserAccount googleWarehouseSpecialist = userAccountService.createUserFromOrganization("A005", "A005",
                                 Role.SPECIALIST, googleWarehouse, google);
+                googleWarehouseSpecialist.setEmail("anonymoust438@gmail.com");
+                
 
 
                 // Asus (sales: A006/A006) | (specialist: A007/peter)
@@ -75,17 +86,44 @@ public class MockDataInitializer {
                 Organization asusSales = orgService.createOrgFromEnterprise(OrganizationType.SALES, asus);
                 UserAccount asusSalesManager = userAccountService.createUserFromOrganization("Asus_SalesManagerA",
                                 "A006", Role.MANAGER, asusSales, asus);
-                UserAccount asusSpecialist = userAccountService.createUserFromOrganization("Test", "peter",
+                UserAccount asusSpecialist = userAccountService.createUserFromOrganization("asusSpecialist", "peter",
                                 Role.SPECIALIST, asusSales, asus);
+                asusSalesManager.setEmail("chenqiyao01@gmail.com");
+                asusSpecialist.setEmail("chenqiyao01@gmail.com");
                 
                 
                 // FedEx (A008/A008)
                 Enterprise fedEx = network.getEnterpriseDir().createEnterprise("FedEx", EnterpriseType.LOGISTICS);
                 Organization fedExShipping = orgService.createOrgFromEnterprise(OrganizationType.LOGISTICS, fedEx);
                 UserAccount fedExShippingCoordinator = userAccountService.createUserFromOrganization("A008", "A008",
-                                Role.SHIPPING_COORDINATOR, fedExShipping, google);
+                                Role.SHIPPING_COORDINATOR, fedExShipping, fedEx);
+                fedExShippingCoordinator.setEmail("neumsis10142008@gmail.com");
+                
+                
+                
+                // test dynamically add a new enterprise > org > user account from db data
+
+                Map<String, String> dbResult = DBApiUtil.getUserInfo();
+
+                String enterpriseName = dbResult.get("enterpriseName");
+                String enterpriseType = dbResult.get("enterpriseType");
+                String orgType = dbResult.get("orgType");
+                String userName = dbResult.get("userName");
+                String userPassword = dbResult.get("userPassword");
+                String userType = dbResult.get("userType");
+                String userEmail = dbResult.get("userEmail");
+                
+                
                 
 
+                // UPS (A009/A009): from db
+                Enterprise newEnterprise = network.getEnterpriseDir().createEnterprise(enterpriseName, EnterpriseType.valueOf(enterpriseType.toUpperCase()));
+                Organization newOrg = orgService.createOrgFromEnterprise(OrganizationType.valueOf(orgType.toUpperCase()), newEnterprise);
+                UserAccount newUserAccount = userAccountService.createUserFromOrganization(userName, userPassword,
+                                Role.valueOf(userType.toUpperCase()), newOrg, newEnterprise);
+                newUserAccount.setEmail(userEmail);
+                
+                
                 // Goolge procurement give two PO to Asus(vendor)
                 TestShipment testShipment = new TestShipment();
                 PurchaseOrder po1 = testShipment.sendPOToVendor(googleProcurementManager,asusSalesManager);
@@ -106,7 +144,7 @@ public class MockDataInitializer {
                 items.add(itemB);
 
 
-                Map<String, Object> result = deliveryController.requestShipping(items, fedEx, asusSalesManager, googleProcurementManager,
+                Map<String, Object> result = deliveryController.requestShipping(network, items, fedEx, asusSalesManager, googleProcurementManager,
                                 "2024.05.06", "2024.05.11", fedEx_shipmentDirectory, po3);
 
                 // connect PO to deliveryRequest

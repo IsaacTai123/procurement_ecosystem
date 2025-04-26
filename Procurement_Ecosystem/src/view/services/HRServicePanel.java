@@ -13,6 +13,7 @@ import model.ecosystem.Enterprise;
 import model.ecosystem.Network;
 import model.ecosystem.Organization;
 import model.user.UserAccount;
+import util.CommonUtil;
 import util.NavigationUtil;
 import util.UIUtil;
 
@@ -79,6 +80,8 @@ public class HRServicePanel extends javax.swing.JPanel implements IDataRefreshCa
         tblUserAccount = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         btnBack = new javax.swing.JButton();
+        lbEmail = new javax.swing.JLabel();
+        txtEmail = new javax.swing.JTextField();
 
         lbTitle.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
         lbTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -139,6 +142,9 @@ public class HRServicePanel extends javax.swing.JPanel implements IDataRefreshCa
             }
         });
 
+        lbEmail.setFont(new java.awt.Font("Helvetica Neue", 2, 13)); // NOI18N
+        lbEmail.setText("Email Address");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -152,31 +158,40 @@ public class HRServicePanel extends javax.swing.JPanel implements IDataRefreshCa
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(61, 61, 61)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lbUserName)
-                                    .addComponent(lbUserPwd)
-                                    .addComponent(lbRole, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(20, 20, 20)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtUserName)
-                                    .addComponent(pwdUserPwd)
-                                    .addComponent(cmbRole, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnCreateUser, javax.swing.GroupLayout.Alignment.TRAILING)))
-                            .addComponent(jLabel1)))
+                                    .addComponent(lbUserName, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lbUserPwd, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lbEmail, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lbRole, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(20, 20, 20)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtUserName, javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(pwdUserPwd, javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(btnCreateUser, javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(txtEmail, javax.swing.GroupLayout.Alignment.TRAILING)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addComponent(cmbRole, 0, 199, Short.MAX_VALUE))))))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lbOrg)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(cmbOrg, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cmbRole, pwdUserPwd, txtUserName});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 196, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 211, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -188,11 +203,15 @@ public class HRServicePanel extends javax.swing.JPanel implements IDataRefreshCa
                             .addComponent(lbUserPwd))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lbEmail)
+                            .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cmbRole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lbRole))
-                        .addGap(18, 18, 18)
+                        .addGap(11, 11, 11)
                         .addComponent(btnCreateUser)
-                        .addGap(149, 149, 149))
+                        .addGap(112, 112, 112))
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnBack)
@@ -213,6 +232,18 @@ public class HRServicePanel extends javax.swing.JPanel implements IDataRefreshCa
         String userName = txtUserName.getText();
         String userPwd = new String(pwdUserPwd.getPassword());
         String role = cmbRole.getSelectedItem().toString();
+        String email = txtEmail.getText();
+
+        // validate input
+        if (userName.isEmpty() || userPwd.isEmpty() || email.isEmpty() || role.equals("--Select Role--")) {
+            UIUtil.showError(this, "Please fill all fields");
+            return;
+        }
+
+        if (!CommonUtil.isValidEmail(email)) {
+            UIUtil.showError(this, "Invalid email address");
+            return;
+        }
 
         network.getUserAccountService().createUserFromOrganization(
                 userName,
@@ -225,7 +256,8 @@ public class HRServicePanel extends javax.swing.JPanel implements IDataRefreshCa
         // clear fields
         UIUtil.clearTextComponents(
                 txtUserName,
-                pwdUserPwd
+                pwdUserPwd,
+                txtEmail
         );
         UIUtil.resetComboBoxes(cmbRole);
         reloadUserTable();
@@ -248,6 +280,7 @@ public class HRServicePanel extends javax.swing.JPanel implements IDataRefreshCa
     private javax.swing.JComboBox<String> cmbRole;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lbEmail;
     private javax.swing.JLabel lbOrg;
     private javax.swing.JLabel lbRole;
     private javax.swing.JLabel lbTitle;
@@ -255,6 +288,7 @@ public class HRServicePanel extends javax.swing.JPanel implements IDataRefreshCa
     private javax.swing.JLabel lbUserPwd;
     private javax.swing.JPasswordField pwdUserPwd;
     private javax.swing.JTable tblUserAccount;
+    private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtUserName;
     // End of variables declaration//GEN-END:variables
 
@@ -262,6 +296,7 @@ public class HRServicePanel extends javax.swing.JPanel implements IDataRefreshCa
         UIUtil.toggleComponentsEnabled(enable,
                 txtUserName,
                 pwdUserPwd,
+                txtEmail,
                 cmbRole,
                 btnCreateUser
         );

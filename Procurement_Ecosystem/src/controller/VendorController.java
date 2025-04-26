@@ -33,7 +33,7 @@ public class VendorController {
         return VendorControllerHolder.INSTANCE;
     }
 
-    public Result<Void> handleSubmitQuotation(RFQ rfq, Enterprise vendor, String priceStr) {
+    public Result<Void> handleSubmitQuotation(RFQ rfq, Enterprise vendor, String priceStr, String terms, String remarks) {
         // check price
         double price;
         try {
@@ -43,6 +43,6 @@ public class VendorController {
         }
 
         // logic to submit quotation
-        return getService().submitQuotation(rfq, price, vendor);
+        return getService().submitQuotation(rfq, price, vendor, terms, remarks);
     }
 }

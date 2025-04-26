@@ -4,6 +4,7 @@
  */
 package view.purchaseOrder;
 
+import interfaces.IDataRefreshCallbackAware;
 import view.purchaseRequest.*;
 import common.Result;
 import common.Session;
@@ -37,7 +38,7 @@ import util.TimeUtil;
  *
  * @author tisaac
  */
-public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
+public class MyPurchaseOrdersPanel extends javax.swing.JPanel implements IDataRefreshCallbackAware {
 
     private UserAccount currentUser;
     private Network network;
@@ -45,7 +46,7 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
     private PurchaseOrderDirectory purchaseOrderDirectory;
     private List<Enterprise> allLogistics;
     private Enterprise selectedLogistics;
-
+    private IDataRefreshCallback callback;
    
     
     /**
@@ -53,12 +54,12 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
      */
     public MyPurchaseOrdersPanel() {
         initComponents();
-
         this.currentUser = Session.getCurrentUser();
         this.network = Session.getCurrentNetwork();
         this.vendor = currentUser.getEnterprise(); // e.g. asus/tsmc (vendor)
         this.purchaseOrderDirectory = vendor.getPurchaseOrderList();
         this.allLogistics = network.getEnterpriseDir().getAllLogisticsEnterprises();
+        initUI();
         
         populateTable();
         populateLogisticsCombo();
@@ -75,6 +76,9 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
         
     }
 
+    public void initUI() {
+        UIUtil.setEnterpriseTitle(lbTitle, currentUser.getEnterprise().getName());
+    }
     
 
     /**
@@ -222,6 +226,61 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
 
     private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
         // TODO add your handling code here:
+        
+        // get selected PO
+        int row = tblPO.getSelectedRow();
+        if(row < 0) {
+            JOptionPane.showMessageDialog(null, "Please select a row from the table first", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        PurchaseOrder po = (PurchaseOrder)tblPO.getValueAt(row, 0);
+        
+        String msg = String.format(
+                                    """
+                    🧾 Purchase Order Summary
+
+                    🆔 Order ID: %s
+                    📄 Quotation ID: %s
+
+                    👤 Buyer: %s
+                    🏢 Buyer Org: %s
+
+                    🧑 Vendor: %s
+                    🏢 Vendor Org: %s
+
+                    🚚 Logistics: %s
+                    📦 Delivery Status: %s
+                    📨 Delivery Request ID: %s
+
+                    📍 Shipping Address: %s
+                    💬 Remarks: %s
+
+                    💰 Total Amount: $%.2f
+                    📅 Date: %s
+                    🕒 Time: %s
+                                        """,
+                po.getId(),
+                po.getQuotationId(),
+                po.getBuyerAccount().getUsername(),
+                po.getBuyerAccount().getEnterprise().getName(),
+                po.getVendorAccount().getUsername(),
+                po.getVendorAccount().getEnterprise().getName(),
+                po.getLogistics() != null ? po.getLogistics().getName() : "Not assigned",
+                po.isIsDelivered() ? "Delivered" : "Not Delivered",
+                po.getDeliveryRequest() != null ? po.getDeliveryRequest().getId() : "N/A",
+                po.getAddress(),
+                po.getRemarks(),
+                po.getTotalAmount(),
+                po.getPurchasedDate(),
+                po.getPurchasedTime()
+        );
+
+        JOptionPane.showMessageDialog(null, msg, "📋 PO Details", JOptionPane.INFORMATION_MESSAGE);
+
+
+        
+        
     }//GEN-LAST:event_btnViewActionPerformed
 
     private void btnIssueDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIssueDeliveryActionPerformed
@@ -258,7 +317,7 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
         po.setLogistics(selectedLogistics);
         po.setIsIssued(true);
 
-        Map<String, Object> result = deliveryController.requestShipping(items, selectedLogistics, currentUser, po.getBuyerAccount(), "", "", shipmentDirectory, po);
+        Map<String, Object> result = deliveryController.requestShipping(network, items, selectedLogistics, currentUser, po.getBuyerAccount(), "", "", shipmentDirectory, po);
         // connect PO to deliveryRequest
 
         DeliveryRequest deliveryRequest = (DeliveryRequest) result.get("deliveryReq");
@@ -275,7 +334,8 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnIssueDeliveryActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        NavigationUtil.getInstance().goBack();
+        callback.refreshData();
     }//GEN-LAST:event_btnBackActionPerformed
 
 
@@ -330,4 +390,8 @@ public class MyPurchaseOrdersPanel extends javax.swing.JPanel {
     }
 
 
+    @Override
+    public void setCallback(IDataRefreshCallback callback) {
+        this.callback = callback;
+    }
 }

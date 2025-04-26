@@ -41,6 +41,7 @@ public class RFQManagmentPanel extends javax.swing.JPanel implements IDataRefres
     private void setupListeners() {
         btnBack.addActionListener(e -> handleBackbtn());
         btnView.addActionListener(e -> handleViewbtn());
+//      TODO:  btnReject.addActionListener(e -> handleRejctbtn());
         btnCreateQuotation.addActionListener(e -> handleCreateQuotationbtn());
     }
 
@@ -89,7 +90,8 @@ public class RFQManagmentPanel extends javax.swing.JPanel implements IDataRefres
                         e,
                         e.getVendor(),
                         e.getDeadline(),
-                        e.getStatus()
+                        e.getStatus(),
+                        e.getQuotationCount()
                 }
         );
     }
@@ -132,17 +134,17 @@ public class RFQManagmentPanel extends javax.swing.JPanel implements IDataRefres
 
         tblRFQ.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Id", "Vendor", "Deadline", "Status"
+                "Id", "Vendor", "Deadline", "Status", "Quotation Count"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                true, false, false, false
+                true, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -151,9 +153,12 @@ public class RFQManagmentPanel extends javax.swing.JPanel implements IDataRefres
         });
         jScrollPane1.setViewportView(tblRFQ);
         if (tblRFQ.getColumnModel().getColumnCount() > 0) {
+            tblRFQ.getColumnModel().getColumn(0).setPreferredWidth(160);
             tblRFQ.getColumnModel().getColumn(1).setResizable(false);
             tblRFQ.getColumnModel().getColumn(2).setResizable(false);
             tblRFQ.getColumnModel().getColumn(3).setResizable(false);
+            tblRFQ.getColumnModel().getColumn(4).setResizable(false);
+            tblRFQ.getColumnModel().getColumn(4).setPreferredWidth(40);
         }
 
         btnBack.setText("<<Back");
@@ -181,9 +186,12 @@ public class RFQManagmentPanel extends javax.swing.JPanel implements IDataRefres
                                 .addComponent(btnView)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnReject))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(btnCreateQuotation)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(595, 595, 595)
+                                .addComponent(btnCreateQuotation))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 851, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(

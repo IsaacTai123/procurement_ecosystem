@@ -3,7 +3,9 @@ package util;
 import enums.OrganizationType;
 import enums.Role;
 import interfaces.Identifiable;
+import jakarta.mail.internet.InternetAddress;
 import model.user.UserAccount;
+import model.workqueue.WorkflowStep;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,5 +30,20 @@ public class CommonUtil {
             }
         }
         return Optional.empty();
+    }
+
+    public static boolean isValidEmail(String email) {
+        try {
+            InternetAddress address = new InternetAddress(email);
+            address.validate();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static String formatOrgAndUser(WorkflowStep step) {
+        UserAccount u = step.getAssignedUser();
+        return u.getEnterprise().getName() + " / " + step.getOrganizationType().name() + " / " + u.getUsername() + " / " + u.getUserType().name();
     }
 }

@@ -24,13 +24,15 @@ public class UserAccount {
     private String password;
     private Organization org;
     private Enterprise enterprise;
+    private String email;
 
 
-    public UserAccount (String name, Role type, String password) {
+    public UserAccount (String name, Role type, String password, String email) {
         this.userId = IdGenerateUtil.generateUserId();
         this.userName = name;
         this.userType = type;
         this.password = password;
+        this.email = email;
     }
 
     public UserAccount (String name, Role type, String password, Organization org, Enterprise enterprise) {
@@ -85,6 +87,16 @@ public class UserAccount {
     public void setEnterprise(Enterprise enterprise) {
         this.enterprise = enterprise;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+    
 
     @Override
     public String toString() {

@@ -4,17 +4,79 @@
  */
 package view.quotation;
 
+import interfaces.IDataRefreshCallback;
+import model.quotation.Quotation;
+import model.user.UserAccount;
+import model.workqueue.WorkflowStep;
+import util.CommonUtil;
+import util.NavigationUtil;
+import util.UIUtil;
+
+import java.util.List;
+import java.util.Map;
+
 /**
  *
  * @author tisaac
  */
 public class QuotationViewDetailPanel extends javax.swing.JPanel {
 
+    private Quotation quotation;
     /**
      * Creates new form QuotationViewDetailPanel
      */
-    public QuotationViewDetailPanel() {
+    public QuotationViewDetailPanel(Quotation quotation) {
         initComponents();
+        this.quotation = quotation;
+        loadQuotationDetails();
+        setupListener();
+        renderProgressTracking();
+    }
+
+    private void setupListener() {
+        btnBack.addActionListener(e -> {
+            NavigationUtil.getInstance().goBack();
+        });
+    }
+
+    private void loadQuotationDetails() {
+        UIUtil.adjustLabelText(lbQuotationId, quotation.getId(), UIUtil.AppendMode.APPEND, "");
+        UIUtil.adjustLabelText(lbRFQId, quotation.getLinkedRFQId(), UIUtil.AppendMode.APPEND, "");
+        UIUtil.adjustLabelText(lbPrice, String.valueOf(quotation.getPrice()), UIUtil.AppendMode.APPEND, "");
+        UIUtil.adjustLabelText(lbTerms, quotation.getTerms(), UIUtil.AppendMode.APPEND, "");
+        UIUtil.adjustLabelText(lbRemarks, quotation.getRemarks(), UIUtil.AppendMode.APPEND, "");
+    }
+
+    private void renderProgressTracking() {
+        List<WorkflowStep> workflowSteps = quotation.getWorkflowSteps();
+        UserAccount sender = quotation.getSender();
+
+        workflowSteps.stream()
+                .filter(s -> s.getAssignedUser() != null)
+                .forEach(s -> {
+                    switch (s.getStepType()) {
+                        case REQUESTOR -> {
+                            lbRequestorName.setText(CommonUtil.formatOrgAndUser(s));
+                            lbRequestorStatus.setText(s.convertStatus());
+                        }
+
+                        case APPROVER -> {
+                            switch (s.getOrganizationType()) {
+                                case FINANCE -> {
+                                    lbFinanceName.setText(CommonUtil.formatOrgAndUser(s));
+                                    lbFinanceStatus.setText(s.convertStatus());
+                                }
+                                case PROCUREMENT -> {
+                                    lbProcurementName.setText(CommonUtil.formatOrgAndUser(s));
+                                    lbProcurementStatus.setText(s.convertStatus());
+                                }
+                                default -> {
+                                    System.out.println("Unknown organization type: " + s.getOrganizationType());
+                                }
+                            }
+                        }
+                    }
+                });
     }
 
     /**
@@ -28,15 +90,10 @@ public class QuotationViewDetailPanel extends javax.swing.JPanel {
 
         lbTitle = new javax.swing.JLabel();
         lbTerms = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtTerms = new javax.swing.JTextArea();
         lbPrice = new javax.swing.JLabel();
-        txtPrice = new javax.swing.JTextField();
         lbRemarks = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtRemarks = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        lbQuotationId = new javax.swing.JLabel();
+        lbRFQId = new javax.swing.JLabel();
         lbRequestorStatus = new javax.swing.JLabel();
         lbProcurementStatus = new javax.swing.JLabel();
         lbFinanceStatus = new javax.swing.JLabel();
@@ -45,6 +102,7 @@ public class QuotationViewDetailPanel extends javax.swing.JPanel {
         lbRequestorName = new javax.swing.JLabel();
         lbProcurementName = new javax.swing.JLabel();
         lbFinanceName = new javax.swing.JLabel();
+        btnBack = new javax.swing.JButton();
 
         lbTitle.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
         lbTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -52,21 +110,13 @@ public class QuotationViewDetailPanel extends javax.swing.JPanel {
 
         lbTerms.setText("Terms:");
 
-        txtTerms.setColumns(20);
-        txtTerms.setRows(5);
-        jScrollPane2.setViewportView(txtTerms);
-
         lbPrice.setText("Price:");
 
         lbRemarks.setText("Remarks:");
 
-        txtRemarks.setColumns(20);
-        txtRemarks.setRows(5);
-        jScrollPane1.setViewportView(txtRemarks);
+        lbQuotationId.setText("Quotation ID: ");
 
-        jLabel1.setText("Quotation ID: ");
-
-        jLabel2.setText("Linked RFQ ID: ");
+        lbRFQId.setText("Linked RFQ ID: ");
 
         lbRequestorStatus.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
         lbRequestorStatus.setText("Requestor Status");
@@ -89,57 +139,55 @@ public class QuotationViewDetailPanel extends javax.swing.JPanel {
         lbFinanceName.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
         lbFinanceName.setText("Finance");
 
+        btnBack.setText("<<Back");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(lbTitle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(76, 76, 76)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(287, 287, 287)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbRemarks)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(11, 11, 11)
-                                .addComponent(lbTerms, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(69, 69, 69)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(lbPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(69, 69, 69)
-                        .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(54, 54, 54)))
-                .addGap(85, 85, 85))
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(75, 75, 75)
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbRequestorName)
-                            .addComponent(lbProcurementName)
-                            .addComponent(lbFinanceName))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbRequestorStatus)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(lbFinanceStatus, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lbProcurementStatus, javax.swing.GroupLayout.Alignment.LEADING)))
-                        .addGap(120, 120, 120))
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(75, 75, 75)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lbRequestorName)
+                                    .addComponent(lbProcurementName)
+                                    .addComponent(lbFinanceName))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 416, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lbRequestorStatus)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(lbFinanceStatus, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(lbProcurementStatus, javax.swing.GroupLayout.Alignment.LEADING)))
+                                .addGap(120, 120, 120))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(16, 16, 16)
+                                .addComponent(lbTrackingTitle)
+                                .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addComponent(lbTrackingTitle)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(71, 71, 71)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(lbRFQId)
+                                            .addComponent(lbQuotationId))
+                                        .addGap(320, 320, 320))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(lbPrice)
+                                        .addGap(324, 324, 324)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lbRemarks)
+                                    .addComponent(lbTerms, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(btnBack)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -147,25 +195,19 @@ public class QuotationViewDetailPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnBack)
+                .addGap(39, 39, 39)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbQuotationId)
+                    .addComponent(lbTerms))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lbPrice)
-                            .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbTerms)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel2)))
+                .addComponent(lbRFQId)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbRemarks))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lbPrice)
+                .addGap(41, 41, 41)
+                .addComponent(lbRemarks)
+                .addGap(52, 52, 52)
                 .addComponent(lbTrackingTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -177,7 +219,7 @@ public class QuotationViewDetailPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbProcurementName)
                     .addComponent(lbProcurementStatus))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbFinanceName)
                     .addComponent(lbFinanceStatus))
@@ -187,24 +229,20 @@ public class QuotationViewDetailPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton btnBack;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lbFinanceName;
     private javax.swing.JLabel lbFinanceStatus;
     private javax.swing.JLabel lbPrice;
     private javax.swing.JLabel lbProcurementName;
     private javax.swing.JLabel lbProcurementStatus;
+    private javax.swing.JLabel lbQuotationId;
+    private javax.swing.JLabel lbRFQId;
     private javax.swing.JLabel lbRemarks;
     private javax.swing.JLabel lbRequestorName;
     private javax.swing.JLabel lbRequestorStatus;
     private javax.swing.JLabel lbTerms;
     private javax.swing.JLabel lbTitle;
     private javax.swing.JLabel lbTrackingTitle;
-    private javax.swing.JTextField txtPrice;
-    private javax.swing.JTextArea txtRemarks;
-    private javax.swing.JTextArea txtTerms;
     // End of variables declaration//GEN-END:variables
 }

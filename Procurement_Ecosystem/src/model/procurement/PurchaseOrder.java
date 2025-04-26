@@ -2,18 +2,12 @@ package model.procurement;
 
 import java.util.ArrayList;
 
-import enums.RequestStatus;
-import model.ecosystem.Organization;
-import model.product.Product;
-import model.product.Spec;
-
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+
 import model.delivery.Shipment;
 import model.ecosystem.Enterprise;
 import model.user.UserAccount;
 import model.workqueue.DeliveryRequest;
-import model.workqueue.WorkRequest;
 import util.IdGenerateUtil;
 import util.TimeUtil;
 
@@ -23,10 +17,11 @@ import util.TimeUtil;
 public class PurchaseOrder {
     private String id;
     private String quotationId;
+    private String linkedPRId;
     private UserAccount buyerAccount;    
     private UserAccount vendorAccount;
     private Enterprise logistics;
-    private ArrayList<PurchaseItem> purchaseItems;
+    private List<PurchaseItem> purchaseItems;
     private String shippingAddress;
     private double totalAmount;
     private String remarks;
@@ -41,9 +36,10 @@ public class PurchaseOrder {
 
 
 
-    public PurchaseOrder(String quotationId, UserAccount buyerAccount, UserAccount vendorAccount, ArrayList<PurchaseItem> purchaseItems, String shippingAddress, double totalAmount, String remarks) {
+    public PurchaseOrder(String quotationId, String linkedPRId, UserAccount buyerAccount, UserAccount vendorAccount, List<PurchaseItem> purchaseItems, String shippingAddress, double totalAmount, String remarks) {
         this.id = IdGenerateUtil.generateIdByActionAndTimestamp("ORDER");
         this.quotationId = quotationId;
+        this.linkedPRId = linkedPRId;
         this.buyerAccount = buyerAccount;
         this.vendorAccount = vendorAccount;
         this.purchaseItems = purchaseItems;
@@ -86,16 +82,6 @@ public class PurchaseOrder {
         this.buyerAccount = buyerAccount;
     }
 
-    public UserAccount getVendorAccount() {
-        return vendorAccount;
-    }
-
-    public void setVendorAccount(UserAccount vendorAccount) {
-        this.vendorAccount = vendorAccount;
-    }
-
-
-
     public Enterprise getLogistics() {
         return logistics;
     }
@@ -104,9 +90,7 @@ public class PurchaseOrder {
         this.logistics = logistics;
     }
 
-    
-
-    public ArrayList<PurchaseItem> getPurchaseItems() {
+    public List<PurchaseItem> getPurchaseItems() {
         return purchaseItems;
     }
 
@@ -170,9 +154,10 @@ public class PurchaseOrder {
         this.purchasedTime = purchasedTime;
     }
 
-    public Enterprise getVendor() {
-        return vendorAccount.getEnterprise();
+    public UserAccount getVendorAccount() {
+        return vendorAccount;
     }
+
     public Shipment getShipment() {
         return shipment;
     }
@@ -189,7 +174,13 @@ public class PurchaseOrder {
         this.deliveryRequest = deliveryRequest;
     }
 
+    public String getAddress() {
+        return shippingAddress;
+    }
 
+    public String getLinkedPRId() {
+        return linkedPRId;
+    }
 
 
 

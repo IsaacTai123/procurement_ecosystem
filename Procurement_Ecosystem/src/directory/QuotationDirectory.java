@@ -31,28 +31,27 @@ public class QuotationDirectory {
                 .orElse(null);
     }
 
-    public Quotation getSelectedQuotation() {
-        for (Quotation q : quotations) {
-            if (q.isSelected()) {
-                return q;
-            }
-        }
-        return null; // 如果没有被选中的 quotation
+    public Quotation findQuotationById(String id) {
+        return quotations
+                .stream()
+                .filter(q -> q.getId().equals(id))
+                .findFirst()
+                .orElse(null);
     }
 
-    public void setSelectedQuotation(Quotation selectedQuotation) {
-        for (Quotation q : getQuotationList()) {
-            q.setSelected(false); //
-        }
-        selectedQuotation.setSelected(true); // 选中传入的 quotation
-    }
-
-    public String findCompletedQuotationByDir() {
+    // Find the completed quotation, this will be used to link purchase order with RFQ
+    public String findCompletedQuotationId() {
         return quotations
                 .stream()
                 .filter(q -> q.getStatus() == RequestStatus.COMPLETED)
                 .map(Quotation::getId)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public Boolean isQuotationApproved() {
+        return quotations
+                .stream()
+                .anyMatch(q -> q.getStatus() == RequestStatus.APPROVED);
     }
 }

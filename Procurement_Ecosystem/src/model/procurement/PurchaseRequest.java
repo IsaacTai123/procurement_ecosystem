@@ -6,6 +6,7 @@ package model.procurement;
 
 import directory.PurchaseItemDirectory;
 import enums.OrganizationType;
+import enums.RequestStatus;
 import enums.Role;
 import enums.StepType;
 import model.product.Product;

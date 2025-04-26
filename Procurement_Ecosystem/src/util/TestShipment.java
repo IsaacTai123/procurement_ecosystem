@@ -25,7 +25,7 @@ public class TestShipment {
         
 
         
-        PurchaseOrder po = new PurchaseOrder("Quotation-001", buyerAccount, vendorAccount, createPurchaseItems(), "134 chelsea st", 0, "I have gived you purchase orders.");
+        PurchaseOrder po = new PurchaseOrder("Quotation-001", "xxxx", buyerAccount, vendorAccount, createPurchaseItems(), "134 chelsea st", 0, "I have gived you purchase orders.");
         PurchaseOrderDirectory purchaseOrderList = vendorAccount.getEnterprise().getPurchaseOrderList();
         purchaseOrderList.addPurchaseOrder(po);
         
