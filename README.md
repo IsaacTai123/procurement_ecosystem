@@ -1,10 +1,77 @@
-# Final Project Team 5: Enterprise Procurement & Vendor Management System
+# Enterprise Procurement & Vendor Management System
 
-## Business Logic Overview
+![Java](https://img.shields.io/badge/Language-Java-blue)
+![Build](https://img.shields.io/badge/Build-Maven-blueviolet)
+![Architecture](https://img.shields.io/badge/Architecture-MVC-green)
+![UI](https://img.shields.io/badge/UI-Java%20Swing-orange)
+![Workflow](https://img.shields.io/badge/Workflow-Flow--Based-important)
+![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
+![Last Updated](https://img.shields.io/badge/Last%20Updated-April%202025-yellow)
+
+## Overview
+
+This project simulates an enterprise procurement and vendor management system, covering the complete workflow from purchase request (PR) initiation to quotation handling, contract issuance, shipping, and final delivery confirmation.
+It models real-world interactions across multiple organizations (Google, TSMC, Samsung, FedEx) and departments, aiming to streamline procurement processes with robust logic and UI/UX enhancements.
+
+> Note: This project uses Mermaid.js diagrams. GitHub currently does not natively render Mermaid syntax. For the best viewing experience, use a compatible Markdown viewer such as VSCode with Mermaid Preview.
+
+---
+
+## Table of Contents
+
+- ️Technologies Used
+- Project Highlights and Challenges
+- System Architecture
+- Business Workflow
+    - Purchase Request (PR) Approval
+    - Request for Quotation (RFQ) & Vendor Quotation
+    - Shipment & Delivery
+- Entities and Roles
+- Key Features
+
+---
+
+## 🛠️ Technologies Used
+
+- Java Swing: Built the desktop application’s user interface (UI) for a responsive and modular frontend.
+- MVC Architecture:
+    - Model: Business entities and system objects (e.g., PurchaseRequest, Quotation, Shipment).
+    - View: Java Swing UI components organized by functional modules.
+    - Coordinates UI actions and invokes service layer logic. Utilizes DTOs (Data Transfer Objects) to encapsulate structured data transfer between layers, ensuring clean separation and reducing coupling.
+    - Service Layer: Encapsulates business rules, workflow validation, and status management, keeping the controller slim and maintainable.
+- Mermaid.js: Used to create flowcharts and process diagrams in Markdown for easy visualization of system workflows.
+- PlantUML: Created detailed class diagrams, relationship mappings, and structural overviews during system design.
+- Git: Managed version control with branching strategies (feature branches, release branch).
+- Linear: Managed task tracking, workflow planning, and project milestones.
+
+---
+
+## ✨ Project Highlights and Challenges
+
+The core of this project was designing a procurement ecosystem where multiple enterprises (e.g., Google, TSMC, FedEx) could interact without tightly coupling their operations.
+
+### Key challenges and highlights include:
+
+- Ecosystem Separation:
+    - Carefully designed the system to ensure that each network (enterprise entity) operates independently.
+      Changes or workflows within one enterprise would not affect the state or data of another, preserving modularity and avoiding cross-contamination between organizations.
+
+- Approval Workflow Design: Developed a robust multi-step approval mechanism that mirrors real-world business processes:
+
+    - Every action was conditional on the successful completion of the previous step (e.g., RFQ issuance ➔ Quotation ➔ Internal Procurement Review ➔ Finance Budget Approval ➔ PO Issuance ➔ Shipment ➔ Delivery Confirmation).
+    - Workflow status transitions were managed carefully to maintain a clear audit trail and ensure accountability at each stage.
+
+- Flow-Based System:
+    - Emphasized a true flow-driven system where each transaction, approval, and shipment is tightly linked in sequence.
+      Every process in the system is base on the previous step, ensuring business rule integrity and creating a real-world-like procurement experience.
+
+---
+
+## 💡System Architecture
 
 ```mermaid
 flowchart TB
-    A[Enterprise Procurement & Vendor Management System] 
+    A[Enterprise Procurement & Vendor Management System]
     N["Network (System Admin)"]
 
     A --> N
@@ -13,7 +80,7 @@ flowchart TB
     N --> FedEx
     N --> SAMSUNG["SAMSUNG Vendor(Hardware)"]
 
-    %% Google
+%% Google
     subgraph Google
         direction LR
 
@@ -27,7 +94,7 @@ flowchart TB
         end
 
         subgraph Procurement
-            A3_1[Procurement Specialist]
+            A3_1[Specialist]
             A3_2[Vendor Compliance Officer]
         end
 
@@ -35,27 +102,27 @@ flowchart TB
             A4_1[Legal Reviewer]
             A4_2[Contract Coordinator]
         end
-        
+
         subgraph HR
-            A5_1[HR Manager]
+            A5_1[Manager]
         end
 
         subgraph Warehouse
-            A6_1[Warehouse Specialist]
+            A6_1[Specialist]
         end
     end
 
-    %% TSMC
+%% TSMC
     subgraph TSMC["TSMC Vendor(Hardware)"]
         direction TB
 
         subgraph TSMC_Sales["Sales Department"]
-            B1_1[Sales Manager]
+            B1_1[Manager]
             B1_2[Vendor Compliance Officer]
         end
     end
-    
-    %% FedEx
+
+%% FedEx
     subgraph FedEx
         direction TB
 
@@ -63,73 +130,71 @@ flowchart TB
             C1_1[Shipping Coordinator]
         end
     end
-    
-    %% SAMSUNG
+
+%% SAMSUNG
     subgraph SAMSUNG["SAMSUNG Vendor(Hardware)"]
         direction TB
 
         subgraph SAMSUNG_Sales["Sales Department"]
-            D1_1[Sales Manager]
+            D1_1[Manager]
             D1_2[Vendor Compliance Officer]
         end
     end
 ```
 
-## PR Approval Flow
+Each enterprise entity is connected to the system through their respective departments.
+
+---
+
+## Business Workflow
+
+### Purchase Request (PR) Approval
 
 ```mermaid
 flowchart LR
-    Employee["Any Employee"] -->|Submit PR| Procurement
+Employee["Any Employee"] -->|Submit PR| Procurement
+Procurement -->|1. Review PR| Decision
+Decision -->|"Hardware-related?"| IT
+Decision -->|"Non-Hardware"| Finance
 
-    Procurement -->|1. Check PR| Decision
-    Decision -->|"Yes (Hardware related)"| IT
-    Decision -->|"No (Non-Hardware related) Jump to 3"| Procurement
-
-    IT -->|2. Approve Spec| Procurement
-    Procurement -->|"3. Submit Quotation (After RFQ and Quotation flow)"| Finance
-    Finance -->|4. Approve Budget| Procurement
+    IT -->|2. Approve Technical Specs| Procurement
+    Procurement -->|3. RFQ and Quotation Submission| Finance
+    Finance -->|4. Final Budget Approval| Procurement
 ```
 
+---
 
-## RFQ and Quotation
+### Request for Quotation (RFQ) & Vendor Quotation
+
 ```mermaid
 flowchart LR
-    Procurement_Specialist["Procurement_Specialist (Google)"] -->|Issue RFQ| Sales_Manager["Sales Manager (TSMC)"]
-    Sales_Manager -->|Submit Quotation| Procurement_Specialist
-    Procurement_Specialist -->|Review / Counter / Accept| Sales_Manager
+    Procurement_Specialist["Procurement Specialist (Google)"] -->|1. Issue RFQ| Sales_Manager["Sales Manager (TSMC)"]
+    Sales_Manager -->|2. Review RFQ and Submit Quotation| Procurement_Specialist
+    Procurement_Specialist -->|3. Internal Review| Procurement_Review["Procurement Internal Review"]
+    Procurement_Review -->|4. Forward to Finance| Finance_Analyst["Finance Analyst (Google)"]
+    Finance_Analyst -->|5. Budget Approval| Procurement_Specialist
+    Procurement_Specialist -->|6. Initiate Final PO| Sales_Manager
 ```
 
-In cases where multiple vendors are invited, the system supports side-by-side quotation comparison. The procurement team evaluates submitted offers and selects the most suitable vendor to proceed with contract finalization and PO issuance.
-```mermaid
-flowchart TD
-    Procurement_Specialist["Procurement Specialist (Google)"] -->|1. Issue RFQ| TSMC_Sales["Sales Manager (TSMC)"]
-    Procurement_Specialist -->|1. Issue RFQ| Samsung_Sales["Sales Manager (Samsung)"]
+PO transmission is permitted only after Finance finalizes the budget.
 
-    TSMC_Sales -->|2. Submit Quotation A| Procurement_Specialist
-    Samsung_Sales -->|2. Submit Quotation B| Procurement_Specialist
-
-    Procurement_Specialist -->|3. Compare & Select Winner| Selected_Vendor["Selected Vendor (e.g., TSMC)"]
-
-    Selected_Vendor -->|4. Proceed to Contract & PO| Procurement_Specialist
-```
-
-## Contract & PO Flow
-
-Once the quotation has been accepted, the procurement process moves into the contract and purchase order phase. This phase ensures that all legal and financial considerations are addressed before placing a binding order.
+#### In multi-vendor scenarios:
 
 ```mermaid
 flowchart TD
-    Sales_Manager["Sales Manager (TSMC)"] -->|1. Send Draft Contract & Compliance Docs| Legal_Reviewer["Legal Reviewer (Google)"]
-    Legal_Reviewer -->|2. Review Passed| Procurement_Specialist["Procurement Specialist (Google)"]
-    Procurement_Specialist -->|3. Send PO| Sales_Manager
+Procurement_Specialist -->|Issue RFQ| TSMC_Sales
+Procurement_Specialist -->|Issue RFQ| Samsung_Sales
+TSMC_Sales -->|Submit Quotation A| Procurement_Specialist
+Samsung_Sales -->|Submit Quotation B| Procurement_Specialist
+Procurement_Specialist -->|Compare & Select| Selected_Vendor
+Selected_Vendor -->|Contract Finalization & PO| Procurement_Specialist
 ```
 
-> While the Procurement Specialist has the interface to initiate a PO, the actual transmission of the order to the vendor is only enabled after a Finance Analyst confirms the final budget. This ensures financial control without overly slowing down procurement operations.
+---
 
-## Shipment & Delivery
+### Shipment & Delivery
 
-- FedEx ships the goods to Googleâ€™s warehouse and provides tracking information.
-- Google Warehouse Specialist confirms delivery and condition of the goods, closing the delivery loop.
+The delivery workflow handles the shipment process from vendor to Google’s warehouse, ensuring streamlined delivery confirmation and procurement closure.
 
 ```mermaid
 flowchart TD
@@ -143,87 +208,49 @@ flowchart TD
     Shipping_Coordinator -->|3. Ship Goods + Tracking Info| Warehouse_Specialist["Warehouse Specialist (Google)"]
 
     %% Google Internal Confirmation
-    Warehouse_Specialist -->|4. Confirm Delivery & Condition| Procurement_Specialist
+    Warehouse_Specialist -->|4. Confirm Delivery & Condition & Close PR| Procurement_Specialist
 ```
 
-### Overview
+#### Key System Notes
 
-1. The Procurement Specialist at Google sends the Purchase Order (PO) to the vendor after completing internal approvals. The PORequest status is set to PENDING.
-2. The Sales Manager at the vendor (e.g., TSMC or Samsung) reviews and approves the PO. The PORequest status is updated to APPROVED.
-3. The vendor sends a delivery request to FedEx and simultaneously initializes a Shipment object with basic information such as receiver, item list, and quantity. The Shipment status is set to PLACED.
-4. The Shipping Coordinator at FedEx processes the shipment by filling in logistics details such as tracking number and expected delivery date (current date + 5 days). The Shipment status is updated to IN_TRANSIT.
-5. The system updates Google’s interface, and the Warehouse Specialist can view the shipment record with a status of IN_TRANSIT.
-6. Once the goods are delivered, the FedEx Shipping Coordinator marks the Shipment as DELIVERED.
-7. The Warehouse Specialist at Google confirms physical receipt of the goods by clicking “Confirm Delivery.” The system automatically creates a DeliveryReceipt object with status INITIATED or PENDING_REVIEW.
-8. The Procurement Specialist reviews the DeliveryReceipt, verifies that the shipment contents match the PO, fills in inspection details, and marks the DeliveryReceipt as COMPLETED. The PORequest is also updated to COMPLETED.
-9. The Procurement Specialist creates a ProcurementClosure object linking the original PurchaseRequest and the completed DeliveryReceipt. The PurchaseRequest status is then set to COMPLETED, officially closing the procurement process.
+- PO Lifecycle: Once created and sent, the PO remains unchanged; there is no separate status management for the PO object.
+- Shipment Lifecycle: The Shipment progresses from PLACED ➔ IN_TRANSIT ➔ DELIVERED, with the final delivery confirmation triggered by Google’s Warehouse Specialist.
+- Delivery Confirmation: Google’s Warehouse Specialist confirms delivery, and the system automatically completes the associated PurchaseRequest (PR).
 
-### Step by Step
-#### Step 1: Send Purchase Order (PO)
+#### Step-by-Step Workflow
 
-- **Actor**: Procurement Specialist (Google)
-- **Action**: Sends the PO to the vendor after internal approvals.
-- **Effect**: The PORequest status is set to PENDING.
+|**Step**|**Actor**|**Action**|**System Behavior**|
+|---|---|---|---|
+|1|Procurement Specialist (Google)|Sends the approved Purchase Order (PO) to the vendor (e.g., ASUS, TSMC).|PO is created and sent; no further status tracking on PO itself.|
+|2|Sales Manager (Vendor)|Receives the PO and initiates a Delivery Request to FedEx. Simultaneously creates a Shipment object with receiver, item list, quantity, and an auto-generated tracking number.|Shipment status set to PLACED.|
+|3|Shipping Coordinator (FedEx)|Reviews the Delivery Request, fills in shipment details (shipment date, expected arrival date = current date + 5 days), and accepts the request.|Shipment status updated to IN_TRANSIT; DeliveryRequest marked as ACCEPTED.|
+|4|System|Updates Google’s internal UI. The Warehouse Specialist can view the shipment record with status IN_TRANSIT.|
+|5|Warehouse Specialist (Google)|Upon physical receipt of the goods, clicks **“Confirm Delivery”** in the system to acknowledge successful receipt.|Shipment status updated to DELIVERED; the associated PurchaseRequest (PR) is automatically marked as COMPLETED.|
 
-#### **Step 2: Vendor Approves the PO**
+---
 
-- **Actor**: Sales Manager (TSMC or Samsung)
-- **Action**: Reviews and approves the received PO.
-- **Effect**: The PORequest status is updated to APPROVED.
+## 🍀 Entities and Roles
 
-#### **Step 3: Vendor Requests  Delivery and Initializes Shipment**
+| **Role**             | **Organization** | **Department** | **Responsibility**                             |
+| -------------------- | ---------------- | -------------- | ---------------------------------------------- |
+| SYS_ADMIN            | System Admin     | System         | Manage network and enterprise setup            |
+| IT_ADMIN             | Google           | IT             | Manage organization within enterprise          |
+| MANAGER              | Google           | IT             | Technical spec approval for hardware PRs       |
+| ENGINEER             | Google           | IT             | Technical consulting and support               |
+| ANALYST              | Google           | Finance        | Budget approval for quotations                 |
+| SPECIALIST           | Google           | Procurement    | Vendor management, RFQ handling, PO creation   |
+| SPECIALIST           | Google           | Warehouse      | Receive shipments and confirm deliveries       |
+| LEGAL_REVIEWER       | Google           | Legal          | Contract compliance review                     |
+| MANAGER              | Google           | HR             | Employee account creation and management       |
+| MANAGER              | Vendors          | Sales          | Quotation submission and shipment coordination |
+| SHIPPING_COORDINATOR | FedEx            | Logistics      | Shipment execution and tracking                |
 
-- **Actor**: Sales Manager (Vendor)
-- **Action**: Sends a delivery request to FedEx and initializes a Shipment object with basic information (e.g., receiver, item list, quantity).
-- **Effect**: The Shipment status is set to PLACED.
+---
 
-#### Step 4: **FedEx Processes Shipment**
+## ⭐️ Key Features
 
-- **Actor**: Shipping Coordinator (FedEx)
-- **Action**: Updates the Shipment object with tracking number, expected delivery date (current date + 5 days), and other logistics details.
-- **Effect**: The Shipment status is updated to IN_TRANSIT.
-
-#### **Step 5: Google Receives Shipment Update** (Not sure yet)
-
-- **Actor**: System / UI
-- **Action**: Displays updated Shipment status in Google’s interface for internal users.
-- **Effect**: The Warehouse Specialist sees the shipment as IN_TRANSIT.
-
-#### **Step 6: FedEx Delivers the Goods**
-
-- **Actor**: Shipping Coordinator (FedEx)
-- **Action**: Marks the shipment as delivered in the system.
-- **Effect**: The Shipment status is updated to DELIVERED.
-
-#### **Step 7: Google Warehouse Confirms Delivery**
-
-- **Actor**: Warehouse Specialist (Google)
-- **Action**: Clicks “Confirm Delivery” to acknowledge that the shipment has physically arrived.
-- **Effect**:
-    - The system automatically creates a DeliveryReceipt with status INITIATED (or PENDING_REVIEW).
-    - The receipt includes basic info (shipment ID, delivery timestamp, warehouse receiver).
-
-#### **Step 8: Procurement Reviews and Confirms Delivery Receipt**
-
-- **Actor**: Procurement Specialist (Google)
-- **Precondition**: A DeliveryReceipt must exist (created by the warehouse).
-- **Action**:
-    - Reviews the delivery details.
-    - Confirms item specs and quantities match the PO.
-    - Updates the DeliveryReceipt with notes or findings.
-    - Marks the receipt status as COMPLETED.
-    - Updates the associated PORequest status to COMPLETED.
-- **Effect**:
-    - Delivery receipt is now officially verified and complete.
-    - The PO is considered fulfilled from the procurement perspective.
-
-#### Step 9: Procurement Creates ProcurementClosure
-
-- Actor: Procurement Specialist (Google)
-- Action:
-    - Creates a ProcurementClosure object.
-    - Links the PurchaseRequest and the now-completed DeliveryReceipt.
-    - Marks the associated PurchaseRequest status as COMPLETED.
--	Effect:
-     - Official closure of the procurement process.
-     - Both PR and DeliveryReceipt are logically and formally connected for auditing or reporting purposes.
+- Full Procurement Lifecycle: End-to-end flow from PR to delivery closure.
+- Multi-Vendor RFQ Handling: Supports parallel RFQ and side-by-side quotation comparison.
+- Finance Budget Control: Purchase Orders (POs) can only be initiated after Finance finalizes the budget.
+- Shipment Tracking: Integration of vendor shipment and internal warehouse confirmation.
+- Robust Workflow Enforcement: Approval checks and role-based actions embedded in logic. 
